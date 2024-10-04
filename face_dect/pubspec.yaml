@@ -1,0 +1,23 @@
+name: face_dect
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.11.0+2
+  image_picker: ^0.8.5+3 #이미지 선택
+  path_provider: ^2.0.11 #피커
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
