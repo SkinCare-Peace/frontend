@@ -25,4 +25,4 @@ class MyApp extends StatelessWidget{
   }
 
 }
-// 깃 푸시 확인용 10/6. 9pm14
+// 깃 푸시 확인용 10/6. 10pm20

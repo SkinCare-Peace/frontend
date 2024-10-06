@@ -1,46 +1,52 @@
 import 'dart:math';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'courdinates_painting.dart';
+import 'courdinates_painting.dart'; // 좌표 변환 관련 도우미 함수들을 여기서 가져온다고 가정
 
+class FaceDetectorPainter extends CustomPainter {
+  final List<Face> faces;
+  final Size absoluteImageSize;
+  final InputImageRotation rotation;
 
-class FaceDetectorPainter extends CustomPainter{
-
-  final List<Face>faces;
-  final Size absoluteIamgeSize;
-  final InputImageRotation;
-  final rotation;
-
-  FaceDetectorPainter(this.faces, this.absoluteIamgeSize, this.rotation, this.InputImageRotation);
+  FaceDetectorPainter(this.faces, this.absoluteImageSize, this.rotation);
 
   @override
-  void paint(final Canvas canvas, final Size size){
-    final Paint paint=Paint()
-    ..style=PaintingStyle.stroke
-    ..strokeWidth=1.0
-    ..color=Colors.blue;
-    for(final Face face in faces){
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0
+      ..color = Colors.blue;
+
+    for (final Face face in faces) {
+      // 얼굴 bounding box 그리기
       canvas.drawRect(
         Rect.fromLTRB(
-        translateX(face.boundingBox.left, rotation, size, absoluteIamgeSize), 
-        translateY(face.boundingBox.top, rotation, size, absoluteIamgeSize),
-        translateX(face.boundingBox.right, rotation, size, absoluteIamgeSize),
-        translateY(face.boundingBox.bottom, rotation, size, absoluteIamgeSize),
-        ),paint,
+          translateX(face.boundingBox.left, rotation, size, absoluteImageSize),
+          translateY(face.boundingBox.top, rotation, size, absoluteImageSize),
+          translateX(face.boundingBox.right, rotation, size, absoluteImageSize),
+          translateY(face.boundingBox.bottom, rotation, size, absoluteImageSize),
+        ),
+        paint,
       );
-      //얼굴 주변에 파란색 그리기 (얼굴의 각 부분그리기용)
-      void paintContour(final FaceContourType type){
-        final faceContour=face.contours[type];
-        if(faceContour?.points!=null){
-          for(final Point point in faceContour!.points){
-            canvas.drawCircle(Offset(translateX(
-              point.x.toDouble(), rotation, size, absoluteIamgeSize),
-              translateY(
-                point.y.toDouble(), rotation, size, absoluteIamgeSize)
-            ),1.0,paint);
+
+      // 얼굴 윤곽선 그리기
+      void paintContour(FaceContourType type) {
+        final faceContour = face.contours[type];
+        if (faceContour?.points != null) {
+          for (final Point point in faceContour!.points) {
+            canvas.drawCircle(
+              Offset(
+                translateX(point.x.toDouble(), rotation, size, absoluteImageSize),
+                translateY(point.y.toDouble(), rotation, size, absoluteImageSize),
+              ),
+              1.0,
+              paint,
+            );
           }
         }
       }
+
+      // 각 얼굴 부위별로 그리기
       paintContour(FaceContourType.face);
       paintContour(FaceContourType.leftEyebrowTop);
       paintContour(FaceContourType.leftEyebrowBottom);
@@ -56,17 +62,11 @@ class FaceDetectorPainter extends CustomPainter{
       paintContour(FaceContourType.noseBridge);
       paintContour(FaceContourType.leftCheek);
       paintContour(FaceContourType.rightCheek);
-
     }
   }
 
-  @override 
-  bool shouldRepaint(final FaceDetectorPainter oldDelegate){
-    return oldDelegate.absoluteIamgeSize!=absoluteIamgeSize||
-    oldDelegate.faces != faces;
-    
+  @override
+  bool shouldRepaint(FaceDetectorPainter oldDelegate) {
+    return oldDelegate.absoluteImageSize != absoluteImageSize || oldDelegate.faces != faces;
   }
-
-  
-
 }
