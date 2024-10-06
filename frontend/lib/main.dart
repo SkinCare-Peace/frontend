@@ -26,3 +26,4 @@ class MyApp extends StatelessWidget{
 
 }
 // 깃 푸시 확인용 10/6. 10pm20
+//  google_mlkit_face_detection 버전 높혀서 수정함

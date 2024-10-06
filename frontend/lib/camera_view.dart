@@ -43,7 +43,6 @@ class _CameraViewState extends State<CameraView> {
     _startLive();
   }
 
-  // 실시간 카메라 시작 메소드
   Future<void> _startLive() async {
     try {
       final camera = cameras[_cameraIndex];
@@ -61,38 +60,32 @@ class _CameraViewState extends State<CameraView> {
       _controller?.startImageStream(_processCameraImage);
       setState(() {});
     } catch (e) {
-      // 카메라 초기화나 스트림 시작 중 에러 처리
       if (kDebugMode) {
         print('Error initializing camera: $e');
       }
     }
   }
 
-  // 실시간 카메라 이미지 처리 메소드
   Future<void> _processCameraImage(CameraImage image) async {
     try {
-      // 카메라 이미지에서 바이너리 데이터 추출
       final WriteBuffer allBytes = WriteBuffer();
       for (final Plane plane in image.planes) {
         allBytes.putUint8List(plane.bytes);
       }
       final bytes = allBytes.done().buffer.asUint8List();
 
-      // 이미지 크기 및 회전 정보 설정
       final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
 
       final camera = cameras[_cameraIndex];
       final imageRotation = InputImageRotationValue.fromRawValue(camera.sensorOrientation) ??
           InputImageRotation.rotation0deg;
 
-      // InputImageMetadata 생성
       final inputImageMetadata = InputImageMetadata(
         size: imageSize,
         rotation: imageRotation,
-        format: InputImageFormat.nv21, bytesPerRow: 0, // bytes per Row 오류때매 일단 삭제함 
+        format: InputImageFormat.nv21, bytesPerRow: 0,
       );
 
-      // InputImage 생성
       final inputImage = InputImage.fromBytes(
         bytes: bytes,
         metadata: inputImageMetadata,
@@ -100,7 +93,6 @@ class _CameraViewState extends State<CameraView> {
 
       widget.onImage(inputImage); // 이미지 처리 콜백 함수 호출
     } catch (e) {
-      // 이미지 처리 중 에러 처리
       if (kDebugMode) {
         print('Error processing image: $e');
       }
@@ -122,7 +114,13 @@ class _CameraViewState extends State<CameraView> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return CameraPreview(_controller!);
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        CameraPreview(_controller!),
+        if (widget.customPaint != null) widget.customPaint!,
+      ],
+    );
   }
 
   @override
