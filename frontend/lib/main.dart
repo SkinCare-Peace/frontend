@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget{
         primarySwatch: Colors.blue
       ),
       home: SkinStatusPage(), //새 페이지 만들면 주석처리하구 하면됨용~
-      //home: HomePage(), //얼굴인식 확인용 홈페이지 
     );
   }
 
