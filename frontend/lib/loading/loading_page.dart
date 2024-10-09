@@ -5,6 +5,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:frontend/face_detector_page.dart';
 
 class SkinStatusPage extends StatefulWidget {
   @override
@@ -120,9 +121,9 @@ class _SkinStatusPageState extends State<SkinStatusPage> {
             ),
             const SizedBox(height: 60), //컨테이너에서 버튼까지 거리
             ElevatedButton(
-              onPressed: () {
-                // 버튼 동작추가 ㄱ
-              },
+               onPressed: ()  => Navigator.push(context,
+            MaterialPageRoute(
+              builder: (context)=> const FaceDetectorPage())),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(
