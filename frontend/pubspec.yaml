@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+   
   camera: ^0.11.0+2
   image_picker: ^0.8.5+3 
   path_provider: ^2.0.11 
@@ -24,3 +25,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:  
+    - assets/emoji/face1.png
+    - assets/emoji/face2.png
+    - assets/emoji/face3.png
+    - assets/emoji/face4.png
+    - assets/emoji/face5.png
+    - assets/emoji/apple.png
+    - assets/emoji/appleG.png
+    - assets/emoji/clock.png
+    - assets/emoji/lotion.png
+    - assets/emoji/soap.png
+
+
