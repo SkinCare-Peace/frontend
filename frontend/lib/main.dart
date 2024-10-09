@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:frontend/loading/loading_page.dart';
 import'home_page.dart';
 
 List<CameraDescription>cameras=[];
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue
       ),
-      home: HomePage(),
+      home: SkinStatusPage(),
+      //home: HomePage(),  //카메라용 홈페이지
     );
   }
 
