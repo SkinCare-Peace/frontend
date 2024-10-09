@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import'home_page.dart';
+import'home_page_for_detection.dart';
 
 List<CameraDescription>cameras=[];
 void main() async{

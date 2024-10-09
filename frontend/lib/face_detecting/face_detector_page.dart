@@ -1,9 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/util/face_detector_painter.dart';
+import 'package:frontend/face_detecting/util/face_detector_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'camera_view.dart';
-import 'face_detector_painter.dart';
+
+
+// todo: x최대, y최대 따주면 좋고, 눈코입 위치 바운딩 박스로 따서 보내기
 
 class FaceDetectorPage extends StatefulWidget {
   const FaceDetectorPage({Key? key}) : super(key: key);

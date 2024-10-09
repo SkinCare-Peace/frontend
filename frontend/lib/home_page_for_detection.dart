@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'face_detector_page.dart';
+import 'face_detecting/face_detector_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
