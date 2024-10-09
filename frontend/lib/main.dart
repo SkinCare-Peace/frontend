@@ -21,11 +21,10 @@ class MyApp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue
       ),
-      home: SkinStatusPage(),
-      //home: HomePage(),  //카메라용 홈페이지
+      home: SkinStatusPage(), //새 페이지 만들면 주석처리하구 하면됨용~
+      //home: HomePage(), //얼굴인식 확인용 홈페이지 
     );
   }
 
 }
-// 깃 푸시 확인용 10/6. 10pm20
-//  google_mlkit_face_detection 버전 높혀서 수정함
+
