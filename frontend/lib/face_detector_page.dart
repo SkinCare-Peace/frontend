@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/util/face_detector_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'camera_view.dart';
-import 'util/courdinates_painting.dart';
 
 class FaceDetectorPage extends StatefulWidget {
   const FaceDetectorPage({Key? key}) : super(key: key);
@@ -35,7 +34,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   @override
   Widget build(BuildContext context) {
     return CameraView(
-      title: 'Face Detector',
+      title: '얼굴인식용',
       customPaint: _customPaint,
       text: _text,
       onImage: (inputImage) {
