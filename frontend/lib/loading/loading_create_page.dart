@@ -1,17 +1,12 @@
-///TODO: 
-/// 1. 이름 적용로직 추가하기 
-/// 2. 시간 남으면 글씨체 바꾸기
-
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:frontend/face_detector_page.dart';
 
-class SkinStatusPage extends StatefulWidget {
+class RoutineCreatePage extends StatefulWidget {
   @override
-  _SkinStatusPageState createState() => _SkinStatusPageState();
+  _RoutineCreateState createState() => _RoutineCreateState();
 }
 
-class _SkinStatusPageState extends State<SkinStatusPage> {
+class _RoutineCreateState extends State<RoutineCreatePage> {
   final ScrollController _scrollController = ScrollController();
   late Timer _timer;
 
@@ -55,18 +50,18 @@ class _SkinStatusPageState extends State<SkinStatusPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              '유지민 님의 피부 상태는\n몇점일까요?',
+              '유지민 님의\n루틴을 생성 중입니다',
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40), //몇점일까요에서 박스까지 거리
+            const SizedBox(height: 30), //루틴을 생성중입니다 부터 박스까지 거리
             Container(
               padding: const EdgeInsets.only( bottom: 50,  top: 20),  //컨테이너 안 패딩
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 223, 223, 223),
+                color: Color.fromARGB(255, 255, 255, 255),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
@@ -119,28 +114,6 @@ class _SkinStatusPageState extends State<SkinStatusPage> {
               ),
             ),
             const SizedBox(height: 60), //컨테이너에서 버튼까지 거리
-            ElevatedButton(
-               onPressed: ()  => Navigator.push(context,
-            MaterialPageRoute(
-              builder: (context)=> const FaceDetectorPage())),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 95, vertical: 20),
-                elevation: 10, // 버튼 그림자 깊이..?
-                shadowColor: Colors.black, 
-              ),
-              child: const Text(
-                '내 피부 상태 진단해보기',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
           ],
         ),
       ),
