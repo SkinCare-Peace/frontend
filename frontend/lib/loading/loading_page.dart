@@ -1,7 +1,6 @@
 ///TODO: 
 /// 1. 이름 적용로직 추가하기 
 /// 2. 시간 남으면 글씨체 바꾸기
-/// 3. 버튼 이동 로직
 
 import 'dart:async';
 import 'package:flutter/material.dart';
