@@ -13,7 +13,7 @@ class FaceDetectorPainter extends CustomPainter {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0
-      ..color = Colors.red;
+      ..color = const Color.fromARGB(255, 255, 255, 255);
 
     for (final face in faces) {
       canvas.drawRect(
@@ -27,7 +27,7 @@ class FaceDetectorPainter extends CustomPainter {
       );
     }
   }
-
+// 위 좌표 변환값 백에 전송 로직 구현 추가해야함 
   double translateX(double x, InputImageRotation rotation, Size size, Size absoluteSize) {
     switch (rotation) {
       case InputImageRotation.rotation90deg:
