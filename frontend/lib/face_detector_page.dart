@@ -33,14 +33,69 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CameraView(
-      title: '얼굴인식용',
-      customPaint: _customPaint,
-      text: _text,
-      onImage: (inputImage) {
-        processImage(inputImage);
-      },
-      initialDirection: CameraLensDirection.front,
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CameraView(
+                  customPaint: _customPaint,
+                  text: _text,
+                  onImage: (inputImage) {
+                    processImage(inputImage);
+                  },
+                  initialDirection: CameraLensDirection.front, title: '',
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    '얼굴이 인식되면\n‘찰칵’ 버튼을 눌러주세요!',
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      // 버튼 동작 추가
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 87, 204, 222),
+                      shape:RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 16),
+                          elevation: 10, // 버튼 그림자 깊이..?
+                          shadowColor: Colors.black, 
+                      
+                      
+                    ),
+                    child: const Text(
+                '찰칵',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

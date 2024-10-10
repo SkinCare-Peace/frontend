@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/loading/loading_page.dart';
-import'home_page.dart'; 
 
 List<CameraDescription>cameras=[];
 void main() async{
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue
       ),
-      home: SkinStatusPage(), //새 페이지 만들면 주석처리하구 하면됨용~
+      home: SkinStatusPage(), //새 페이지 만들면 이거 주석처리하구 하면됨용~
     );
   }
 
