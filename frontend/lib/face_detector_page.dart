@@ -121,8 +121,9 @@ Map<String, dynamic>? landmarkToBoundingBox(FaceLandmark? landmark) {
 
 //이마
 Map<String, dynamic> calculateForeheadBox(FaceLandmark? leftEye, FaceLandmark? rightEye, Rect faceBox) {
-  if (leftEye == null || rightEye == null) return {};
-
+  if (leftEye == null || rightEye == null) {
+    return {}; // 랜드마크가 null이면 빈 맵 반환
+  }
   final eyeCenterY = (leftEye.position.y + rightEye.position.y) / 2;
   return {
     'left': faceBox.left,
@@ -132,10 +133,12 @@ Map<String, dynamic> calculateForeheadBox(FaceLandmark? leftEye, FaceLandmark? r
   };
 }
 
+
 //미간
 Map<String, dynamic> calculateGlabellusBox(FaceLandmark? leftEye, FaceLandmark? rightEye, Rect faceBox) {
-  if (leftEye == null || rightEye == null) return {};
-
+  if (leftEye == null || rightEye == null) {
+    return {}; // 랜드마크가 null이면 빈 맵 반환
+  }
   final centerX = (leftEye.position.x + rightEye.position.x) / 2;
   final centerY = (leftEye.position.y + rightEye.position.y) / 2;
   final boxWidth = (rightEye.position.x - leftEye.position.x) * 0.5;
@@ -150,7 +153,9 @@ Map<String, dynamic> calculateGlabellusBox(FaceLandmark? leftEye, FaceLandmark? 
 
 //입술영역
 Map<String, dynamic> calculateLipBox(FaceLandmark? mouthLeft, FaceLandmark? mouthRight, FaceLandmark? mouthBottom) {
-  if (mouthLeft == null || mouthRight == null || mouthBottom == null) return {};
+  if (mouthLeft == null || mouthRight == null || mouthBottom == null) {
+    return {}; // 랜드마크가 null이면 빈 맵 반환
+  }
 
   return {
     'left': mouthLeft.position.x,
@@ -162,8 +167,9 @@ Map<String, dynamic> calculateLipBox(FaceLandmark? mouthLeft, FaceLandmark? mout
 
 //턱
 Map<String, dynamic> calculateChinBox(FaceLandmark? mouthBottom, Rect faceBox) {
-  if (mouthBottom == null) return {};
-
+  if (mouthBottom == null) {
+    return {}; // 랜드마크가 null이면 빈 맵 반환
+  }
   return {
     'left': faceBox.left,
     'top': mouthBottom.position.y,
@@ -172,7 +178,6 @@ Map<String, dynamic> calculateChinBox(FaceLandmark? mouthBottom, Rect faceBox) {
   };
 }
 
-/// 
 class FaceDetectorPage extends StatefulWidget {
   const FaceDetectorPage({super.key});
 
@@ -280,6 +285,49 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
 
     // 얼굴 정보를 백엔드로 전송
     await sendFaceDataToServer(faces); // 얼굴 데이터를 서버로 전송
+    
+    // 바운딩 박스 정보 콘솔에 출력하는 부분 ******************************************************************************
+    for (var face in faces) {
+      final boundingBox = face.boundingBox;
+      print('Full face bounding box: ${boundingBoxToJson(boundingBox)}');
+
+    // 각 얼굴 영역의 바운딩 박스 계산 후 출력
+    final leftEye = face.landmarks[FaceLandmarkType.leftEye]?.position;
+    final rightEye = face.landmarks[FaceLandmarkType.rightEye]?.position;
+    final nose = face.landmarks[FaceLandmarkType.noseBase]?.position;
+    final mouthLeft = face.landmarks[FaceLandmarkType.leftMouth]?.position;
+    final mouthRight = face.landmarks[FaceLandmarkType.rightMouth]?.position;
+    final mouthBottom = face.landmarks[FaceLandmarkType.bottomMouth]?.position;
+    final cheekLeft = face.landmarks[FaceLandmarkType.leftCheek]?.position;
+    final cheekRight = face.landmarks[FaceLandmarkType.rightCheek]?.position;
+
+    final foreheadBox = calculateForeheadBox(leftEye as FaceLandmark?, rightEye as FaceLandmark?, boundingBox);
+    final glabellusBox = calculateGlabellusBox(leftEye as FaceLandmark?, rightEye as FaceLandmark?, boundingBox);
+    final lipBox = calculateLipBox(mouthLeft as FaceLandmark?, mouthRight as FaceLandmark?, mouthBottom as FaceLandmark?);
+    final chinBox = calculateChinBox(mouthBottom as FaceLandmark?, boundingBox);
+
+    print('Forehead bounding box: $foreheadBox');
+    print('Glabellus bounding box: $glabellusBox');
+    print('Lip bounding box: $lipBox');
+    print('Chin bounding box: $chinBox');
+
+    if (leftEye != null) {
+      print('Left eye bounding box: ${landmarkToBoundingBox(leftEye as FaceLandmark?)}');
+    }
+    if (rightEye != null) {
+      print('Right eye bounding box: ${landmarkToBoundingBox(rightEye as FaceLandmark?)}');
+    }
+    if (cheekLeft != null) {
+      print('Left cheek bounding box: ${landmarkToBoundingBox(cheekLeft as FaceLandmark?)}');
+    }
+    if (cheekRight != null) {
+      print('Right cheek bounding box: ${landmarkToBoundingBox(cheekRight as FaceLandmark?)}');
+    }
+    if (nose != null) {
+      print('Nose bounding box: ${landmarkToBoundingBox(nose as FaceLandmark?)}');
+    }
+  }
+  // 출력 부분 여기까지 지우면 됨  *************************************************************************************
 
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(
