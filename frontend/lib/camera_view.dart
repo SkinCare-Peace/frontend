@@ -3,7 +3,28 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'dart:math' as math; 
+
+
+//카메라 뷰
+class CameraView extends StatefulWidget {
+  final String title;
+  final CustomPaint? customPaint; // 얼굴 인식 결과 그리기 
+  final String? text; //얼굴 인식 결과 텍스트
+  final Function(InputImage inputImage) onImage; //이미지 처리 콜백함수
+  final CameraLensDirection initialDirection; //초기 카메라 렌즈 방향
+
+  const CameraView({
+    super.key,
+    required this.title,
+    required this.onImage,
+    required this.initialDirection,
+    this.customPaint,
+    this.text,
+  });
+
+  @override
+  State<CameraView> createState() => _CameraViewState();
+}
 
 class _CameraViewState extends State<CameraView> {
   CameraController? _controller;
@@ -14,14 +35,14 @@ class _CameraViewState extends State<CameraView> {
     super.initState();
 
     // 초기 카메라 렌즈 방향에 맞는 카메라 인덱스 설정
-    _cameraIndex = cameras.indexWhere(
-        (camera) => camera.lensDirection == widget.initialDirection);
+    _cameraIndex = cameras.indexWhere((camera) =>
+        camera.lensDirection == widget.initialDirection);
 
     if (_cameraIndex == -1 && cameras.isNotEmpty) {
       _cameraIndex = 0; // 기본적으로 첫 번째 카메라 사용
     }
 
-    _startLive(); // 라이브 시작
+    _startLive(); //라이브 시작 
   }
 
   Future<void> _startLive() async {
@@ -29,8 +50,8 @@ class _CameraViewState extends State<CameraView> {
       final camera = cameras[_cameraIndex];
       _controller = CameraController(
         camera,
-        ResolutionPreset.high, // 해상도 최대한 높게
-        enableAudio: false, // 오디오 비활성화
+        ResolutionPreset.high, //해상도 최대한 높게 
+        enableAudio: false, //오디오 ㄴ 
       );
 
       await _controller?.initialize();
@@ -47,7 +68,7 @@ class _CameraViewState extends State<CameraView> {
     }
   }
 
-  // 카메라에서 받은 이미지 처리 함수
+//카메라에서 받은 이미지 처리 함수 
   Future<void> _processCameraImage(CameraImage image) async {
     try {
       final WriteBuffer allBytes = WriteBuffer();
@@ -65,8 +86,7 @@ class _CameraViewState extends State<CameraView> {
       final inputImageMetadata = InputImageMetadata(
         size: imageSize,
         rotation: imageRotation,
-        format: InputImageFormat.nv21,
-        bytesPerRow: image.planes[0].bytesPerRow,
+        format: InputImageFormat.nv21, bytesPerRow: 0,
       );
 
       final inputImage = InputImage.fromBytes(
@@ -88,24 +108,25 @@ class _CameraViewState extends State<CameraView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: _body(),
+      body: Transform(
+      alignment: Alignment.center,
+      transform: Matrix4.identity()..scale(-1.0, 1.0), // 화면 전체 좌우 반전
+      child: _body(),
+    ),
     );
   }
 
   Widget _body() {
     if (_controller == null || !_controller!.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator()); // 카메라 초기화 중일 때 로딩
+      return const Center(child: CircularProgressIndicator()); //카메라 초기화 중일떄 로딩 
     }
 
     return Stack(
-      fit: StackFit.expand,
+      fit: StackFit.expand, 
       children: [
-        Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.identity()..rotateY(math.pi), // 카메라 프리뷰 좌우 반전
-          child: CameraPreview(_controller!), // 카메라 프리뷰
-        ),
-        if (widget.customPaint != null) widget.customPaint!, // 얼굴 인식 결과
+        
+        CameraPreview(_controller!), //카메라 프리뷰
+        if (widget.customPaint != null) widget.customPaint!, //얼굴 인식 결과 
       ],
     );
   }
@@ -115,25 +136,4 @@ class _CameraViewState extends State<CameraView> {
     _controller?.dispose();
     super.dispose();
   }
-}
-
-//카메라 뷰
-class CameraView extends StatefulWidget {
-  final String title;
-  final CustomPaint? customPaint; // 얼굴 인식 결과 그리기 
-  final String? text; //얼굴 인식 결과 텍스트
-  final Function(InputImage inputImage) onImage; //이미지 처리 콜백함수
-  final CameraLensDirection initialDirection; //초기 카메라 렌즈 방향
-
-  const CameraView({
-    super.key,
-    required this.title,
-    required this.onImage,
-    required this.initialDirection,
-    this.customPaint,
-    this.text,
-  });
-
-  @override
-  State<CameraView> createState() => _CameraViewState();
 }
