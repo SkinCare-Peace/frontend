@@ -14,15 +14,15 @@ class FaceDetectorPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
 
-    for (final Face face in faces) {// Euler Y 각도에 따라 색상 결정
+    for (final Face face in faces) {// face_detecttor_page에 정의해놈 Euler Y 각도에 따라 색상 결정
       if (face.headEulerAngleY != null) {
-        if (face.headEulerAngleY! < 0) {// 얼굴이 왼쪽으로 기울어진 경우 빨간색
+        if (face.headEulerAngleY! < 0) {// 얼굴이 왼쪽으로 기울어지면 빨간색 -> 근데 좌우반전시켜서 우리한텐 반대임
           paint.color = Colors.red;
-        } else { // 얼굴이 오른쪽으로 기울어진 경우 파란색
+        } else { // 얼굴이 오른쪽으로 기울어진 경우 파란색 -> 위와 같은 경우로 우리한텐 반대
           paint.color = Colors.blue;
         }
       } else {
-        // Euler Y 각도가 없는 경우 기본 색상
+        // Euler Y 각도가 없는 경우 기본 색상 -> 인데 각도가 없기가 힘듬
         paint.color = Colors.green;
       }
       // 얼굴 바운딩 박스를 이미지 크기에 맞춰 변환
@@ -32,11 +32,12 @@ class FaceDetectorPainter extends CustomPainter {
         translateX(face.boundingBox.right, rotation, size, absoluteImageSize),
         translateY(face.boundingBox.bottom, rotation, size, absoluteImageSize),
       );
-
-      // 얼굴 바운딩 박스를 그립니다
+      //바운딩 박스 그리기용
       canvas.drawRect(boundingBox, paint);
     }
   }
+
+  //변환
   double translateX(double x, InputImageRotation rotation, Size size, Size absoluteImageSize) {
     switch (rotation) {
       case InputImageRotation.rotation90deg:
@@ -47,7 +48,7 @@ class FaceDetectorPainter extends CustomPainter {
         return x * size.width / absoluteImageSize.width;
     }
   }
-
+//좌표변환
   double translateY(double y, InputImageRotation rotation, Size size, Size absoluteImageSize) {
     switch (rotation) {
       case InputImageRotation.rotation90deg:

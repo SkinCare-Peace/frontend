@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/util/face_detector_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'camera_view.dart';
+import 'question/question1.dart';
+
 /* 얼굴의 각 영역을 정의 -> 그에 맞는 좌표를 계산(각 영역을 구성하는 기준을 landmark로 나눔)
 -> 각 영역에 해당하는 좌표 추출 및 전송 */
 
@@ -242,7 +244,12 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      // 버튼 동작 추가
+                      Navigator.push(
+                      context,
+                        MaterialPageRoute(builder: (context) => QuestionPage()),
+                          );
+
+                      //일단 전송 스킵하고 버튼 누르면 설문으로 이동하게 해야함
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 87, 204, 222),
