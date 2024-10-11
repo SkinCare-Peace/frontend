@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
+
+//카메라 뷰
 class CameraView extends StatefulWidget {
   final String title;
-  final CustomPaint? customPaint;
-  final String? text;
-  final Function(InputImage inputImage) onImage;
-  final CameraLensDirection initialDirection;
+  final CustomPaint? customPaint; // 얼굴 인식 결과 그리기 
+  final String? text; //얼굴 인식 결과 텍스트
+  final Function(InputImage inputImage) onImage; //이미지 처리 콜백함수
+  final CameraLensDirection initialDirection; //초기 카메라 렌즈 방향
 
   const CameraView({
     super.key,
@@ -40,7 +42,7 @@ class _CameraViewState extends State<CameraView> {
       _cameraIndex = 0; // 기본적으로 첫 번째 카메라 사용
     }
 
-    _startLive();
+    _startLive(); //라이브 시작 
   }
 
   Future<void> _startLive() async {
@@ -48,8 +50,8 @@ class _CameraViewState extends State<CameraView> {
       final camera = cameras[_cameraIndex];
       _controller = CameraController(
         camera,
-        ResolutionPreset.high,
-        enableAudio: false,
+        ResolutionPreset.high, //해상도 최대한 높게 
+        enableAudio: false, //오디오 ㄴ 
       );
 
       await _controller?.initialize();
@@ -66,6 +68,7 @@ class _CameraViewState extends State<CameraView> {
     }
   }
 
+//카메라에서 받은 이미지 처리 함수 
   Future<void> _processCameraImage(CameraImage image) async {
     try {
       final WriteBuffer allBytes = WriteBuffer();
@@ -105,20 +108,25 @@ class _CameraViewState extends State<CameraView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: _body(),
+      body: Transform(
+      alignment: Alignment.center,
+      transform: Matrix4.identity()..scale(-1.0, 1.0), // 화면 전체 좌우 반전
+      child: _body(),
+    ),
     );
   }
 
   Widget _body() {
     if (_controller == null || !_controller!.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator()); //카메라 초기화 중일떄 로딩 
     }
 
     return Stack(
-      fit: StackFit.expand,
+      fit: StackFit.expand, 
       children: [
-        CameraPreview(_controller!),
-        if (widget.customPaint != null) widget.customPaint!,
+        
+        CameraPreview(_controller!), //카메라 프리뷰
+        if (widget.customPaint != null) widget.customPaint!, //얼굴 인식 결과 
       ],
     );
   }
