@@ -1,4 +1,4 @@
-import 'dart:io'; // 파일 입출력을 위한 라이브러리
+//import 'dart:io'; // 파일 입출력을 위한 라이브러리
 import 'package:flutter/material.dart'; // Flutter의 기본 위젯과 기능 사용
 import 'package:camera/camera.dart'; // 카메라 기능을 위한 패키지
 
@@ -61,34 +61,37 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('카메라 화면')), // 상단 앱바 제목 설정
-        body: Column(
-          children: [
-            Expanded(
-              child: FutureBuilder<void>(
-                future: _initializeControllerFuture, // 카메라 초기화 Future
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    // 초기화가 완료되면 카메라 미리보기 화면 출력
-                    return _controller != null
-                        ? CameraPreview(_controller!)
-                        : Container();
-                  } else {
-                    // 초기화 중이면 로딩 인디케이터 표시
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
+        appBar: AppBar(title: const Text('Camera Demo')), // 상단 앱바 제목 설정
+        body: Center(
+          // 가운데 정렬
+          child: Column(
+            children: [
+              Expanded(
+                child: FutureBuilder<void>(
+                  future: _initializeControllerFuture, // 카메라 초기화 Future
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      // 초기화가 완료되면 카메라 미리보기 화면 출력
+                      return _controller != null
+                          ? CameraPreview(_controller!)
+                          : Container();
+                    } else {
+                      // 초기화 중이면 로딩 인디케이터 표시
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
               ),
-            ),
-            // 카메라 변경 버튼
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: onSwitchCamera,
-                child: const Text('카메라 전환'),
+              // 카메라 변경 버튼
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: onSwitchCamera,
+                  child: const Text('카메라 전환'),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         // // 플로팅 액션 버튼: 카메라 캡처 기능
         // floatingActionButton: FloatingActionButton(
@@ -115,9 +118,9 @@ class MyAppState extends State<MyApp> {
         //     }
         //   },
         //   child: const Icon(Icons.camera_alt), // 버튼 아이콘 설정
-        // ),
-        floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerFloat, // 버튼 위치 조정
+        // // ),
+        // floatingActionButtonLocation:
+        //     FloatingActionButtonLocation.centerFloat, // 버튼 위치 조정
       ),
     );
   }

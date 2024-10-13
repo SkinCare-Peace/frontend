@@ -47,3 +47,6 @@
 	<true/>
 </dict>
 </plist>
+
+<key>NSCameraUsageDescription</key>
+<string>We need access to the camera for face detection.</string>
