@@ -1,6 +1,9 @@
-//import 'dart:io'; // 파일 입출력을 위한 라이브러리
+import 'dart:io'; // 플랫폼 구분을 위해 사용
 import 'package:flutter/material.dart'; // Flutter의 기본 위젯과 기능 사용
-import 'package:camera/camera.dart'; // 카메라 기능을 위한 패키지
+import 'package:camera/camera.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart'; // 카메라 기능을 위한 패키지
+// 플랫폼별 서비스와 통신하기 위함
+import 'package:flutter/services.dart';
 
 // MyApp 위젯: StatefulWidget으로 카메라 기능을 포함
 class MyApp extends StatefulWidget {
@@ -18,6 +21,8 @@ class MyAppState extends State<MyApp> {
   late Future<void> _initializeControllerFuture; // 카메라 초기화 Future
   late int selectedCameraIndex; // 선택된 카메라의 인덱스
 
+  final InputImage inputImage;
+
   @override
   void initState() {
     super.initState();
@@ -33,12 +38,25 @@ class MyAppState extends State<MyApp> {
     _controller?.dispose();
     // 새로운 컨트롤러 생성
     _controller = CameraController(
-      cameraDescription,
-      ResolutionPreset.medium,
+      enableAudio: false, // 오디오 캡쳐 비활성화
+      cameraDescription, // 사용가능한 카메라
+      ResolutionPreset.max, // 해상도
+      imageFormatGroup: Platform.isAndroid // 플랫폼에 따라 이미지 포맷 설정
+          ? ImageFormatGroup.nv21 // for Android
+          : ImageFormatGroup.bgra8888, // for iOS
     );
     // 컨트롤러 초기화 수행
     _initializeControllerFuture = _controller!.initialize(); // 초기화할 때 null 체크
   }
+
+  // 장치 방향을 각도로 정의한 매핑한 맵 정의
+// ML Kit에서 이미지의 회전을 보정하기 위해 사용
+final _orientations = {
+  DeviceOrientation.portraitUp: 0,
+  DeviceOrientation.landscapeLeft: 90,
+  DeviceOrientation.portraitDown: 180,
+  DeviceOrientation.landscapeRight: 270,
+};
 
   @override
   void dispose() {
