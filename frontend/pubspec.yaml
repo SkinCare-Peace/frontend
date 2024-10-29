@@ -37,5 +37,8 @@ flutter:
     - assets/emoji/clock.png
     - assets/emoji/lotion.png
     - assets/emoji/soap.png
+    - assets/images/background.png
+    - assets/images/logo.png
+    - assets/images/glogo.png
 
 
