@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/logIn/login_post.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -28,9 +29,7 @@ class LoginPage extends StatelessWidget {
                 children: [
                   Image.asset('assets/images/logo.png'),
                   ElevatedButton(
-                    onPressed: () {
-                      print('google login Button');
-                    },
+                    onPressed: initiateGoogleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       shadowColor: Colors.black,
