@@ -7,7 +7,7 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   // 선택된 제품들 저장할 map
-  Map<String, bool> _selectedProducts = {
+  final Map<String, bool> _selectedProducts = {
     '선크림': false,
     '폼 클렌징': false,
     '로션': false,
@@ -21,7 +21,7 @@ class _QuestionPageState extends State<QuestionPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
           ),
           width: 350,

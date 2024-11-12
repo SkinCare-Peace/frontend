@@ -121,14 +121,17 @@ class _CameraViewState extends State<CameraView> {
       return const Center(child: CircularProgressIndicator()); //카메라 초기화 중일떄 로딩 
     }
 
-    return Stack(
-      fit: StackFit.expand, 
+    return AspectRatio(
+    aspectRatio: _controller!.value.aspectRatio, // 카메라 비율 맞추기 
+    child: Stack(
+      fit: StackFit.expand,
       children: [
-        
-        CameraPreview(_controller!), //카메라 프리뷰
-        if (widget.customPaint != null) widget.customPaint!, //얼굴 인식 결과 
+        CameraPreview(_controller!), // 카메라 프리뷰
+        if (widget.customPaint != null) widget.customPaint!, // 얼굴 인식 결과
       ],
-    );
+    ),
+  );
+        
   }
 
   @override
