@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       //home 변경할때, 주석처리로!
-      //home: SkinStatusPage(),  //처음 로딩화면
+      home: SkinStatusPage(),  //처음 로딩화면
       //home: RoutineCreatePage(), //루틴 생성중 로딩 페이지로 바로 이동
-      home: LoginPage(),
+      //home: LoginPage(), // 로그인 페이지
     );
   }
 }

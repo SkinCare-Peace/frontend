@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/util/face_detector_painter.dart';
+import 'package:frontend/face_detection/face_detector_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'camera_view.dart';
-import 'question/question1.dart';
+import '../question/question1.dart';
 
 
 //  서버로 얼굴 전체 bbox 전송

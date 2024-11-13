@@ -16,9 +16,15 @@ class FaceDetectorPainter extends CustomPainter {
 
     for (final Face face in faces) {// face_detecttor_page에 정의해놈 Euler Y 각도에 따라 색상 결정
       if (face.headEulerAngleY != null) {
-        if (face.headEulerAngleY! < 0) {// 얼굴이 왼쪽으로 기울어지면 빨간색 -> 근데 좌우반전시켜서 우리한텐 반대임
-          paint.color = Colors.red;
-        } else { // 얼굴이 오른쪽으로 기울어진 경우 파란색 -> 위와 같은 경우로 우리한텐 반대
+        if (face.headEulerAngleY! > 10)
+        {
+          paint.color = Colors.red; // 얼굴 오른쪽으로 기울어지면 초록색 -> 좌우반전
+        }
+        else if (face.headEulerAngleY! > 350)
+        {
+          paint.color = Colors.green;
+        }
+        else { 
           paint.color = Colors.blue;
         }
       } else {

@@ -4,7 +4,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:frontend/face_detector_page.dart';
+import 'package:frontend/face_detection/face_detector_page.dart';
 
 class SkinStatusPage extends StatefulWidget {
   @override
