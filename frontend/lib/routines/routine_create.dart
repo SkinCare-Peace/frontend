@@ -99,6 +99,9 @@ class _RoutinePageState extends State<RoutinePage> {
             ),
           ),
           const SizedBox(height: 20),
+
+
+           // ************************** 각 루틴 **************************
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
@@ -145,17 +148,20 @@ class _RoutinePageState extends State<RoutinePage> {
                             ],
                           ),
                           if (isExpanded && step.containsKey('ingredients')) ...[
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 30),
                             const Text('추천 성분:', style: TextStyle(fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 10),
                             Wrap(
-                              spacing: 8,
+                              spacing: 5,
                               children: (step['ingredients'] as List<String>).map((ingredient) {
                                 return Chip(
                                   label: Text(ingredient),
-                                  backgroundColor: Colors.green[100],
+                                  backgroundColor: const Color.fromARGB(255, 216, 238, 217),
                                   side: const BorderSide(color: Color.fromARGB(184, 239, 238, 238)),
                                   shape: RoundedRectangleBorder(
-                                     borderRadius: BorderRadius.circular(20),) // 모서리 둥글게 설정
+                                     borderRadius: BorderRadius.circular(20),), // 모서리 둥글게 설정
+                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: -4), 
                                   
                                 );
                               }).toList(),
@@ -166,6 +172,17 @@ class _RoutinePageState extends State<RoutinePage> {
                             const SizedBox(height: 9),
                             const Text('사용 방법:', style: TextStyle(fontWeight: FontWeight.bold)),
                             Text(step['usage'] ?? '', style: const TextStyle(color: Colors.black87)),
+                            const SizedBox(height: 12),
+                            Center(
+                            child: Container(
+                                height: 6,
+                                width: 60, 
+                                decoration: BoxDecoration(
+                                color: Colors.grey[300],  
+                                borderRadius: BorderRadius.circular(5),  
+                                ),
+                             ),
+                            ),
                           ],
                         ],
                       ),
@@ -175,6 +192,9 @@ class _RoutinePageState extends State<RoutinePage> {
               },
             ),
           ),
+
+
+          // ************************** 하단 결정 버튼 **************************
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: Column(
