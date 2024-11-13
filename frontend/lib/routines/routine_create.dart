@@ -1,17 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: RoutinePage(),
-    );
-  }
-}
+import 'package:frontend/dash.dart';
 
 class RoutinePage extends StatefulWidget {
   @override
@@ -80,7 +68,7 @@ class _RoutinePageState extends State<RoutinePage> {
             padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
               '1일 2회 (총 소요시간 ${totalTime}분)',
-              style: const TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 10),
@@ -94,11 +82,14 @@ class _RoutinePageState extends State<RoutinePage> {
                 '피부타입 : 수분이 부족한 건성\n'
                 '유지민님은 건조도가 높아, 보습이 중요한 피부 타입입니다.\n'
                 '수분을 가득 채워줄 다음과 같은 루틴을 생성해 봤어요!',
-                style: TextStyle(color: Colors.black87),
+                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w400),
               ),
             ),
           ),
           const SizedBox(height: 20),
+
+
+           // ************************** 각 루틴 **************************
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
@@ -145,17 +136,20 @@ class _RoutinePageState extends State<RoutinePage> {
                             ],
                           ),
                           if (isExpanded && step.containsKey('ingredients')) ...[
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 30),
                             const Text('추천 성분:', style: TextStyle(fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 10),
                             Wrap(
-                              spacing: 8,
+                              spacing: 5,
                               children: (step['ingredients'] as List<String>).map((ingredient) {
                                 return Chip(
                                   label: Text(ingredient),
-                                  backgroundColor: Colors.green[100],
+                                  backgroundColor: const Color.fromARGB(255, 216, 238, 217),
                                   side: const BorderSide(color: Color.fromARGB(184, 239, 238, 238)),
                                   shape: RoundedRectangleBorder(
-                                     borderRadius: BorderRadius.circular(20),) // 모서리 둥글게 설정
+                                     borderRadius: BorderRadius.circular(20),), // 모서리 둥글게 설정
+                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: -4), 
                                   
                                 );
                               }).toList(),
@@ -166,6 +160,17 @@ class _RoutinePageState extends State<RoutinePage> {
                             const SizedBox(height: 9),
                             const Text('사용 방법:', style: TextStyle(fontWeight: FontWeight.bold)),
                             Text(step['usage'] ?? '', style: const TextStyle(color: Colors.black87)),
+                            const SizedBox(height: 12),
+                            Center(
+                            child: Container(
+                                height: 6,
+                                width: 60, 
+                                decoration: BoxDecoration(
+                                color: Colors.grey[300],  
+                                borderRadius: BorderRadius.circular(5),  
+                                ),
+                             ),
+                            ),
                           ],
                         ],
                       ),
@@ -175,14 +180,20 @@ class _RoutinePageState extends State<RoutinePage> {
               },
             ),
           ),
+
+
+          // ************************** 하단 결정 버튼 **************************
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () { Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DashPage()), // 루틴 결정시 dashpage 로 이동
+                    );},
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
+                    minimumSize: const Size(double.infinity, 58),
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
@@ -190,14 +201,14 @@ class _RoutinePageState extends State<RoutinePage> {
                   ),
                   child: const Text(
                     '이 루틴으로 결정 !',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
+                    minimumSize: const Size(double.infinity, 58),
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
