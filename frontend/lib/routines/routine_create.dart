@@ -80,7 +80,7 @@ class _RoutinePageState extends State<RoutinePage> {
             padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
               '1일 2회 (총 소요시간 ${totalTime}분)',
-              style: const TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 10),
@@ -94,7 +94,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 '피부타입 : 수분이 부족한 건성\n'
                 '유지민님은 건조도가 높아, 보습이 중요한 피부 타입입니다.\n'
                 '수분을 가득 채워줄 다음과 같은 루틴을 생성해 봤어요!',
-                style: TextStyle(color: Colors.black87),
+                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w400),
               ),
             ),
           ),
@@ -202,7 +202,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
+                    minimumSize: const Size(double.infinity, 58),
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
@@ -210,14 +210,14 @@ class _RoutinePageState extends State<RoutinePage> {
                   ),
                   child: const Text(
                     '이 루틴으로 결정 !',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
+                    minimumSize: const Size(double.infinity, 58),
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
