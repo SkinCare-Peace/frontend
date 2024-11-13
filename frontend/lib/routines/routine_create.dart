@@ -1,17 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: RoutinePage(),
-    );
-  }
-}
+import 'package:frontend/dash.dart';
 
 class RoutinePage extends StatefulWidget {
   @override
@@ -200,7 +188,10 @@ class _RoutinePageState extends State<RoutinePage> {
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () { Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DashPage()), // 루틴 결정시 dashpage 로 이동
+                    );},
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 58),
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
