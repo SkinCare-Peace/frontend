@@ -1,4 +1,6 @@
+// 제품명으로 검색하기 로직
 import 'package:flutter/material.dart';
+import 'added_product.dart';
 
 class SearchByName extends StatefulWidget {
   final String searchQuery;
@@ -11,6 +13,7 @@ class SearchByName extends StatefulWidget {
 
 class _SearchByNameState extends State<SearchByName> {
   List<Map<String, dynamic>> _searchResults = [];
+  List<Map<String, dynamic>> addedProducts = []; // 보유 제품 저장 리스트
   bool _isLoading = false;
 
   @override
@@ -114,8 +117,11 @@ class _SearchByNameState extends State<SearchByName> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+               onPressed: () {
                   Navigator.pop(context);
+                  setState(() {
+                    addedProducts.add(product); // 보유 제품에 추가
+                  });
                   print('${product['name']} 추가됨');
                 },
                 style: ElevatedButton.styleFrom(
