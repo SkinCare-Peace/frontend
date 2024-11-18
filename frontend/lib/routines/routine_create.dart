@@ -204,6 +204,7 @@ class _RoutinePageState extends State<RoutinePage> {
                     style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
+                 // ************************** 하단 결정 버튼 **************************
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {},
