@@ -31,18 +31,22 @@ class _SearchByNameState extends State<SearchByName> {
         {
           'name': '스킨푸드 캐롯 카로틴 카밍 워터패드',
           'image': 'https://via.placeholder.com/150',
+          'volume': '60매',
         },
         {
           'name': '스킨푸드 데일리 마스크 30매',
           'image': 'https://via.placeholder.com/150',
+          'volume': '30매',
         },
         {
           'name': '스킨푸드 캐롯 카로틴 릴리프 크림',
           'image': 'https://via.placeholder.com/150',
+          'volume': '50ml',
         },
         {
           'name': '스킨푸드 캐롯 카로틴 모이스트 이펙터',
           'image': 'https://via.placeholder.com/150',
+          'volume': '100ml',
         },
       ];
 
@@ -58,6 +62,87 @@ class _SearchByNameState extends State<SearchByName> {
     }
   }
 
+// ***************************** 팝업 ***************************** // 
+  void _showProductPopup(BuildContext context, Map<String, dynamic> product) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: const Color(0xFFF8F9FA),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.only(left:45, right: 45, top: 20, bottom: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 바
+              Container(
+              width: 70,
+              height: 5,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+              Text(
+                product['name'],
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '용량 : ${product['volume']}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  product['image'],
+                  height: 150,
+                  width: 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  print('${product['name']} 추가됨');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 55),
+                ),
+                child: const Text(
+                  '보유 제품에 추가하기',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+// ***************************** 검색창 메인  ***************************** // 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +150,6 @@ class _SearchByNameState extends State<SearchByName> {
       body: SafeArea(
         child: Column(
           children: [
-            // 상단 검색창과 뒤로가기 버튼을 포함하는 패딩
             Padding(
               padding: const EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
               child: Row(
@@ -76,7 +160,7 @@ class _SearchByNameState extends State<SearchByName> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 40.0, left: 10), // 검색창에만 패딩 적용
+                      padding: const EdgeInsets.only(right: 40.0, left: 10),
                       child: TextField(
                         controller: TextEditingController(text: widget.searchQuery),
                         style: const TextStyle(fontSize: 16),
@@ -84,7 +168,7 @@ class _SearchByNameState extends State<SearchByName> {
                           prefixIcon: const Icon(Icons.search, color: Colors.grey),
                           hintText: "제품명을 검색하세요",
                           hintStyle: const TextStyle(
-                            color: Colors.grey, // 힌트 텍스트 색상 회색으로 변경
+                            color: Colors.grey,
                           ),
                           filled: true,
                           fillColor: const Color(0xFFF6F6F6),
@@ -93,7 +177,7 @@ class _SearchByNameState extends State<SearchByName> {
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
-                            vertical: 20, 
+                            vertical: 20,
                             horizontal: 16,
                           ),
                         ),
@@ -108,7 +192,7 @@ class _SearchByNameState extends State<SearchByName> {
                 ],
               ),
             ),
-            // 검색 결과 표시
+            //// ***************************** 검색 결과 표시 로직 ***************************** // 
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -133,7 +217,7 @@ class _SearchByNameState extends State<SearchByName> {
                               final result = _searchResults[index];
                               return GestureDetector(
                                 onTap: () {
-                                  print('Selected: ${result['name']}');
+                                  _showProductPopup(context, result);
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -153,7 +237,7 @@ class _SearchByNameState extends State<SearchByName> {
                                       style: const TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(255, 58, 58, 58)
+                                        color: Color.fromARGB(255, 58, 58, 58),
                                       ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,

@@ -95,7 +95,7 @@ class AddSkinCareMain extends StatelessWidget {
                       borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 25, // 세로 크기 조정
+                      vertical: 25, 
                       horizontal: 16,
                     ),
                   ),

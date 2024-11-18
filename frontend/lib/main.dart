@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       //home: RoutineCreatePage(), //루틴 생성중 로딩 페이지로 바로 이동
       //home: LoginPage(), // 로그인 페이지
       //home: RoutinePage() // 루틴 페이지
-      home : AddSkinCareMain()
+      home : const AddSkinCareMain()
     );
   }
 }
