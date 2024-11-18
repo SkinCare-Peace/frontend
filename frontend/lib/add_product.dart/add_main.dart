@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_byName.dart'; // SearchByName 파일을 import
 
 class AddSkinCareMain extends StatelessWidget {
   const AddSkinCareMain({super.key});
@@ -25,11 +26,11 @@ class AddSkinCareMain extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 90),
-              // 첫 번째 TextField
+              // 첫 번째 TextField (검색어 입력 필드)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
                 child: TextField(
-                  style: const TextStyle(fontSize: 15), 
+                  style: const TextStyle(fontSize: 15),
                   decoration: InputDecoration(
                     prefixIcon: const SizedBox(
                       width: 24,
@@ -55,6 +56,16 @@ class AddSkinCareMain extends StatelessWidget {
                       horizontal: 16,
                     ),
                   ),
+                  onSubmitted: (query) {
+                    if (query.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchByName(searchQuery: query), // 검색어 전달
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 15),
@@ -62,7 +73,7 @@ class AddSkinCareMain extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
                 child: TextField(
-                  style: const TextStyle(fontSize: 15), 
+                  style: const TextStyle(fontSize: 15),
                   decoration: InputDecoration(
                     prefixIcon: const SizedBox(
                       width: 24,
