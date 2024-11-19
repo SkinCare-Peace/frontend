@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class LoadingPage1 extends StatelessWidget {
   const LoadingPage1({Key? key}) : super(key: key);
 
+  // 타이머 넣고, 넘어가기 로직 추가해서 question1.dart 로 넘어가야함
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

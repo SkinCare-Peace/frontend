@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/loading/loading_page1.dart';
 import 'add_byName.dart';
 import 'added_product.dart'; // AddedProduct import
 
@@ -249,7 +250,14 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                       context,
+                      MaterialPageRoute(
+                      builder: (context) => const LoadingPage1(), // 건너뛰기 누르면 로딩화면으로 ㄱㄱ 
+                      ),
+                      );
+                  },
                   style: OutlinedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 238, 237, 237),
                     padding: const EdgeInsets.symmetric(vertical: 16),

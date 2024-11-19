@@ -29,6 +29,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:  
+
+    # 이모티콘
     - assets/emoji/face1.png
     - assets/emoji/face2.png
     - assets/emoji/face3.png
@@ -39,8 +41,13 @@ flutter:
     - assets/emoji/clock.png
     - assets/emoji/lotion.png
     - assets/emoji/soap.png
+
+    # 기본 사진
     - assets/images/background.png
     - assets/images/logo.png
     - assets/images/glogo.png
+
+    # 제품 사진
+    - assets/product/carrotCarming.png
 
 
