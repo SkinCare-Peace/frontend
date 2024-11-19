@@ -8,7 +8,9 @@
 
 dart 파일 설명
 
-1. loading_page.dart : 로딩페이지 구현 완료
+1. loading_page0.dart :  처음 로딩 페이지
+1. loading_page1.dart : 로딩페이지 
+1. loading_page2.dart : 로딩페이지
 2. face_detector_painter.dart : 얼굴 인식용 페인터
 3. camera_view.dart : 카메라 설정
 4. face_detector_pager.dart : 얼굴 인식 구현
