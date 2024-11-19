@@ -78,7 +78,7 @@ class _LoadingPage2  extends State<LoadingPage2 > {
                       fontWeight: FontWeight.w900,//글씨체 바꿔야할듯
                     ),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 60),
                   SizedBox(
                     height: 120, // 사진 크기
                     child: ListView(
@@ -86,23 +86,23 @@ class _LoadingPage2  extends State<LoadingPage2 > {
                       scrollDirection: Axis.horizontal,
                       children: [
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face1.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/apple.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face2.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/lotion.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face3.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/clock.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face4.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/appleG.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face5.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/soap.png'), 
 

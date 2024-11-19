@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/loading/loading_page2.dart';
-import 'package:frontend/question/question1.dart';
-import 'package:frontend/question/question3.dart';
 
 
 class QuestionPage3 extends StatefulWidget {
