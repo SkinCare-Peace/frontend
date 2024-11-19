@@ -27,10 +27,10 @@ class MyApp extends StatelessWidget {
       //home 변경할때, 주석처리로!
       //home: LoadingPage0(), //로딩 페이지 0 (로그인 후 첫화면)
       // home : LoadingPage1(),
-      home: DashPage(),
+      //home: DashPage(),
       //home: LoginPage(), // 로그인 페이지
       //home: RoutinePage() // 루틴 페이지
-      //home : const AddSkinCareMain() // 제품 등록 페이지
+      home : const AddSkinCareMain() // 제품 등록 페이지
     );
   }
 }
