@@ -62,17 +62,11 @@ class _LoadingPage0 extends State<LoadingPage0> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40), //몇점일까요에서 박스까지 거리
+            const SizedBox(height: 10), //몇점일까요에서 박스까지 거리
             Container(
               padding: const EdgeInsets.only( bottom: 50,  top: 20),  //컨테이너 안 패딩
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 223, 223, 223),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 0,
-                  ),
-                ],
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
               child: Column(
                 children: [
@@ -81,9 +75,10 @@ class _LoadingPage0 extends State<LoadingPage0> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w900,//글씨체 바꿔야할듯
+                      color: Color.fromARGB(255, 106, 106, 106)
                     ),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 90),
                   SizedBox(
                     height: 120, // 사진 크기
                     child: ListView(
@@ -91,23 +86,23 @@ class _LoadingPage0 extends State<LoadingPage0> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face1.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/apple.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face2.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/lotion.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face3.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/clock.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face4.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/appleG.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/face5.png'), 
+                        Image.asset('assets/BBI.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/soap.png'), 
 
@@ -118,7 +113,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
                 ],
               ),
             ),
-            const SizedBox(height: 60), //컨테이너에서 버튼까지 거리
+            const SizedBox(height: 80), //컨테이너에서 버튼까지 거리
             ElevatedButton(
                onPressed: ()  => Navigator.push(context,
             MaterialPageRoute(
@@ -128,9 +123,8 @@ class _LoadingPage0 extends State<LoadingPage0> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 95, vertical: 20),
-                elevation: 10, // 버튼 그림자 깊이..?
-                shadowColor: Colors.black, 
+                padding: const EdgeInsets.symmetric(horizontal: 65, vertical: 20),
+
               ),
               child: const Text(
                 '내 피부 상태 진단해보기',

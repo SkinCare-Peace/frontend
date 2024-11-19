@@ -30,6 +30,8 @@ flutter:
   uses-material-design: true
   assets:  
 
+    - assets/BBI.png
+
     # 이모티콘
     - assets/emoji/face1.png
     - assets/emoji/face2.png

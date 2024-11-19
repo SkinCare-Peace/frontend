@@ -1,6 +1,5 @@
 // 제품명으로 검색하기 로직
 import 'package:flutter/material.dart';
-import 'added_product.dart';
 
 class SearchByName extends StatefulWidget {
   final String searchQuery;
