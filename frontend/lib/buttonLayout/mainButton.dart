@@ -19,7 +19,7 @@ class MainButton extends StatelessWidget {
         backgroundColor: AppColors.mainColor,
         padding: const EdgeInsets.symmetric(vertical: 15),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
       child: SizedBox(
@@ -30,6 +30,7 @@ class MainButton extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               color: AppColors.textWhite,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

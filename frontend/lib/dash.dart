@@ -13,7 +13,8 @@ class DashPage extends StatefulWidget {
 class _DashPageState extends State<DashPage> {
   DateTime selectedDate = DateTime(2024, 8, 20);
 
-// 더미 데이터
+  final int criterion = 50;
+// 더미 데이터 : 나중에 class 분리 예정.
   final Map<DateTime, Map<String, int>> skinData = {
     DateTime(2024, 8, 20): {
       "수분": 21,
@@ -32,7 +33,7 @@ class _DashPageState extends State<DashPage> {
     DateTime(2024, 8, 22): {
       "수분": 18,
       "모공": 25,
-      "여드름": 80,
+      "여드름": 20,
       "주름": 60,
       "색소침착": 40,
     },
@@ -50,23 +51,21 @@ class _DashPageState extends State<DashPage> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
+        padding:
+            const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const TitleText(text: "DSPT 유지민님의\n피부 데이터"),
-
             const SizedBox(height: 10),
-
-            const ContentText(
-              text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
-            ),
+            const ContentText(text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!"),
             const SizedBox(height: 20),
 
             MainButton(text: "루틴 시작하기", onPressed: () {}),
             const SizedBox(height: 10),
             MainButton(text: "오늘 피부 기록하기", onPressed: () {}),
             const SizedBox(height: 20),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -74,25 +73,19 @@ class _DashPageState extends State<DashPage> {
                   onPressed: () {
                     // 통합 결과
                   },
-                  child: const ContentText(
-                    text: "통합 결과",
-                  ),
+                  child: const ContentText(text: "통합 결과"),
                 ),
                 TextButton(
                   onPressed: () {
                     // 결과 통계
                   },
-                  child: const ContentText(
-                    text: "결과 통계",
-                  ),
+                  child: const ContentText(text: "결과 통계"),
                 ),
                 TextButton(
                   onPressed: () {
                     // 보유 제품 관리
                   },
-                  child: const ContentText(
-                    text: "보유 제품 관리",
-                  ),
+                  child: const ContentText(text: "보유 제품 관리"),
                 ),
               ],
             ),
@@ -108,7 +101,10 @@ class _DashPageState extends State<DashPage> {
                 ),
                 Text(
                   "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}",
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
@@ -116,8 +112,6 @@ class _DashPageState extends State<DashPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-
             // 데이터 출력
             if (currentData.isNotEmpty)
               Container(
@@ -127,27 +121,39 @@ class _DashPageState extends State<DashPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                   children: currentData.entries.map((entry) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            entry.key,
-                            style: const TextStyle(fontSize: 16),
+                          Row(
+                            children: [
+                              Text(
+                                entry.key,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(width: 7),
+                              Text(
+                                "${entry.value}점",
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            child: LinearProgressIndicator(
-                              value: entry.value / 100,
-                              color: entry.key == "여드름" || entry.key == "주름"
-                                  ? AppColors.positiveScore
-                                  : AppColors.negativeScore,
-                              backgroundColor: Colors.white,
-                            ),
+                          const SizedBox(height: 7),
+                          LinearProgressIndicator(
+                            value: entry.value / 100,
+                            color: entry.value >= criterion // 기준 점수에 따른 색상
+                                ? AppColors.positiveScore
+                                : AppColors.negativeScore,
+                            backgroundColor: Colors.white,
+                            minHeight: 20,
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          const SizedBox(width: 10),
-                          Text("${entry.value}점"),
                         ],
                       ),
                     );
