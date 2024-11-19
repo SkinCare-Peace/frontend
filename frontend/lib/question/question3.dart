@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/question/question1.dart';
 import 'package:frontend/question/question3.dart';
 
@@ -52,7 +53,7 @@ class _QuestionPage3State extends State<QuestionPage3> {
                 onPressed: () {
                    Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => QuestionPage1()), // 다음 질문으로 넘어감
+                        MaterialPageRoute(builder: (context) => LoadingPage2()), // 루틴생성 시작
                       );
         
                   // 제출 버튼 클릭 시의 동작
