@@ -267,7 +267,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                     side: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
                   ),
                   child: Text(
-                    "건너뛰기",
+                    "넘어가기",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

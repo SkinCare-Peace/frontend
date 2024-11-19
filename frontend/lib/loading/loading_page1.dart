@@ -1,11 +1,28 @@
-// 로딩 화면 1
-
+import 'dart:async'; 
 import 'package:flutter/material.dart';
+import 'package:frontend/question/question1.dart'; 
 
-class LoadingPage1 extends StatelessWidget {
+class LoadingPage1 extends StatefulWidget {
   const LoadingPage1({Key? key}) : super(key: key);
 
-  // 타이머 넣고, 넘어가기 로직 추가해서 question1.dart 로 넘어가야함
+  @override
+  _LoadingPage1State createState() => _LoadingPage1State();
+}
+
+
+
+class _LoadingPage1State extends State<LoadingPage1> {
+  @override
+  void initState() {
+    super.initState();
+    // 타이머 설정: 3초 후 question1.dart로 이동
+    Timer(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => QuestionPage1()),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +33,6 @@ class LoadingPage1 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
- 
             const Text(
               "루틴 생성을 위해\n몇 가지 간단한 질문을 할게요!",
               textAlign: TextAlign.center,
