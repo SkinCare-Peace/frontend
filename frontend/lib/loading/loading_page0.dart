@@ -6,12 +6,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
 
-class SkinStatusPage extends StatefulWidget {
+class LoadingPage0 extends StatefulWidget {
   @override
-  _SkinStatusPageState createState() => _SkinStatusPageState();
+  _LoadingPage0 createState() => _LoadingPage0();
 }
 
-class _SkinStatusPageState extends State<SkinStatusPage> {
+class _LoadingPage0 extends State<LoadingPage0> {
   final ScrollController _scrollController = ScrollController();
   late Timer _timer;
 

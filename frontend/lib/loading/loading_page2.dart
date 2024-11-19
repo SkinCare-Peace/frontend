@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class RoutineCreatePage extends StatefulWidget {
+class LoadingPage2 extends StatefulWidget {
   @override
-  _RoutineCreateState createState() => _RoutineCreateState();
+  _LoadingPage2  createState() => _LoadingPage2 ();
 }
 
-class _RoutineCreateState extends State<RoutineCreatePage> {
+class _LoadingPage2  extends State<LoadingPage2 > {
   final ScrollController _scrollController = ScrollController();
   late Timer _timer;
 

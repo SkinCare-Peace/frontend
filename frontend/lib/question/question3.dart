@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/question/question2.dart';
+import 'package:frontend/loading/loading_page2.dart';
+import 'package:frontend/question/question1.dart';
+import 'package:frontend/question/question3.dart';
 
-class QuestionPage1 extends StatefulWidget {
+
+class QuestionPage3 extends StatefulWidget {
   @override
-  _QuestionPage1State createState() => _QuestionPage1State();
+  _QuestionPage3State createState() => _QuestionPage3State();
 }
 
-class _QuestionPage1State extends State<QuestionPage1> {
+class _QuestionPage3State extends State<QuestionPage3> {
   // 선택된 제품들 저장할 map
   final Map<String, bool> _selectedProducts = {
-    '선크림': false,
-    '폼 클렌징': false,
-    '로션': false,
-    '마스크팩': false,
-    '립밤': false,
-    '올인원': false,
+    '1만원': false,
+    '3만원': false,
+    '5만원': false,
+    '10만원' : false,
+    '상관없어요': false,
   };
 
   @override
@@ -30,7 +32,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '스킨케어 제품 중 자주 사용해본 제품을 선택해주세요',
+                '피부에 얼마를 투자하실\n수 있나요?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25,
@@ -51,7 +53,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                 onPressed: () {
                    Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => QuestionPage2()), // 다음 질문으로 넘어감
+                        MaterialPageRoute(builder: (context) => LoadingPage2()), // 루틴생성 시작
                       );
         
                   // 제출 버튼 클릭 시의 동작

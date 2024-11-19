@@ -1,12 +1,12 @@
 
 import 'dart:convert';
+import 'package:frontend/dash.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/face_detection/face_detector_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'camera_view.dart';
-import '../question/question1.dart';
 
 
 //  서버로 얼굴 전체 bbox 전송
@@ -124,7 +124,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => QuestionPage()),
+                        MaterialPageRoute(builder: (context) => DashPage()), // 결과 페이지로 넘어가야함 임시로 대시보드 이동
                       );
                     },
                     style: ElevatedButton.styleFrom(
