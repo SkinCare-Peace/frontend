@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frontend/dash.dart';
 
@@ -6,7 +7,6 @@ class RoutineStartPage extends StatefulWidget {
   _RoutineStartPageState createState() => _RoutineStartPageState();
 }
 
-// 백에서 각 정보 받아와서 입력
 class _RoutineStartPageState extends State<RoutineStartPage> {
   final List<Map<String, dynamic>> routineSteps = [
     {
@@ -30,7 +30,17 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
   ];
 
   late List<bool> isExpandedList;
+  int? activeTimerIndex;
+  int remainingTime = 0;
+  Timer? timer;
 
+  @override
+  void initState() {
+    super.initState();
+    isExpandedList = List<bool>.filled(routineSteps.length, false);
+  }
+
+  // 총 소요시간 계산
   int calculateTotalTime() {
     int totalTime = 0;
     for (var step in routineSteps) {
@@ -40,10 +50,33 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
     return totalTime;
   }
 
+  // 타이머 시작
+  void startTimer(int index) {
+    // 이전 타이머가 있다면 취소
+    if (timer != null) {
+      timer!.cancel();
+    }
+    setState(() {
+      activeTimerIndex = index;
+      remainingTime = int.parse(routineSteps[index]['time']!.replaceAll('분', '')) * 60; // 초 단위 변환
+    });
+
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (remainingTime > 0) {
+          remainingTime--;
+        } else {
+          timer.cancel();
+          activeTimerIndex = null; // 타이머 완료 후 초기화
+        }
+      });
+    });
+  }
+
   @override
-  void initState() {
-    super.initState();
-    isExpandedList = List<bool>.filled(routineSteps.length, false);
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -74,27 +107,6 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
               style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                '피부타입 : 수분이 부족한 건성\n'
-                '유지민님은 건조도가 높아, 보습이 중요한 피부 타입입니다.\n'
-                '수분을 가득 채워줄 다음과 같은 루틴을 생성해 봤어요!',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // ************************** 각 루틴 **************************
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
@@ -102,116 +114,112 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
               itemBuilder: (context, index) {
                 bool isExpanded = isExpandedList[index];
                 var step = routineSteps[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(184, 239, 238, 238),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/emoji/apple.png', 
-                                  width: 24,
-                                  height: 24,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  step['name']!,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
+                return GestureDetector(
+                  onTap: () {
+                    startTimer(index); // 항목 클릭 시 타이머 시작
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(184, 239, 238, 238),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/emoji/apple.png',
+                                    width: 24,
+                                    height: 24,
                                   ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    step['name']!,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(step['time']!),
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    icon: const Icon(Icons.info_outline), // i 아이콘 누르면 상세정보 출력됨
+                                    onPressed: () {
+                                      setState(() {
+                                        isExpandedList[index] = !isExpandedList[index];
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          if (activeTimerIndex == index)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                '남은 시간: ${remainingTime ~/ 60}분 ${remainingTime % 60}초',
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 77, 77, 77),
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(step['time']!),
-                                const SizedBox(width: 8),
-                                IconButton(
-                                  icon: const Icon(Icons.info_outline), // i 아이콘 누르면 상세정보 출력됨
-                                  onPressed: () {
-                                    setState(() {
-                                      isExpandedList[index] =
-                                          !isExpandedList[index];
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        if (isExpanded && step.containsKey('ingredients')) ...[
-                          const SizedBox(height: 30),
-                          const Text(
-                            '추천 성분:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Wrap(
-                            spacing: 5,
-                            children: (step['ingredients'] as List<String>)
-                                .map((ingredient) {
-                              return Chip(
-                                label: Text(ingredient),
-                                backgroundColor:
-                                    const Color.fromARGB(255, 216, 238, 217),
-                                side: const BorderSide(
-                                  color: Color.fromARGB(184, 239, 238, 238),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: -4,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(height: 9),
-                          const Text(
-                            '추천 제품:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            step['product'] ?? '',
-                            style: const TextStyle(color: Colors.black87),
-                          ),
-                          const SizedBox(height: 9),
-                          const Text(
-                            '사용 방법:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            step['usage'] ?? '',
-                            style: const TextStyle(color: Colors.black87),
-                          ),
-                          const SizedBox(height: 12),
-                          Center(
-                            child: Container(
-                              height: 6,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                          ),
+                          if (isExpanded && step.containsKey('ingredients')) ...[
+                            const SizedBox(height: 30),
+                            const Text(
+                              '추천 성분:',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 5,
+                              children: (step['ingredients'] as List<String>).map((ingredient) {
+                                return Chip(
+                                  label: Text(ingredient),
+                                  backgroundColor: const Color.fromARGB(255, 216, 238, 217),
+                                  side: const BorderSide(
+                                    color: Color.fromARGB(184, 239, 238, 238),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 9),
+                            const Text(
+                              '추천 제품:',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              step['product'] ?? '',
+                              style: const TextStyle(color: Colors.black87),
+                            ),
+                            const SizedBox(height: 9),
+                            const Text(
+                              '사용 방법:',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              step['usage'] ?? '',
+                              style: const TextStyle(color: Colors.black87),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 );
@@ -219,38 +227,34 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
             ),
           ),
 
-          // ************************** 루틴 다함 버튼 **************************
+
+          // ****************** 루틴 마치기 버튼 ****************** //
           Padding(
             padding: const EdgeInsets.all(40.0),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DashPage(),
-                      ), // 루틴 결정시 dashpage 로 이동
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 58),
-                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(17),
-                    ),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DashPage(),
                   ),
-                  child: const Text(
-                    '루틴을 마쳤어요!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 58),
+                backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(17),
                 ),
-                const SizedBox(height: 8),
-              ],
+              ),
+              child: const Text(
+                '루틴을 마쳤어요!',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ],
