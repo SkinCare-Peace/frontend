@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
-import 'package:frontend/buttonLayout/text.dart';
+import 'package:frontend/buttonLayout/contentText.dart'; 
 
 class DashPage extends StatefulWidget {
   const DashPage({super.key});
@@ -57,9 +57,15 @@ class _DashPageState extends State<DashPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TitleText(text: "DSPT 유지민님의\n피부 데이터"),
+            const ContentText(
+              text: "DSPT 유지민님의\n피부 데이터",
+              fontSize: 20,
+            ),
             const SizedBox(height: 10),
-            const ContentText(text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!"),
+            const ContentText(
+              text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
+              fontSize: 16,
+            ),
             const SizedBox(height: 20),
 
             MainButton(text: "루틴 시작하기", onPressed: () {}),
@@ -81,39 +87,27 @@ class _DashPageState extends State<DashPage> {
                     onPressed: () {
                       // 통합 결과
                     },
-                    child: const Text(
-                      "통합 결과",
-                      style: TextStyle(
-                        fontSize: 14, 
-                        fontWeight: FontWeight.w600, 
-                        color: Colors.black
-                      ),
+                    child: const ContentText(
+                      text: "통합 결과",
+                      fontSize: 14,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
                       // 결과 통계
                     },
-                    child: const Text(
-                      "결과 통계",
-                      style: TextStyle(
-                        fontSize: 14, 
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black
-                      ),
+                    child: const ContentText(
+                      text: "결과 통계",
+                      fontSize: 14,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
                       // 보유 제품 관리
                     },
-                    child: const Text(
-                      "보유 제품 관리",
-                      style: TextStyle(
-                        fontSize: 14, 
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black
-                      ),
+                    child: const ContentText(
+                      text: "보유 제품 관리",
+                      fontSize: 14,
                     ),
                   ),
                 ],
@@ -142,17 +136,17 @@ class _DashPageState extends State<DashPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             // 데이터 출력
             if (currentData.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: AppColors.greyBox,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: SizedBox(
-                  height: 260, // 스크롤 영역 제한
+                  height: 250, // 스크롤 영역 제한
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
@@ -164,32 +158,29 @@ class _DashPageState extends State<DashPage> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    entry.key,
-                                    style: const TextStyle(fontSize: 13),
+                                  ContentText(
+                                    text: entry.key,
+                                    fontSize: 13,
                                   ),
                                   const SizedBox(width: 7),
-                                  Text(
-                                    " ${entry.value}점",
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  ContentText(
+                                    text: "${entry.value}점",
+                                    fontSize: 20,
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 7),
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(30), // 바의 모서리 둥글게 설정
+                                borderRadius: BorderRadius.circular(30),
                                 child: LinearProgressIndicator(
-                                value: entry.value / 100,
-                                color: entry.value >= criterion // 기준 점수에 따른 색상
-                                    ? AppColors.positiveScore
-                                    : AppColors.negativeScore,
-                                backgroundColor: Colors.white,
-                                minHeight: 20,
+                                  value: entry.value / 100,
+                                  color: entry.value >= criterion
+                                      ? AppColors.positiveScore
+                                      : AppColors.negativeScore,
+                                  backgroundColor: Colors.white,
+                                  minHeight: 20,
+                                ),
                               ),
-                            ),
                             ],
                           ),
                         );
@@ -199,7 +190,10 @@ class _DashPageState extends State<DashPage> {
                 ),
               )
             else
-              const Text("데이터가 없습니다."),
+              const ContentText(
+                text: "데이터가 없습니다.",
+                fontSize: 16,
+              ),
           ],
         ),
       ),
