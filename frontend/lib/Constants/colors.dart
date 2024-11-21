@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   // 기본 색상
   static const Color mainColor = Color(0xFF43C1CD);
-  static const Color greyBox = Color.fromARGB(255, 240, 240, 240);
+  static const Color greyBox = Color.fromARGB(255, 245, 245, 245);
 
   // 텍스트 색상
   static const Color textBlack = Color(0xFF212121);

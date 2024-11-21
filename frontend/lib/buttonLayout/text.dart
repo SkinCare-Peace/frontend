@@ -14,7 +14,7 @@ class TitleText extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 30,
+        fontSize: 28,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -34,7 +34,7 @@ class ContentText extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 20,
+        fontSize: 18,
         color: AppColors.textBlack,
       ),
     );
