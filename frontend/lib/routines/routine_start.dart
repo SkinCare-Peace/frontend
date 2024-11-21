@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frontend/dash.dart';
+import 'package:frontend/Constants/colors.dart';
 
 class RoutineStartPage extends StatefulWidget {
   @override
   _RoutineStartPageState createState() => _RoutineStartPageState();
 }
-
 class _RoutineStartPageState extends State<RoutineStartPage> {
   final List<Map<String, dynamic>> routineSteps = [
     {
       'name': '오일 클렌징 마사지',
-      'time': '3분',
+      'time': '1분',
       'ingredients': ['어성초', '레티놀', '시카'],
       'product': '티스 딥 오프 클렌징 오일',
       'usage': '손 끝으로 클렌징 오일을 살살 도포해서 1~2분 문질러 주세요!',
@@ -29,15 +29,17 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
     {'name': '슬리핑 크림 바르기', 'time': '1분'},
   ];
 
-  late List<bool> isExpandedList; // 상
-  int? activeTimerIndex; //현재 실행중인 타이머 index
-  int remainingTime = 0; // 남은시간 
+  late List<bool> isExpandedList; // 각 항목 확장 상태
+  late List<Color> containerColors; // 각 항목의 컨테이너 색상
+  int? activeTimerIndex; // 현재 실행 중인 타이머 index
+  int remainingTime = 0; // 남은 시간
   Timer? timer;
 
   @override
   void initState() {
     super.initState();
     isExpandedList = List<bool>.filled(routineSteps.length, false);
+    containerColors = List<Color>.filled(routineSteps.length, const Color.fromARGB(184, 239, 238, 238));
   }
 
   // 총 소요시간 계산
@@ -59,6 +61,7 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
     setState(() {
       activeTimerIndex = index;
       remainingTime = int.parse(routineSteps[index]['time']!.replaceAll('분', '')) * 60; // 초 단위 변환
+      containerColors[index] = const Color.fromARGB(184, 239, 238, 238); // 초기화
     });
 
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -67,7 +70,8 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
           remainingTime--;
         } else {
           timer.cancel();
-          activeTimerIndex = null; // 타이머 완료 후 초기화
+          activeTimerIndex = null; // 타이머 완료 초기화
+          containerColors[index] = const Color.fromARGB(255, 220, 250, 216) ; // 타이머 완료 시 색상 변경
         }
       });
     });
@@ -124,7 +128,7 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(184, 239, 238, 238),
+                        color: containerColors[index], // 각 항목의 컨테이너 색상
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Column(
@@ -226,7 +230,6 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
               },
             ),
           ),
-
 
           // ****************** 루틴 마치기 버튼 ****************** //
           Padding(
