@@ -29,9 +29,9 @@ class _RoutineStartPageState extends State<RoutineStartPage> {
     {'name': '슬리핑 크림 바르기', 'time': '1분'},
   ];
 
-  late List<bool> isExpandedList;
-  int? activeTimerIndex;
-  int remainingTime = 0;
+  late List<bool> isExpandedList; // 상
+  int? activeTimerIndex; //현재 실행중인 타이머 index
+  int remainingTime = 0; // 남은시간 
   Timer? timer;
 
   @override
