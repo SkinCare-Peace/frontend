@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
-import 'package:frontend/buttonLayout/contentText.dart'; 
+import 'package:frontend/buttonLayout/contentText.dart';
+
+import 'routines/routine_start.dart'; 
 
 class DashPage extends StatefulWidget {
   const DashPage({super.key});
@@ -59,16 +61,28 @@ class _DashPageState extends State<DashPage> {
           children: [
             const ContentText(
               text: "DSPT 유지민님의\n피부 데이터",
-              fontSize: 20,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              
             ),
             const SizedBox(height: 10),
             const ContentText(
               text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
               fontSize: 16,
+              fontWeight: FontWeight.w400,
             ),
             const SizedBox(height: 20),
 
-            MainButton(text: "루틴 시작하기", onPressed: () {}),
+
+
+            MainButton(text: "루틴 시작하기", onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RoutineStartPage(),
+                  ),
+                );
+            }),
             const SizedBox(height: 10),
             MainButton(text: "오늘 피부 기록하기", onPressed: () {}),
             const SizedBox(height: 20),
@@ -123,13 +137,20 @@ class _DashPageState extends State<DashPage> {
                   icon: const Icon(Icons.chevron_left),
                   onPressed: () => updateDate(-1),
                 ),
-                Text(
-                  "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}",
-                  style: const TextStyle(
+                Container( // 날짜 표시용 컨테이너
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.greyBox, 
+                    borderRadius: BorderRadius.circular(20), 
+                    ),
+                   child: Text(
+                    "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}",
+                    style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
+                    ),
+                    ),
                   ),
-                ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
                   onPressed: () => updateDate(1),
@@ -140,20 +161,28 @@ class _DashPageState extends State<DashPage> {
             // 데이터 출력
             if (currentData.isNotEmpty)
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.only(left: 20,right: 10, top: 20, bottom: 20),
                 decoration: BoxDecoration(
                   color: AppColors.greyBox,
                   borderRadius: BorderRadius.circular(10),
                 ),
+
                 child: SizedBox(
                   height: 250, // 스크롤 영역 제한
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-                      children: currentData.entries.map((entry) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Column(
+                  child: Scrollbar( // 스크롤바
+                  thumbVisibility: true, // 항상 스크롤바 보이게 
+                  thickness: 4, // 스크롤바 두께
+                  radius: const Radius.circular(10), // 스크롤바 모서리 둥글게
+                  child: Padding( // 스크롤바와 내용 사이에 거리 추가
+                    padding: const EdgeInsets.only(right: 20), // 오른쪽 간격 추가
+                    child: SingleChildScrollView(
+                    
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+                        children: currentData.entries.map((entry) {
+                         return Padding(
+                           padding: const EdgeInsets.symmetric(vertical: 5),
+                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
@@ -188,7 +217,7 @@ class _DashPageState extends State<DashPage> {
                     ),
                   ),
                 ),
-              )
+              )))
             else
               const ContentText(
                 text: "데이터가 없습니다.",
