@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // 기본 색상
-  static const Color mainColor = Color(0xFF43C1CD);
+  static const Color mainColor = Color.fromARGB(255, 87, 204, 222);
   static const Color greyBox = Color.fromARGB(255, 245, 245, 245);
 
   // 텍스트 색상
@@ -21,3 +21,4 @@ class AppColors {
   static const Color progressBar = Color(0xFFE0E0E0); // 프로그래스 바 배경색
   static const Color divider = Color(0xFFBDBDBD); // 구분선 색상
 }
+

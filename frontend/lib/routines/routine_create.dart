@@ -6,7 +6,6 @@ class RoutinePage extends StatefulWidget {
   _RoutinePageState createState() => _RoutinePageState();
 }
 
-
 // 백에서 각 정보 받아와서 입력
 class _RoutinePageState extends State<RoutinePage> {
   final List<Map<String, dynamic>> routineSteps = [
@@ -60,14 +59,14 @@ class _RoutinePageState extends State<RoutinePage> {
             padding: EdgeInsets.only(right: 30.0, left: 30, top: 80, bottom: 10),
             child: Text(
               '유지민 님에게 가장 잘 맞는 루틴',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 25),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
-              '1일 2회 (총 소요시간 ${totalTime}분)',
+              '1일 2회 (총 소요시간 $totalTime분)',
               style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
           ),
@@ -190,7 +189,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 ElevatedButton(
                   onPressed: () { Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DashPage()), // 루틴 결정시 dashpage 로 이동
+                      MaterialPageRoute(builder: (context) => const DashPage()), // 루틴 결정시 dashpage 로 이동
                     );},
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 58),
