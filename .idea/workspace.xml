@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee6614ce-2a79-474c-bc4c-ef3e0acb5ae0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/buttonLayout/contentText.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/buttonLayout/contentText.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +34,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feature/faceGuidline",
+    "git-widget-placeholder": "feature/developF",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/shu/frontend",
     "show.migrate.to.gradle.popup": "false"
