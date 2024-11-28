@@ -1,10 +1,7 @@
-///TODO: 
-/// 1. 이름 적용로직 추가하기 
-/// 2. 시간 남으면 글씨체 바꾸기
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:frontend/face_detection/face_detector_page.dart';
+import 'package:frontend/face_detection/guidline.dart';
 
 class LoadingPage0 extends StatefulWidget {
   @override
@@ -90,21 +87,30 @@ class _LoadingPage0 extends State<LoadingPage0> {
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/apple.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
+                        Image.asset('assets/BBIpimple.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/lotion.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
+                        Image.asset('assets/BBImask.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/emoji/clock.png'), 
+                        Image.asset('assets/emoji/heart.png'), 
                         const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/appleG.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
+                        Image.asset('assets/BBIhappy.png'), 
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/soap.png'), 
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIsad.png'), 
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/icc.png'), 
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBI.png'), 
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/paint.png'), 
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBI.png'), 
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/apple.png'),
+                        
 
                       ],
                     ),
@@ -117,7 +123,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
             ElevatedButton(
                onPressed: ()  => Navigator.push(context,
             MaterialPageRoute(
-              builder: (context)=> const FaceDetectorPage())),
+              builder: (context)=> const PicGuideline())),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(

@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:frontend/addProduct/add_main.dart';
 import 'package:frontend/dash.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
@@ -88,6 +89,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
@@ -124,7 +126,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => DashPage()), // 결과 페이지로 넘어가야함 임시로 대시보드 이동
+                        MaterialPageRoute(builder: (context) => AddSkinCareMain()), // 결과 페이지로 넘어가야함 임시로 제품추가로 건너뜀
                       );
                     },
                     style: ElevatedButton.styleFrom(
