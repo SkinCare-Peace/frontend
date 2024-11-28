@@ -19,8 +19,6 @@ dependencies:
   url_launcher: ^6.3.1
   google_sign_in: ^6.2.1
 
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -29,21 +27,22 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:  
-
     - assets/BBI.png
     - assets/BBIloading.png
+    - assets/BBImask.png
+    - assets/BBIangry.png
+    - assets/BBIhappy.png
+    - assets/BBIpimple.png
+    - assets/BBIsad.png
 
     # 이모티콘
-    - assets/emoji/face1.png
-    - assets/emoji/face2.png
-    - assets/emoji/face3.png
-    - assets/emoji/face4.png
-    - assets/emoji/face5.png
     - assets/emoji/apple.png
     - assets/emoji/appleG.png
-    - assets/emoji/clock.png
     - assets/emoji/lotion.png
     - assets/emoji/soap.png
+    - assets/emoji/heart.png
+    - assets/emoji/icc.png
+    - assets/emoji/paint.png
 
     # 기본 사진
     - assets/images/background.png
@@ -52,5 +51,3 @@ flutter:
 
     # 제품 사진
     - assets/product/carrotCarming.png
-
-
