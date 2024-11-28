@@ -8,6 +8,7 @@ class AppColors {
   // 텍스트 색상
   static const Color textBlack = Color(0xFF212121);
   static const Color textWhite = Color.fromARGB(255, 255, 255, 255);
+  static const Color textgrey = Colors.black54;
 
   // 경고 및 상태 색상
   static const Color success = Color(0xFF4CAF50);
@@ -21,4 +22,3 @@ class AppColors {
   static const Color progressBar = Color(0xFFE0E0E0); // 프로그래스 바 배경색
   static const Color divider = Color(0xFFBDBDBD); // 구분선 색상
 }
-
