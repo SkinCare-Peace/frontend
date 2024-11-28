@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/question/question2.dart';
 
-class QuestionPage1 extends StatefulWidget {
+class QuestionPage extends StatefulWidget {
+  const QuestionPage({super.key});
+
   @override
-  _QuestionPage1State createState() => _QuestionPage1State();
+  _QuestionPageState createState() => _QuestionPageState();
 }
 
-class _QuestionPage1State extends State<QuestionPage1> {
+class _QuestionPageState extends State<QuestionPage> {
   // 선택된 제품들 저장할 map
   final Map<String, bool> _selectedProducts = {
     '선크림': false,
@@ -33,7 +34,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                 '스킨케어 제품 중 자주 사용해본 제품을 선택해주세요',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 27,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -45,23 +46,36 @@ class _QuestionPage1State extends State<QuestionPage1> {
                     const SizedBox(height: 18), // 항목 간격 조절
                   ],
                 );
-              }).toList(),
+              }),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                   Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => QuestionPage2()), // 다음 질문으로 넘어감
-                      );
-        
                   // 제출 버튼 클릭 시의 동작
                   List<String> selectedItems = _selectedProducts.entries
                       .where((entry) => entry.value)
                       .map((entry) => entry.key)
                       .toList();
 
-                  print('${selectedItems}');
-
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text(
+                          selectedItems.isNotEmpty
+                              ? '${selectedItems.join(', ')}를 선택했습니다.'
+                              : '아무것도 선택하지 않았습니다.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('확인'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
@@ -88,7 +102,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
     );
   }
 
-  // 커스텀 체크박스 
+  // 커스텀 체크박스
   Widget _buildCustomCheckboxOption(String label) {
     return ListTile(
       title: Text(
@@ -108,7 +122,8 @@ class _QuestionPage1State extends State<QuestionPage1> {
               _selectedProducts[label] = value ?? false;
             });
           },
-          activeColor: const Color.fromARGB(255, 87, 204, 222), // 선택된 체크박스 색상 주기
+          activeColor:
+              const Color.fromARGB(255, 87, 204, 222), // 선택된 체크박스 색상 주기
         ),
       ),
     );
