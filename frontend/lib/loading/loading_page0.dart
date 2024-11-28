@@ -1,10 +1,7 @@
-///TODO: 
-/// 1. 이름 적용로직 추가하기 
-/// 2. 시간 남으면 글씨체 바꾸기
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:frontend/face_detection/face_detector_page.dart';
+import 'package:frontend/face_detection/guidline.dart';
 
 class LoadingPage0 extends StatefulWidget {
   @override
@@ -117,7 +114,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
             ElevatedButton(
                onPressed: ()  => Navigator.push(context,
             MaterialPageRoute(
-              builder: (context)=> const FaceDetectorPage())),
+              builder: (context)=> const PicGuideline())),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(
