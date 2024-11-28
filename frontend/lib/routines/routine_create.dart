@@ -1,17 +1,234 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/dash.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RoutinePage extends StatefulWidget {
   @override
   _RoutinePageState createState() => _RoutinePageState();
 }
 
+class _RoutinePageState extends State<RoutinePage> {
+  List<Map<String, dynamic>> routineSteps = []; // 초기 데이터 비우기
+  late List<bool> isExpandedList;
+
+  // 총 소요 시간 계산
+  int calculateTotalTime() {
+    int totalTime = 0;
+    for (var step in routineSteps) {
+      if (step['time'] != null) {
+        String timeString = step['time']!.replaceAll('분', '');
+        totalTime += int.parse(timeString);
+      }
+    }
+    return totalTime;
+  }
+
+  // /routine Get으로 ㄱㄱ
+  Future<List<dynamic>> fetchRoutine({
+    required int timeMinutes,
+    required int moneyWon,
+  }) async {
+    final uri = Uri.parse("http://10.0.2.2/routine").replace(queryParameters: {
+      "time_minutes": timeMinutes.toString(),
+      "money_won": moneyWon.toString(),
+    });
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['routine'];
+    } else {
+      throw Exception("Failed to fetch routine: ${response.body}");
+    }
+  }
+
+
+  // /routine 가져와서 UI 업데이트
+  void fetchAndUpdateRoutine() async {
+    try {
+      final data = await fetchRoutine(
+        timeMinutes: 30, // 예시값임
+        moneyWon: 50000, //얘도 돈 예시값
+      );
+
+      setState(() {
+        routineSteps = data.map((item) {
+          return {
+            "name": item["name"] ?? "단계 이름 없음",
+            "time": item["usage_time"] != null ? "${item["usage_time"].length}분" : "0분",
+            "sequence": item["sequence"] ?? 0,
+            "frequency": item["frequency"] ?? 0,
+          };
+        }).toList();
+        isExpandedList = List<bool>.filled(routineSteps.length, false);
+      });
+    } catch (e) {
+      print("Error fetching routine: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndUpdateRoutine(); // 초기 데이터 불러오기
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int totalTime = calculateTotalTime(); // 총 소요시간 계산
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF7F7F7),
+      body: routineSteps.isEmpty
+          ? const Center(child: CircularProgressIndicator()) // 로딩 상태 표시
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(right: 30.0, left: 30, top: 80, bottom: 10),
+                  child: Text(
+                    '유지민 님에게 가장 잘 맞는 루틴',
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 25),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
+                  child: Text(
+                    '1일 2회 (총 소요시간 $totalTime분)',
+                    style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      '피부타입 : 수분이 부족한 건성\n'
+                      '유지민님은 건조도가 높아, 보습이 중요한 피부 타입입니다.\n'
+                      '수분을 가득 채워줄 다음과 같은 루틴을 생성해 봤어요!',
+                      style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // ************************** 각 루틴 **************************
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 26.0),
+                    itemCount: routineSteps.length,
+                    itemBuilder: (context, index) {
+                      bool isExpanded = isExpandedList[index];
+                      var step = routineSteps[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isExpandedList[index] = !isExpandedList[index];
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(184, 239, 238, 238),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      step['name']!,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                                    ),
+                                    Text(step['time']!),
+                                  ],
+                                ),
+                                if (isExpanded) ...[
+                                  const SizedBox(height: 30),
+                                  const Text('순서:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text("${step['sequence']}"),
+                                  const SizedBox(height: 9),
+                                  const Text('빈도:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text("${step['frequency']}회"),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                // ************************** 하단 결정 버튼 **************************
+                Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // 루틴 결정시 동작 추가해야됨
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 58),
+                          backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                        ),
+                        child: const Text(
+                          '이 루틴으로 결정 !',
+                          style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: fetchAndUpdateRoutine, // 새로운 루틴 요청
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 58),
+                          backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                        ),
+                        child: const Text(
+                          '새로운 루틴 추천받기',
+                          style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+
+
+/**  아래 코드 : UI 기존
+class RoutinePage extends StatefulWidget {
+  @override
+  _RoutinePageState createState() => _RoutinePageState();
+}
 
 // 백에서 각 정보 받아와서 입력
 class _RoutinePageState extends State<RoutinePage> {
   final List<Map<String, dynamic>> routineSteps = [
     {
-      'name': '오일 클렌징 마사지',
+      'name': '오일 클렌징 마사지', 
       'time': '3분',
       'ingredients': ['어성초', '레티놀', '시카'],
       'product': '티스 딥 오프 클렌징 오일',
@@ -60,14 +277,14 @@ class _RoutinePageState extends State<RoutinePage> {
             padding: EdgeInsets.only(right: 30.0, left: 30, top: 80, bottom: 10),
             child: Text(
               '유지민 님에게 가장 잘 맞는 루틴',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 25),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
-              '1일 2회 (총 소요시간 ${totalTime}분)',
+              '1일 2회 (총 소요시간 $totalTime분)',
               style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
           ),
@@ -190,7 +407,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 ElevatedButton(
                   onPressed: () { Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DashPage()), // 루틴 결정시 dashpage 로 이동
+                      MaterialPageRoute(builder: (context) => const DashPage()), // 루틴 결정시 dashpage 로 이동
                     );},
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 58),
@@ -228,3 +445,4 @@ class _RoutinePageState extends State<RoutinePage> {
     );
   }
 }
+**/
