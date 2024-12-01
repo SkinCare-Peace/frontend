@@ -298,10 +298,10 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
 // 카테고리 데이터
 final List<Map<String, String>> _categories = [
   {'name': '토너', 'icon': 'assets/emoji/apple.png'},
-  {'name': '선크림', 'icon': 'assets/emoji/lotion.png'},
-  {'name': '크림', 'icon': 'assets/emoji/face1.png'},
-  {'name': '세럼/에센스', 'icon': 'assets/emoji/appleG.png'},
+  {'name': '선크림', 'icon': 'assets/BBI.png'},
+  {'name': '크림', 'icon': 'assets/emoji/paint.png'},
+  {'name': '세럼/에센스', 'icon': 'assets/emoji/lotion.png'},
   {'name': '앰플', 'icon': 'assets/emoji/soap.png'},
-  {'name': '로션', 'icon': 'assets/emoji/face2.png'},
-  {'name': '폼클렌징', 'icon': 'assets/emoji/clock.png'},
+  {'name': '로션', 'icon': 'assets/emoji/heart.png'},
+  {'name': '폼클렌징', 'icon': 'assets/emoji/icc.png'},
 ];

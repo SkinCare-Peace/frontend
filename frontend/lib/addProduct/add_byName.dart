@@ -32,7 +32,7 @@ Future<void> _fetchSearchResults(String query) async {
 
   try {
     // 실제 백엔드 요청 URL
-    final uri = Uri.parse("http://000/cosmetics?q=$query&limit=10");
+    final uri = Uri.parse("http://00/cosmetics?q=$query&limit=10");
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {

@@ -28,7 +28,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required int timeMinutes,
     required int moneyWon,
   }) async {
-    final uri = Uri.parse("http://000/routine").replace(queryParameters: {
+    final uri = Uri.parse("http://00/routine").replace(queryParameters: {
       "time_minutes": timeMinutes.toString(),
       "money_won": moneyWon.toString(),
     });
