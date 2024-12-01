@@ -32,7 +32,7 @@ Future<void> _fetchSearchResults(String query) async {
 
   try {
     // 실제 백엔드 요청 URL
-    final uri = Uri.parse("http://3.34.5.57/cosmetics?q=$query&limit=10");
+    final uri = Uri.parse("http://000/cosmetics?q=$query&limit=10");
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
@@ -40,6 +40,7 @@ Future<void> _fetchSearchResults(String query) async {
   final List<dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
   _searchResults = decodedData.map((item) {
     return {
+      //"_id" : item['id'],  // 고객 ID? 라면 추가된 제품 로직에 이 아이디로 보면될듯
       'name': item['name'], // 한글 텍스트
       'image': item['image_url'] ?? 'https://via.placeholder.com/150',
       'volume': item['volume'] ?? '알 수 없음',
