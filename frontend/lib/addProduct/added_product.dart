@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class AddedProduct extends StatefulWidget {
   final List<Map<String, dynamic>> products; // 보유 제품 리스트
 
-  const AddedProduct({Key? key, required this.products}) : super(key: key);
+  const AddedProduct({super.key, required this.products});
 
   @override
   State<AddedProduct> createState() => _AddedProductState();
@@ -22,9 +22,12 @@ class _AddedProductState extends State<AddedProduct> {
 
   void _removeProduct(int index) {
     setState(() {
-      _productList.removeAt(index); // 제품 삭제
+      _productList.removeAt(index); // 리스트에서 제품 삭제
     });
+    // 뒤로가기 버튼 클릭하면 업데이트된 리스트 반환됨
+    Navigator.pop(context, _productList);
   }
+  
 
   @override
   Widget build(BuildContext context) {
