@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/dash.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -9,7 +8,7 @@ class RoutinePage extends StatefulWidget {
 }
 
 class _RoutinePageState extends State<RoutinePage> {
-  List<Map<String, dynamic>> routineSteps = []; // 초기 데이터 비우기
+  List<Map<String, dynamic>> routineSteps = [];
   late List<bool> isExpandedList;
 
   // 총 소요 시간 계산
@@ -24,12 +23,12 @@ class _RoutinePageState extends State<RoutinePage> {
     return totalTime;
   }
 
-  // /routine Get으로 ㄱㄱ
+  // /routine Get으로 데이터 가져오기
   Future<List<dynamic>> fetchRoutine({
     required int timeMinutes,
     required int moneyWon,
   }) async {
-    final uri = Uri.parse("http://10.0.2.2/routine").replace(queryParameters: {
+    final uri = Uri.parse("http://0.00000/routine").replace(queryParameters: {
       "time_minutes": timeMinutes.toString(),
       "money_won": moneyWon.toString(),
     });
@@ -37,31 +36,35 @@ class _RoutinePageState extends State<RoutinePage> {
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final data = json.decode(decodedResponse);
       return data['routine'];
     } else {
       throw Exception("Failed to fetch routine: ${response.body}");
     }
   }
 
-
-  // /routine 가져와서 UI 업데이트
+  // 데이터 가져와서 UI 업데이트
   void fetchAndUpdateRoutine() async {
     try {
       final data = await fetchRoutine(
-        timeMinutes: 30, // 예시값임
-        moneyWon: 50000, //얘도 돈 예시값
+        timeMinutes: 5, // 예시 값
+        moneyWon: 50000, // 예시 값
       );
 
       setState(() {
-        routineSteps = data.map((item) {
+        routineSteps = List<Map<String, dynamic>>.from(data.map((item) {
           return {
             "name": item["name"] ?? "단계 이름 없음",
             "time": item["usage_time"] != null ? "${item["usage_time"].length}분" : "0분",
             "sequence": item["sequence"] ?? 0,
             "frequency": item["frequency"] ?? 0,
+            "usage_time": item["usage_time"] ?? [],
           };
-        }).toList();
+        })).toList();
+
+        // sequence 순서로 정렬
+        routineSteps.sort((a, b) => a['sequence'].compareTo(b['sequence']));
         isExpandedList = List<bool>.filled(routineSteps.length, false);
       });
     } catch (e) {
@@ -77,12 +80,12 @@ class _RoutinePageState extends State<RoutinePage> {
 
   @override
   Widget build(BuildContext context) {
-    int totalTime = calculateTotalTime(); // 총 소요시간 계산
+    int totalTime = calculateTotalTime();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       body: routineSteps.isEmpty
-          ? const Center(child: CircularProgressIndicator()) // 로딩 상태 표시
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -147,20 +150,59 @@ class _RoutinePageState extends State<RoutinePage> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      step['name']!,
-                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/emoji/apple.png',
+                                          width: 24,
+                                          height: 24,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          step['name']!,
+                                          style: const TextStyle(
+                                              fontSize: 16, fontWeight: FontWeight.w700),
+                                        ),
+                                      ],
                                     ),
                                     Text(step['time']!),
                                   ],
                                 ),
                                 if (isExpanded) ...[
                                   const SizedBox(height: 30),
-                                  const Text('순서:', style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text("${step['sequence']}"),
-                                  const SizedBox(height: 9),
                                   const Text('빈도:', style: TextStyle(fontWeight: FontWeight.bold)),
                                   Text("${step['frequency']}회"),
+                                  const SizedBox(height: 10),
+                                  const Text('추천 시간대:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 10),
+                                  Wrap(
+                                    spacing: 10,
+                                    children: (step['usage_time'] as List<dynamic>).map((time) {
+                                      // 아침이먄 노란색
+                                      final String timeString = time.toString();
+                                      Color chipColor;
+                                      if (timeString == 'morning') {
+                                        chipColor = const Color.fromARGB(255, 255, 249, 195)!;
+                                      } else if (timeString == 'evening') {
+                                        chipColor = const Color.fromARGB(255, 185, 223, 255)!;
+                                      } else {
+                                        chipColor = const Color.fromARGB(255, 216, 238, 217); 
+                                      }
+                                      return Chip(
+                                        label: Text(
+                                          timeString == 'morning' ? '아침' : '저녁',
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: chipColor,
+                                        side: BorderSide(color: chipColor),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ), // 모서리 둥글게 설정
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: -4),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ],
                               ],
                             ),
@@ -178,7 +220,7 @@ class _RoutinePageState extends State<RoutinePage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // 루틴 결정시 동작 추가해야됨
+                          // 루틴 결정시 동작 추가
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 58),
@@ -215,7 +257,6 @@ class _RoutinePageState extends State<RoutinePage> {
     );
   }
 }
-
 
 
 /**  아래 코드 : UI 기존
@@ -444,5 +485,4 @@ class _RoutinePageState extends State<RoutinePage> {
       ),
     );
   }
-}
-**/
+}*/

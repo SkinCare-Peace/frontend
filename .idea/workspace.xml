@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="ee6614ce-2a79-474c-bc4c-ef3e0acb5ae0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/dash.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/dash.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/guidline.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/guidline.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/routines/routine_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/routines/routine_create.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

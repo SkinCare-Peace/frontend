@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
 import 'package:frontend/buttonLayout/contentText.dart';
-
 import 'routines/routine_start.dart'; 
 
 class DashPage extends StatefulWidget {
