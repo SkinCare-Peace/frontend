@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/buttonLayout/text.dart';
 import 'package:frontend/logIn/login_post.dart';
 
 class LoginPage extends StatelessWidget {
@@ -20,44 +21,47 @@ class LoginPage extends StatelessWidget {
         backgroundColor: Colors.transparent, // 배경색을 투명으로 설정
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 50, bottom: 90, left: 30, right: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Image.asset('assets/images/logo.png'),
-                  ElevatedButton(
-                    onPressed: initiateGoogleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shadowColor: Colors.black,
-                      minimumSize: const Size.fromHeight(50), // 높이만 50으로 설정
-                      elevation: 1.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset('images/glogo.png'),
-                        const Text(
-                          'Login with Google',
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Opacity(
-                          opacity: 0.0,
-                          child: Image.asset('images/glogo.png'),
-                        ),
-                      ],
-                    ),
+          child: Padding(
+            padding:
+                const EdgeInsets.only(top: 50, bottom: 90, left: 30, right: 30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "피부케어\n스마트하게",
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
+                ),
+                Image.asset('assets/BBI.png'),
+                const TitleText(text: "with BBI"),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Sign in",
+                            style: TextStyle(fontSize: 20),
+                          )),
+                      const Text("|", style: TextStyle(fontSize: 25)),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          "Sign up",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ),
