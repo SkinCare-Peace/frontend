@@ -38,6 +38,7 @@ flutter:
     - assets/BBIhappy.png
     - assets/BBIpimple.png
     - assets/BBIsad.png
+    - assets/BBIblush.png
 
     # 이모티콘
     - assets/emoji/apple.png
@@ -55,3 +56,9 @@ flutter:
 
     # 제품 사진
     - assets/product/carrotCarming.png
+
+    # bsti BBI
+    - assets/bstiBBI/O--T.png
+    - assets/bstiBBI/D-N-.png
+    - assets/bstiBBI/D-P-.png
+    - assets/bstiBBI/O--W.png
