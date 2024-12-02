@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> initiateGoogleLogin() async {
+Future<void> userRegister() async {
   final response = await http.get(
     Uri.parse('https://your-backend.com/auth/login'),
     headers: {'Content-Type': 'application/json'},

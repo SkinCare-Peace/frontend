@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
-import 'package:frontend/buttonLayout/text.dart';
+import 'package:frontend/logIn/login_post.dart';
 
 class LoginInput extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  LoginInput({super.key});
+  const LoginInput({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +31,7 @@ class LoginInput extends StatelessWidget {
                         'assets/BBIhappy.png',
                         height: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).viewInsets.bottom) *
-                            0.3,
+                            0.25,
                       ),
                       const Text(
                         "Sign in",
@@ -44,20 +41,27 @@ class LoginInput extends StatelessWidget {
                         height: 30,
                       ),
                       const TextField(
-                        decoration: InputDecoration(labelText: 'Enter email'),
+                        decoration: InputDecoration(labelText: '이름'),
+                        keyboardType: TextInputType.text,
+                      ),
+                      const TextField(
+                        decoration: InputDecoration(labelText: '이메일'),
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const TextField(
-                        decoration:
-                            InputDecoration(labelText: 'Enter password'),
+                        decoration: InputDecoration(labelText: '비밀번호'),
                         keyboardType: TextInputType.text,
                         obscureText: true, // 비밀번호 안보이도록 하는 것
                       ),
-                      const SizedBox(
-                        height: 40.0,
+                      SizedBox(
+                        height: (MediaQuery.of(context).size.height -
+                                MediaQuery.of(context).viewInsets.bottom) *
+                            0.05,
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          userRegister();
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),
                         child: const Icon(
