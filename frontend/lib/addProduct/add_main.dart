@@ -13,18 +13,7 @@ class AddSkinCareMain extends StatefulWidget {
 class _AddSkinCareMainState extends State<AddSkinCareMain> {
   // 보유 제품 리스트
  //List<Map<String, dynamic>> addedProducts = [];
-  List<Map<String, dynamic>> addedProducts = [ //임시 데이터 
-    {
-      'name': '스킨푸드 캐롯 카로틴 카밍 워터패드',
-      'image': 'https://via.placeholder.com/150',
-      'volume': '60매',
-    },
-    {
-      'name': '라운드랩 1025 독도 로션',
-      'image': 'https://via.placeholder.com/150',
-      'volume': '200ml',
-    },
-  ];
+  List<Map<String, dynamic>> addedProducts = []; //추가된 제품들용 리스트
 
   // ****************** 카테고리 팝업 로직 ****************** //
   void _showCategoryPopup(BuildContext context) {
@@ -161,7 +150,9 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                       horizontal: 16,
                     ),
                   ),
-                  onSubmitted: (query) {
+
+
+                  onSubmitted: (query) { //제품들 제출된거
                     if (query.isNotEmpty) {
                       Navigator.push(
                         context,
@@ -171,11 +162,15 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                           ), // 검색어 전달
                         ),
                       ).then((result) {
-                        // SearchByName에서 추가된 제품 받아오기
+                        // SearchByName에서 추가된 제품 병합 
                         if (result != null && result is List<Map<String, dynamic>>) {
-                          setState(() {
-                            addedProducts.addAll(result); // 추가된 제품 리스트 병합
-                          });
+                            setState(() {
+                            addedProducts.addAll(result.where((product) {
+                            // 중복 방지: 동일한 이름의 제품 제외
+                            return !addedProducts.any((existingProduct) =>
+                          existingProduct['name'] == product['name']);
+                          }));
+                           });
                         }
                       });
                     }
@@ -226,9 +221,14 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AddedProduct(products: addedProducts),
-                      ),
-                    );
-                  },
+                        ),
+                        ).then((updatedProducts) {
+                          if (updatedProducts != null) {
+                            setState(() {
+                              addedProducts = updatedProducts; // 업데이트된 리스트 반영
+                              });
+                        }});
+                    },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -298,10 +298,10 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
 // 카테고리 데이터
 final List<Map<String, String>> _categories = [
   {'name': '토너', 'icon': 'assets/emoji/apple.png'},
-  {'name': '선크림', 'icon': 'assets/emoji/lotion.png'},
-  {'name': '크림', 'icon': 'assets/emoji/face1.png'},
-  {'name': '세럼/에센스', 'icon': 'assets/emoji/appleG.png'},
+  {'name': '선크림', 'icon': 'assets/BBI.png'},
+  {'name': '크림', 'icon': 'assets/emoji/paint.png'},
+  {'name': '세럼/에센스', 'icon': 'assets/emoji/lotion.png'},
   {'name': '앰플', 'icon': 'assets/emoji/soap.png'},
-  {'name': '로션', 'icon': 'assets/emoji/face2.png'},
-  {'name': '폼클렌징', 'icon': 'assets/emoji/clock.png'},
+  {'name': '로션', 'icon': 'assets/emoji/heart.png'},
+  {'name': '폼클렌징', 'icon': 'assets/emoji/icc.png'},
 ];

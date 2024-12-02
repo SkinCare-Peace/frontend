@@ -1,5 +1,8 @@
 // 제품명으로 검색하기 로직
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SearchByName extends StatefulWidget {
   final String searchQuery;
@@ -21,48 +24,42 @@ class _SearchByNameState extends State<SearchByName> {
     _fetchSearchResults(widget.searchQuery); // 초기 검색어 전달
   }
 
-  Future<void> _fetchSearchResults(String query) async {
-    setState(() {
-      _isLoading = true;
-    });
 
-    try {
-      // 여기에 실제 백엔드 API 호출 로직 추가
-      await Future.delayed(const Duration(seconds: 1)); // 모의 지연 시간
-      final mockData = [
-        {
-          'name': '스킨푸드 캐롯 카로틴 카밍 워터패드',
-          'image': 'https://via.placeholder.com/150',
-          'volume': '60매',
-        },
-        {
-          'name': '스킨푸드 데일리 마스크 30매',
-          'image': 'https://via.placeholder.com/150',
-          'volume': '30매',
-        },
-        {
-          'name': '스킨푸드 캐롯 카로틴 릴리프 크림',
-          'image': 'https://via.placeholder.com/150',
-          'volume': '50ml',
-        },
-        {
-          'name': '스킨푸드 캐롯 카로틴 모이스트 이펙터',
-          'image': 'https://via.placeholder.com/150',
-          'volume': '100ml',
-        },
-      ];
+Future<void> _fetchSearchResults(String query) async {
+  setState(() {
+    _isLoading = true;
+  });
 
-      _searchResults = mockData
-          .where((item) => item['name']!.contains(query))
-          .toList();
-    } catch (e) {
-      print('Error fetching search results: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+  try {
+    // 실제 백엔드 요청 URL
+    final uri = Uri.parse("http://3.34.5.57/cosmetics?q=$query&limit=10");
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+  // 이 부분에 UTF-8 디코딩 추가
+  final List<dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
+  _searchResults = decodedData.map((item) {
+    return {
+      "_id" : item['id'],  // 화장품 id
+      'name': item['name'], // 한글 텍스트
+      'image': item['image_url'] ?? 'https://via.placeholder.com/150',
+      'volume': item['volume'] ?? '알 수 없음',
+    };
+  }).toList();
+}
+    else {
+      print('Failed to fetch data. Status code: ${response.statusCode}');
     }
+  } catch (e) {
+    print('Error fetching search results: $e');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
+
+ 
 
 // ***************************** 팝업 ***************************** // 
   void _showProductPopup(BuildContext context, Map<String, dynamic> product) {
@@ -117,11 +114,12 @@ class _SearchByNameState extends State<SearchByName> {
               const SizedBox(height: 20),
               ElevatedButton(
                onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // 팝업 닫고 
                   setState(() {
                     addedProducts.add(product); // 보유 제품에 추가
                   });
-                  print('${product['name']} 추가됨');
+                  print('${product['name']} 추가됨 (ID: ${product['_id']})');
+                  Navigator.pop(context, addedProducts); //그리고 추가된거 add_main.dart에 반환
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
