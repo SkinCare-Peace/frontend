@@ -5,6 +5,10 @@ import 'package:frontend/logIn/register_post.dart';
 class SignupInput extends StatelessWidget {
   const SignupInput({super.key});
 
+  // final TextEditingController _nameController = TextEditingController();
+  // final TextEditingController _passwordController = TextEditingController();
+  // final TextEditingController _editingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,14 +45,14 @@ class SignupInput extends StatelessWidget {
                         height: 30,
                       ),
                       const TextField(
-                        decoration: InputDecoration(labelText: '이름'),
+                        decoration: InputDecoration(labelText: '이름', ),
                         keyboardType: TextInputType.text,
                       ),
                       const TextField(
                         decoration: InputDecoration(labelText: '이메일'),
                         keyboardType: TextInputType.emailAddress,
                       ),
-                      const TextField(
+                       TextField(
                         decoration: InputDecoration(labelText: '비밀번호'),
                         keyboardType: TextInputType.text,
                         obscureText: true, // 비밀번호 안보이도록 하는 것
@@ -60,7 +64,7 @@ class SignupInput extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          //userRegister();
+                          userRegister();
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),
@@ -81,3 +85,4 @@ class SignupInput extends StatelessWidget {
     );
   }
 }
+

@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> userRegister() async {
+Future<void> userRegister(String email) async {
   final response = await http.get(
-    Uri.parse('https://your-backend.com/auth/login'),
+    Uri.parse('http://3.34.5.57/users/email/{email}'),
     headers: {'Content-Type': 'application/json'},
   );
 
