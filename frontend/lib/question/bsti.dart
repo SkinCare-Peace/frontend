@@ -25,7 +25,6 @@ class _BSTIState extends State<BSTI> {
       "색소침착": 40,
     },
   };
-
   final String user_bsti = "OSPT";
   final String bsti_detail = "피부가 반짝 빛나는";
   final String name = "유지민";
@@ -44,22 +43,24 @@ class _BSTIState extends State<BSTI> {
     return Scaffold(
       backgroundColor: Colors.white, //배경색 흰색
       body: Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 30),
+        padding: const EdgeInsets.only(bottom: 30),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Image.asset(
                 BBISTI.bstiBBI(user_bsti),
                 height: MediaQuery.of(context).size.height * 0.3,
-                fit: BoxFit.contain,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.cover,
               ),
               const SizedBox(
                 height: 10,
               ),
               SubText_grey(
                 text: "$name님은",
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
               const SizedBox(
                 height: 10,
@@ -67,7 +68,7 @@ class _BSTIState extends State<BSTI> {
               SubText_bk(
                 text: bsti_detail,
                 fontSize: 24,
-                fontweight: FontWeight.w400,
+                fontweight: FontWeight.normal,
               ),
               const SizedBox(
                 height: 5,
@@ -75,10 +76,9 @@ class _BSTIState extends State<BSTI> {
               SubText_bk(
                 text: user_bsti,
                 fontSize: 30,
-                fontweight: FontWeight.w800,
+                fontweight: FontWeight.bold,
               ),
               const SizedBox(height: 5),
-              // 데이터 출력
               // 데이터 출력
               if (currentData.isNotEmpty)
                 Container(
@@ -88,7 +88,7 @@ class _BSTIState extends State<BSTI> {
                   ),
                   child: SizedBox(
                     height:
-                        MediaQuery.of(context).size.height * 0.3, // 스크롤 영역 제한
+                        MediaQuery.of(context).size.height * 0.25, // 스크롤 영역 제한
                     child: Scrollbar(
                       // 스크롤바
                       thumbVisibility: true, // 항상 스크롤바 보이게
@@ -155,7 +155,7 @@ class _BSTIState extends State<BSTI> {
                 height: 25,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.1,
+                height: MediaQuery.of(context).size.height * 0.15,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical, // 텍스트가 가로로 스크롤되도록 설정
                   child: ContentText(
