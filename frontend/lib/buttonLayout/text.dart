@@ -56,7 +56,7 @@ class SubText_grey extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         color: AppColors.textgrey,
       ),
     );
@@ -82,6 +82,32 @@ class SubText_bk extends StatelessWidget {
       style: const TextStyle(
         color: AppColors.textBlack,
       ),
+    );
+  }
+}
+
+class ContentText extends StatelessWidget {
+  final String text;
+  final double fontSize;
+  final FontWeight fontWeight;
+
+  const ContentText({
+    super.key,
+    required this.text,
+    this.fontSize = 18,
+    this.fontWeight = FontWeight.w500,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: Colors.black,
+      ),
+      textAlign: TextAlign.center,
     );
   }
 }

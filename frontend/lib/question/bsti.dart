@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
-import 'package:frontend/buttonLayout/contentText.dart';
 import 'package:frontend/buttonLayout/text.dart';
+import 'package:frontend/Constants/bsti_bbi_image.dart';
 
 class BSTI extends StatefulWidget {
   const BSTI({super.key});
@@ -12,7 +12,7 @@ class BSTI extends StatefulWidget {
 }
 
 class _BSTIState extends State<BSTI> {
-  DateTime selectedDate = DateTime(2024, 8, 20);
+  DateTime selectedDate = DateTime(2024, 8, 22);
 
   final int criterion = 50;
 // 더미 데이터 : 나중에 class 분리 예정.
@@ -29,7 +29,8 @@ class _BSTIState extends State<BSTI> {
   final String user_bsti = "OSPT";
   final String bsti_detail = "피부가 반짝 빛나는";
   final String name = "유지민";
-  final String describe = "설명";
+  final String describe =
+      "OSPT는 이러이러한 유형입니다.\n이러이러하니 이러이러하면 좋아요.\n파이팅!\n왜 안 나오지\n뭐지\n제대로 안 나옴 글자가;;";
 
   void updateDate(int days) {
     setState(() {
@@ -40,60 +41,68 @@ class _BSTIState extends State<BSTI> {
   @override
   Widget build(BuildContext context) {
     final currentData = skinData[selectedDate] ?? {};
-
     return Scaffold(
       backgroundColor: Colors.white, //배경색 흰색
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset('assets/images/img_blue.png'),
-            const SizedBox(
-              height: 20,
-            ),
-            SubText_grey(
-              text: "$name님은",
-              fontWeight: FontWeight.w600,
-            ),
-            const SizedBox(height: 20),
-            SubText_bk(
-              text: bsti_detail,
-              fontSize: 16,
-              fontweight: FontWeight.w400,
-            ),
-            const SizedBox(height: 10),
-            SubText_bk(
-              text: user_bsti,
-              fontSize: 20,
-              fontweight: FontWeight.bold,
-            ),
-            const SizedBox(height: 20),
-            // 데이터 출력
-            if (currentData.isNotEmpty)
-              Container(
+        padding: const EdgeInsets.only(top: 10, bottom: 30),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                BBISTI.bstiBBI(user_bsti),
+                height: MediaQuery.of(context).size.height * 0.3,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              SubText_grey(
+                text: "$name님은",
+                fontWeight: FontWeight.w600,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              SubText_bk(
+                text: bsti_detail,
+                fontSize: 24,
+                fontweight: FontWeight.w400,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              SubText_bk(
+                text: user_bsti,
+                fontSize: 30,
+                fontweight: FontWeight.w800,
+              ),
+              const SizedBox(height: 5),
+              // 데이터 출력
+              // 데이터 출력
+              if (currentData.isNotEmpty)
+                Container(
                   padding: const EdgeInsets.only(
-                      left: 20, right: 10, top: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                    color: AppColors.greyBox,
-                    borderRadius: BorderRadius.circular(10),
+                    left: 30,
+                    right: 20,
                   ),
                   child: SizedBox(
-                      height: 250, // 스크롤 영역 제한
-                      child: Scrollbar(
-                        // 스크롤바
-                        thumbVisibility: true, // 항상 스크롤바 보이게
-                        thickness: 4, // 스크롤바 두께
-                        radius: const Radius.circular(10), // 스크롤바 모서리 둥글게
-                        child: Padding(
-                          // 스크롤바와 내용 사이에 거리 추가
-                          padding:
-                              const EdgeInsets.only(right: 20), // 오른쪽 간격 추가
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start, // 왼쪽 정렬
-                              children: currentData.entries.map((entry) {
+                    height:
+                        MediaQuery.of(context).size.height * 0.3, // 스크롤 영역 제한
+                    child: Scrollbar(
+                      // 스크롤바
+                      thumbVisibility: true, // 항상 스크롤바 보이게
+                      thickness: 4, // 스크롤바 두께
+                      radius: const Radius.circular(10), // 스크롤바 모서리 둥글게
+                      child: Padding(
+                        // 스크롤바와 내용 사이에 거리 추가
+                        padding: const EdgeInsets.only(right: 20), // 오른쪽 간격 추가
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start, // 왼쪽 정렬
+                            children: currentData.entries.map(
+                              (entry) {
                                 return Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
@@ -122,31 +131,57 @@ class _BSTIState extends State<BSTI> {
                                           color: entry.value >= criterion
                                               ? AppColors.positiveScore
                                               : AppColors.negativeScore,
-                                          backgroundColor: Colors.white,
+                                          backgroundColor: AppColors.greyBox,
                                           minHeight: 20,
                                         ),
                                       ),
                                     ],
                                   ),
                                 );
-                              }).toList(),
-                            ),
+                              },
+                            ).toList(),
                           ),
                         ),
-                      )))
-            else
-              const ContentText(
-                text: "데이터가 없습니다.",
-                fontSize: 16,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                const ContentText(
+                  text: "데이터가 없습니다.",
+                  fontSize: 16,
+                ),
+              const SizedBox(
+                height: 25,
               ),
-            ContentText(
-              text: describe,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
-            const SizedBox(height: 20),
-            MainButton(text: "나만의 루틴 시작하기", onPressed: () {}),
-          ],
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.1,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical, // 텍스트가 가로로 스크롤되도록 설정
+                  child: ContentText(
+                    text: describe,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              const SubText_grey(
+                text: "결과는 나중에도 볼 수 있어요!",
+                fontWeight: FontWeight.w700,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: MainButton(
+                  text: "나만의 루틴 시작하기",
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
