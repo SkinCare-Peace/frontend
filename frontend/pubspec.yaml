@@ -38,6 +38,7 @@ flutter:
     - assets/BBIhappy.png
     - assets/BBIpimple.png
     - assets/BBIsad.png
+    - assets/BBIblush.png
 
     # 이모티콘
     - assets/emoji/apple.png
