@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
-import 'package:frontend/logIn/login_post.dart';
+import 'package:frontend/logIn/register_post.dart';
 
-class LoginInput extends StatelessWidget {
-  const LoginInput({super.key});
+class SignupInput extends StatelessWidget {
+  const SignupInput({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +28,30 @@ class LoginInput extends StatelessWidget {
                   child: Column(
                     children: [
                       Image.asset(
-                        'assets/BBIhappy.png',
+                        'assets/BBImask.png',
                         height: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).viewInsets.bottom) *
                             0.25,
                       ),
                       const Text(
-                        "Sign in",
+                        "Sign up",
                         style: TextStyle(fontSize: 30),
                       ),
                       const SizedBox(
                         height: 30,
                       ),
                       const TextField(
+                        decoration: InputDecoration(labelText: '이름'),
+                        keyboardType: TextInputType.text,
+                      ),
+                      const TextField(
                         decoration: InputDecoration(labelText: '이메일'),
                         keyboardType: TextInputType.emailAddress,
+                      ),
+                      const TextField(
+                        decoration: InputDecoration(labelText: '비밀번호'),
+                        keyboardType: TextInputType.text,
+                        obscureText: true, // 비밀번호 안보이도록 하는 것
                       ),
                       SizedBox(
                         height: (MediaQuery.of(context).size.height -
@@ -51,7 +60,7 @@ class LoginInput extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          userRegister();
+                          //userRegister();
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),

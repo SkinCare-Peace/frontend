@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/buttonLayout/text.dart';
 import 'package:frontend/logIn/login_input.dart';
+import 'package:frontend/logIn/signup_input';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -46,7 +47,7 @@ class LoginPage extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginInput(),
+                                  builder: (context) => const LoginInput(),
                                 ));
                           },
                           child: const Text(
@@ -55,7 +56,13 @@ class LoginPage extends StatelessWidget {
                           )),
                       const Text("|", style: TextStyle(fontSize: 25)),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignupInput(),
+                              ));
+                        },
                         child: const Text(
                           "Sign up",
                           style: TextStyle(fontSize: 20),
