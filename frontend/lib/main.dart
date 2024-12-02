@@ -27,15 +27,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       /** home 변경할때, 주석처리로! **/
-
-
       //home: LoadingPage0(), //로딩 페이지 0 (얼굴인식 )
-
       // home : LoadingPage1(),
-      // home: const DashPage(), // 피부 측정 기록과 루틴 기록이 하나라도 있을 때의 메인화면
-      // home: LoginPage(), // 로그인 페이지
+      //home: const DashPage(), // 피부 측정 기록과 루틴 기록이 하나라도 있을 때의 메인화면
+      //home: LoginPage(), // 로그인 페이지
       //home: RoutinePage() // 루틴 페이지
-      home : const AddSkinCareMain() // 제품 등록 페이지
+      // home : const AddSkinCareMain() // 제품 등록 페이지
       // home : const PicGuideline()
       home: const BSTI(), // 디버깅용
     );
