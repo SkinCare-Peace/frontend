@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/buttonLayout/text.dart';
-import 'package:frontend/logIn/login_post.dart';
+import 'package:frontend/logIn/login_input.dart';
 
 class LoginPage extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +42,13 @@ class LoginPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginInput(),
+                                ));
+                          },
                           child: const Text(
                             "Sign in",
                             style: TextStyle(fontSize: 20),
