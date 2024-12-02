@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       // home : LoadingPage1(),
       // home: const DashPage(), // 피부 측정 기록과 루틴 기록이 하나라도 있을 때의 메인화면
       // home: LoginPage(), // 로그인 페이지
-      //home: RoutinePage() // 루틴 페이지
+      // home: RoutinePage() // 루틴 생성 페이지
       home : const AddSkinCareMain() // 제품 등록 페이지
       // home : const PicGuideline()
     );
