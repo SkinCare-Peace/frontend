@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/routines/routine_create.dart';
 
 class QuestionPage3 extends StatefulWidget {
@@ -17,7 +16,7 @@ class _QuestionPage3State extends State<QuestionPage3> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> options = ['1만원', '3만원', '5만원', '10만원'];
+    final List<String> options = ['10,000', '30,000', '50,000', '100,000'];
 
     return Scaffold(
       body: Center(

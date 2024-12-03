@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 import 'package:frontend/addProduct/add_main.dart';
-import 'package:frontend/dash.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
