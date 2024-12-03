@@ -1,23 +1,26 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:frontend/Constants/user_data.dart';
+import 'package:http/http.dart' as http;
 
-Future<void> userRegister(String email) async {
-  final response = await http.get(
-    Uri.parse('http://3.34.5.57/users/email/{email}'),
-    headers: {'Content-Type': 'application/json'},
-  );
+Future<UserData?> fetchUserData(String email) async {
+  final url = Uri.parse('http://3.34.5.57/users/email/{$email}'); // 실제 엔드포인트로 변경
+  final headers = {'Content-Type': 'application/json'}; // 요청 헤더 설정
 
-  if (response.statusCode == 200) {
-    final responseData = json.decode(response.body);
-    final loginUrl = responseData['url'];
+  try {
+    final response = await http.get(url, headers: headers);
 
-    if (await canLaunchUrl(loginUrl)) {
-      await launchUrl(loginUrl); // 브라우저로 로그인 페이지 열기
+    if (response.statusCode == 200) {
+      // 성공 시 JSON 데이터를 파싱하여 UserData 객체 반환
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      return UserData.fromJson(responseData);
     } else {
-      throw 'Could not launch $loginUrl';
+      // 에러 처리
+      print("Error: Status code ${response.statusCode}");
+      return null;
     }
-  } else {
-    print('로그인 URL 요청 실패: ${response.statusCode}');
+  } catch (e) {
+    // 예외 처리
+    print("Error: $e");
+    return null;
   }
 }

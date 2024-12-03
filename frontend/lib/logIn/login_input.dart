@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/loading/loading_page0.dart';
 import 'package:frontend/logIn/login_post.dart';
 
 class LoginInput extends StatelessWidget {
-  const LoginInput({super.key});
+  LoginInput({super.key});
 
-  //final TextEditingController _editingController = TextEditingController();
+  final TextEditingController _editingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +63,18 @@ class LoginInput extends StatelessWidget {
                             0.05,
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          //userRegister(_editingController.text);
+                        onPressed: () async {
+                          final userData =
+                              await fetchUserData(_editingController.text);
+                          if (userData != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoadingPage0(),
+                                ));
+                          } else {
+                            print("로그인에 실패했습니다.");
+                          } // 추후 팝업으로 변경 필요
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),

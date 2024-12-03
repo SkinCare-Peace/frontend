@@ -3,11 +3,15 @@ import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/logIn/register_post.dart';
 
 class SignupInput extends StatelessWidget {
-  const SignupInput({super.key});
 
-  // final TextEditingController _nameController = TextEditingController();
-  // final TextEditingController _passwordController = TextEditingController();
-  // final TextEditingController _editingController = TextEditingController();
+      SignupInput({Key? key,}) : super(key: key); // const 제거
+
+  // TextEditingController는 mutable 객체이므로 final로 선언
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _editingController = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +68,7 @@ class SignupInput extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          userRegister();
+                          userRegister(_nameController.text, _passwordController.text, _editingController.text);
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),
