@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -38,8 +40,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required int timeMinutes,
     required int moneyWon,
   }) async {
-
-    print("Fetching routine with time: $timeMinutes, money: $moneyWon"); // 뭐 전송하는지 확인
+    print("Fetching routine with time: $timeMinutes, money: $moneyWon");
     final uri = Uri.parse("http://3.34.5.57/routine").replace(queryParameters: {
       "time_minutes": timeMinutes.toString(),
       "money_won": moneyWon.toString(),
@@ -58,44 +59,40 @@ class _RoutinePageState extends State<RoutinePage> {
 
   // 추천 화장품 가져오기
   Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
-  required String skinType,
-  required String cosmeticType,
-  required int budget,
-}) async {
-  final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation").replace(queryParameters: {
-    "user_skin_type": skinType, // 피부 타입
-    "cosmetic_types": cosmeticType, // 화장품 타입
-    "budget": budget.toString(), // 예산
-  });
+    required String skinType,
+    required String cosmeticType,
+    required int budget,
+  }) async {
+    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation").replace(queryParameters: {
+      "user_skin_type": skinType,
+      "cosmetic_types": cosmeticType,
+      "budget": budget.toString(),
+    });
 
-  // 요청 본문 생성
-  final requestBody = jsonEncode({
-    "user_concerns": ["건성", "지성"], // 피부 고민
-    "allergic_ingredients": ["parabens"], // 알레르기 성분
-  });
+    final requestBody = jsonEncode({
+      "user_concerns": ["건성", "지성"],
+      "allergic_ingredients": ["parabens"],
+    });
 
-  // POST 요청
-  final response = await http.post(
-    uri,
-    headers: {"Content-Type": "application/json"},
-    body: requestBody,
-  );
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: requestBody,
+    );
 
-  if (response.statusCode == 200) {
-    try {
-      final decodedResponse = utf8.decode(response.bodyBytes);
-      final data = json.decode(decodedResponse);
-      return List<Map<String, dynamic>>.from(data); // 결과 반환
-    } catch (e) {
-      throw FormatException("Invalid JSON format: ${response.body}");
+    if (response.statusCode == 200) {
+      try {
+        final decodedResponse = utf8.decode(response.bodyBytes);
+        final data = json.decode(decodedResponse);
+        return List<Map<String, dynamic>>.from(data);
+      } catch (e) {
+        throw FormatException("Invalid JSON format: ${response.body}");
+      }
+    } else {
+      throw Exception("Failed to fetch recommended cosmetics: ${response.body}");
     }
-  } else {
-    throw Exception("Failed to fetch recommended cosmetics: ${response.body}");
   }
-}
 
-
-  // 데이터 가져와서 UI 업데이트
   void fetchAndUpdateRoutine() async {
     try {
       final data = await fetchRoutine(
@@ -122,47 +119,37 @@ class _RoutinePageState extends State<RoutinePage> {
     }
   }
 
-  // 추천 화장품 요청 및 업데이트 
-  /*(수정: 여기 응답이 스킨/토너로 들어옴)
-  - /를 기준으로 분리해서 하나씩 요청할꺼임
-  */
   void fetchAndUpdateCosmetics(int index, String cosmeticType) async {
-  try {
-    // `/`를 기준으로 화장품 유형 분리 후 첫 번째 항목만 사용
-    final String trimmedCosmeticType = cosmeticType.contains('/') 
-        ? cosmeticType.split('/').first.trim() 
-        : cosmeticType.trim();
+    try {
+      final String trimmedCosmeticType = cosmeticType.contains('/')
+          ? cosmeticType.split('/').first.trim()
+          : cosmeticType.trim();
 
-    final cosmetics = await fetchRecommendedCosmetics(
-      skinType: "건성", // 피부 타입
-      cosmeticType: trimmedCosmeticType, // 첫 번째 화장품 타입만 전송
-      budget: widget.moneyWon,
-    );
+      final cosmetics = await fetchRecommendedCosmetics(
+        skinType: "건성",
+        cosmeticType: trimmedCosmeticType,
+        budget: widget.moneyWon,
+      );
 
-    setState(() {
-      recommendedCosmetics[index] = cosmetics;
-    });
-  } catch (e) {
-    print("Error fetching cosmetics for step $index: $e");
-    print("Query parameters: ${{
-      "user_skin_type": "건성",
-      "cosmetic_types": cosmeticType, // 원본 값
-      "budget": widget.moneyWon.toString(),
-    }}");
+      setState(() {
+        recommendedCosmetics[index] = cosmetics;
+      });
+    } catch (e) {
+      print("Error fetching cosmetics for step $index: $e");
+      print("Query parameters: ${{
+        "user_skin_type": "건성",
+        "cosmetic_types": cosmeticType,
+        "budget": widget.moneyWon.toString(),
+      }}");
+    }
   }
-}
-
-
-
-
 
 // ************************************************ UI *******************************************
   @override
   void initState() {
     super.initState();
-    fetchAndUpdateRoutine(); // 초기 데이터 불러오기
+    fetchAndUpdateRoutine();
   }
-
   @override
   Widget build(BuildContext context) {
     int totalTime = calculateTotalTime();
@@ -247,6 +234,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                   Text("${step['frequency']}회"),
                                   const SizedBox(height: 10),
                                   const Text('추천 화장품:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 10),
                                   if (cosmetics.isEmpty)
                                     const Text(
                                       '추천 데이터를 불러오는 중입니다...',
@@ -254,61 +242,35 @@ class _RoutinePageState extends State<RoutinePage> {
                                     )
                                   else
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('추천 화장품:', style: TextStyle(fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 10),
-                                  
-                                        // 첫 번째 추천 화장품
-                                        if (cosmetics.isNotEmpty) ...[
-                                          Row(
-                                            children: [
-                                             Image.network(
-                                                cosmetics[0]['img_url'] ?? '', // 화장품 이미지 URL
-                                                width: 50,
-                                                height: 50,
-                                                fit: BoxFit.cover,
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Text(
-                                                cosmetics[0]['name'] ?? '제품 이름 없음', // 제품 이름
-                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                        ],
-
-                                        // 두 번째 추천 화장품
-                                        if (cosmetics.length > 1) ...[
-                                          Row(
+                                      children: cosmetics.map((cosmetic) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(bottom: 10.0),
+                                          child: Row(
                                             children: [
                                               Image.network(
-                                                cosmetics[1]['img_url'] ?? '',
+                                                cosmetic['img_url'] ?? 'https://dummyimage.com/150',
                                                 width: 50,
                                                 height: 50,
                                                 fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) {
+                                                  print("Image load error: $error for URL: ${cosmetic['img_url']}");
+                                                  return Icon(Icons.broken_image, size: 50);
+                                                },
                                               ),
                                               const SizedBox(width: 10),
-                                              Text(
-                                                cosmetics[1]['name'] ?? '제품 이름 없음',
-                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                              Expanded(
+                                                child: Text(
+                                                  cosmetic['name'] ?? '제품 이름 없음',
+                                                  style: const TextStyle(
+                                                      fontWeight: FontWeight.bold, fontSize: 14),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 10),
-                                        ],
-                                        // 데이터 부족 시 안내 문구
-                                        if (cosmetics.isEmpty)
-                                          const Text(
-                                            '추천할 제품이 없습니다.',
-                                            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-                                          ),
-                                      ],
-                                    )
-                                  ,
-
-                             
+                                        );
+                                      }).toList(),
+                                    ),
                                   const SizedBox(height: 10),
                                   const Text('추천 시간대:', style: TextStyle(fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 10),
@@ -318,9 +280,9 @@ class _RoutinePageState extends State<RoutinePage> {
                                       final String timeString = time.toString();
                                       Color chipColor;
                                       if (timeString == 'morning') {
-                                        chipColor = const Color.fromARGB(255, 255, 249, 195)!;
+                                        chipColor = const Color.fromARGB(255, 255, 249, 195);
                                       } else if (timeString == 'evening') {
-                                        chipColor = const Color.fromARGB(255, 185, 223, 255)!;
+                                        chipColor = const Color.fromARGB(255, 185, 223, 255);
                                       } else {
                                         chipColor = const Color.fromARGB(255, 216, 238, 217);
                                       }
@@ -348,6 +310,7 @@ class _RoutinePageState extends State<RoutinePage> {
                     },
                   ),
                 ),
+ 
 
                 // ************************** 하단 결정 버튼 **************************
                 Padding(

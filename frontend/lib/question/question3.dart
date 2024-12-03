@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/routines/routine_create.dart';
 
 class QuestionPage3 extends StatefulWidget {
