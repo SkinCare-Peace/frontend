@@ -4,12 +4,12 @@ import 'package:frontend/logIn/register_post.dart';
 
 class SignupInput extends StatelessWidget {
 
-      SignupInput({Key? key,}) : super(key: key); // const 제거
+      SignupInput({super.key,}); // const 제거
 
   // TextEditingController는 mutable 객체이므로 final로 선언
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _editingController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
 
 
@@ -48,16 +48,19 @@ class SignupInput extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                      const TextField(
-                        decoration: InputDecoration(labelText: '이름', ),
+                      TextField(
+                        controller: _nameController, 
+                        decoration: const InputDecoration(labelText: '이름', ),
                         keyboardType: TextInputType.text,
                       ),
-                      const TextField(
-                        decoration: InputDecoration(labelText: '이메일'),
+                       TextField(
+                        controller: _emailController, 
+                        decoration: const InputDecoration(labelText: '이메일'),
                         keyboardType: TextInputType.emailAddress,
                       ),
-                       TextField(
-                        decoration: InputDecoration(labelText: '비밀번호'),
+                        TextField(
+                          controller: _passwordController, 
+                        decoration: const InputDecoration(labelText: '비밀번호'),
                         keyboardType: TextInputType.text,
                         obscureText: true, // 비밀번호 안보이도록 하는 것
                       ),
@@ -68,7 +71,7 @@ class SignupInput extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          userRegister(_nameController.text, _passwordController.text, _editingController.text);
+                          userRegister(_nameController.text, _emailController.text, _passwordController.text);
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),

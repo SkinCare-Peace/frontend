@@ -3,11 +3,10 @@ import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http;
 
 Future<UserData?> fetchUserData(String email) async {
-  final url = Uri.parse('http://3.34.5.57/users/email/{$email}'); // 실제 엔드포인트로 변경
-  final headers = {'Content-Type': 'application/json'}; // 요청 헤더 설정
+  final url = Uri.parse('http://3.34.5.57/users/email/$email'); // 실제 엔드포인트로 변경
 
   try {
-    final response = await http.get(url, headers: headers);
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
       // 성공 시 JSON 데이터를 파싱하여 UserData 객체 반환

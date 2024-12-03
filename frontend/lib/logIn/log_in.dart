@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/buttonLayout/text.dart';
 import 'package:frontend/logIn/login_input.dart';
-import 'package:frontend/logIn/signup_input';
+import 'package:frontend/logIn/signup_input.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

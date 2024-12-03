@@ -6,7 +6,7 @@ import 'package:frontend/logIn/login_post.dart';
 class LoginInput extends StatelessWidget {
   LoginInput({super.key});
 
-  final TextEditingController _editingController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +43,9 @@ class LoginInput extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                      const TextField(
-                        decoration: InputDecoration(
+                       TextField(
+                        controller: _emailController, 
+                        decoration: const InputDecoration(
                           labelText: '이메일',
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -65,7 +66,7 @@ class LoginInput extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           final userData =
-                              await fetchUserData(_editingController.text);
+                              await fetchUserData(_emailController.text);
                           if (userData != null) {
                             Navigator.push(
                                 context,

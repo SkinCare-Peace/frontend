@@ -1,7 +1,7 @@
 import 'dart:convert'; // JSON 변환을 위해 필요
 import 'package:http/http.dart' as http; // HTTP 요청을 위해 필요
 
-Future<void> userRegister(String email, String name, String password) async {
+Future<void> userRegister(String name, String email, String password) async {
   final url = Uri.parse('http://3.34.5.57/users/'); // 백엔드의 엔드포인트
   final headers = {'Content-Type': 'application/json'}; // 요청 헤더 설정
   final body = jsonEncode({
