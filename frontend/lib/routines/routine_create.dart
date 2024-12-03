@@ -9,10 +9,10 @@ class RoutinePage extends StatefulWidget {
   final int moneyWon; // 돈
 
   const RoutinePage({
-    Key? key,
+    super.key,
     required this.timeMinutes,
     required this.moneyWon,
-  }) : super(key: key);
+  });
 
   @override
   _RoutinePageState createState() => _RoutinePageState();
@@ -41,7 +41,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required int moneyWon,
   }) async {
     print("Fetching routine with time: $timeMinutes, money: $moneyWon");
-    final uri = Uri.parse("http://929/routine").replace(queryParameters: {
+    final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
       "time_minutes": timeMinutes.toString(),
       "money_won": moneyWon.toString(),
     });
@@ -63,7 +63,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required String cosmeticType,
     required int budget,
   }) async {
-    final uri = Uri.parse("http://929/cosmetics/recommendation").replace(queryParameters: {
+    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation").replace(queryParameters: {
       "user_skin_type": skinType,
       "cosmetic_types": cosmeticType,
       "budget": budget.toString(),
@@ -256,7 +256,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                                 fit: BoxFit.cover,
                                                 errorBuilder: (context, error, stackTrace) {
                                                   print("Image load error: $error for URL: ${cosmetic['img_url']}");
-                                                  return Icon(Icons.broken_image, size: 50); //오류날때 이거 출력
+                                                  return const Icon(Icons.broken_image, size: 50); //오류날때 이거 출력
                                                 },
                                               ),
 
@@ -397,7 +397,7 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
                   width: 300,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return Icon(Icons.broken_image, size: 300);
+                    return const Icon(Icons.broken_image, size: 300);
                   },
                 ),
               const SizedBox(height: 10),
@@ -447,7 +447,7 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('닫기', style: const TextStyle(
+            child: const Text('닫기', style: TextStyle(
             fontWeight: FontWeight.w400, 
             fontSize: 16, 
               ),
