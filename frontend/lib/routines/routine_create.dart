@@ -1,5 +1,5 @@
 
-
+import 'package:url_launcher/url_launcher.dart'; // url 열기용
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -41,7 +41,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required int moneyWon,
   }) async {
     print("Fetching routine with time: $timeMinutes, money: $moneyWon");
-    final uri = Uri.parse("http://3.34.5.57/routine").replace(queryParameters: {
+    final uri = Uri.parse("http://929/routine").replace(queryParameters: {
       "time_minutes": timeMinutes.toString(),
       "money_won": moneyWon.toString(),
     });
@@ -63,7 +63,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required String cosmeticType,
     required int budget,
   }) async {
-    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation").replace(queryParameters: {
+    final uri = Uri.parse("http://929/cosmetics/recommendation").replace(queryParameters: {
       "user_skin_type": skinType,
       "cosmetic_types": cosmeticType,
       "budget": budget.toString(),
@@ -93,6 +93,7 @@ class _RoutinePageState extends State<RoutinePage> {
     }
   }
 
+// 루틴 불러오기
   void fetchAndUpdateRoutine() async {
     try {
       final data = await fetchRoutine(
@@ -119,6 +120,7 @@ class _RoutinePageState extends State<RoutinePage> {
     }
   }
 
+// 화장품 불러오기
   void fetchAndUpdateCosmetics(int index, String cosmeticType) async {
     try {
       final String trimmedCosmeticType = cosmeticType.contains('/')
@@ -248,15 +250,16 @@ class _RoutinePageState extends State<RoutinePage> {
                                           child: Row(
                                             children: [
                                               Image.network(
-                                                cosmetic['img_url'] ?? 'https://dummyimage.com/150',
+                                                cosmetic['img_url'] ?? 'https://dummyimage.com/150', //사진 없으면 임시 사진 
                                                 width: 50,
                                                 height: 50,
                                                 fit: BoxFit.cover,
                                                 errorBuilder: (context, error, stackTrace) {
                                                   print("Image load error: $error for URL: ${cosmetic['img_url']}");
-                                                  return Icon(Icons.broken_image, size: 50);
+                                                  return Icon(Icons.broken_image, size: 50); //오류날때 이거 출력
                                                 },
                                               ),
+
                                               const SizedBox(width: 10),
                                               Expanded(
                                                 child: Text(
@@ -266,6 +269,11 @@ class _RoutinePageState extends State<RoutinePage> {
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
+                                              IconButton(icon: const Icon(
+                                                Icons.info_outline
+                                              ),
+                                              onPressed: () => {showCosmeticDetails(context, cosmetic)},
+                                              )
                                             ],
                                           ),
                                         );
@@ -355,4 +363,99 @@ class _RoutinePageState extends State<RoutinePage> {
             ),
     );
   }
+}
+
+
+// ************************************  화장품 정보 표시 다이얼로그 ************************************ 
+void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 30), // 다이얼로그 여백
+        titlePadding: const EdgeInsets.only(top: 40, left: 30, right: 30), // 제목 여백
+        contentPadding: const EdgeInsets.symmetric(horizontal: 30), // 내용 여백
+        title: Center(
+          child: Text(
+            cosmetic['name'] ?? '제품 이름 없음',
+            textAlign: TextAlign.center, 
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18, 
+            ),
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (cosmetic['image_url'] != null)
+                Image.network(
+                  cosmetic['image_url'],
+                  height: 300,
+                  width: 300,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons.broken_image, size: 300);
+                  },
+                ),
+              const SizedBox(height: 10),
+              Text("브랜드: ${cosmetic['brand'] ?? '정보 없음'}",style: const TextStyle(
+                 fontWeight: FontWeight.bold, 
+                 fontSize: 16,
+                 ),
+              ),
+              const SizedBox(height: 10),
+              Text("가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",style: const TextStyle(
+                fontWeight: FontWeight.bold, 
+                fontSize: 16, 
+                ),),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  final url = cosmetic['link'];
+                  if (url != null && await canLaunchUrl(Uri.parse(url))) {
+                    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("유효하지 않은 링크입니다")),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                ),
+                child: const Text(
+                  "구매 링크",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text("총 점수: ${cosmetic['total_score'] ?? '정보 없음'}"),
+              Text("피부 타입 점수: ${cosmetic['skin_type_score'] ?? '정보 없음'}"),
+              Text("관심사 점수: ${cosmetic['concern_score'] ?? '정보 없음'}"),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('닫기', style: const TextStyle(
+            fontWeight: FontWeight.w400, 
+            fontSize: 16, 
+              ),
+              )
+            ,
+          ),
+        ],
+      );
+    },
+  );
 }
