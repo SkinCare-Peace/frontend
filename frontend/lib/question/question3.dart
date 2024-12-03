@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/loading/loading_page2.dart';
-
+import 'package:frontend/routines/routine_create.dart';
 
 class QuestionPage3 extends StatefulWidget {
+  final String timeMinutes; // 설문2에서 전달된 시간 데이터
+
+  const QuestionPage3({Key? key, required this.timeMinutes}) : super(key: key);
+
   @override
   _QuestionPage3State createState() => _QuestionPage3State();
 }
 
 class _QuestionPage3State extends State<QuestionPage3> {
-  // 선택된 제품들 저장할 map
-  final Map<String, bool> _selectedProducts = {
-    '1만원': false,
-    '3만원': false,
-    '5만원': false,
-    '10만원' : false,
-    '상관없어요': false,
-  };
+  // 선택된 항목
+  String? _selectedOption;
 
   @override
   Widget build(BuildContext context) {
+    final List<String> options = ['10,000', '30,000', '50,000', '100,000'];
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -38,30 +37,34 @@ class _QuestionPage3State extends State<QuestionPage3> {
                 ),
               ),
               const SizedBox(height: 40),
-              ..._selectedProducts.keys.map((product) {
+              ...options.map((option) {
                 return Column(
                   children: [
-                    _buildCustomCheckboxOption(product), // 만든 체크박스
-                    const SizedBox(height: 18), // 항목 간격 조절
+                    _buildCustomRadioOption(option), 
+                    const SizedBox(height: 18), 
                   ],
                 );
               }).toList(),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                   Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoadingPage2()), // 루틴생성 시작
-                      );
-        
-                  // 제출 버튼 클릭 시의 동작
-                  List<String> selectedItems = _selectedProducts.entries
-                      .where((entry) => entry.value)
-                      .map((entry) => entry.key)
-                      .toList();
-
-                  print('${selectedItems}');
-
+                  if (_selectedOption != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RoutinePage(
+                          timeMinutes: int.parse(widget.timeMinutes.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
+                          moneyWon: int.parse(_selectedOption!.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('하나의 옵션을 선택해주세요!'),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
@@ -84,31 +87,30 @@ class _QuestionPage3State extends State<QuestionPage3> {
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 배경 색상
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
     );
   }
 
-  // 커스텀 체크박스 
-  Widget _buildCustomCheckboxOption(String label) {
+  Widget _buildCustomRadioOption(String label) {
     return ListTile(
       title: Text(
         label,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 25, // 글씨 크기 크게
+          fontSize: 25, 
         ),
       ),
       trailing: Transform.scale(
-        scale: 1.5, // 체크박스 크기 조정
-        child: Checkbox(
-          shape: const CircleBorder(), // 체크박스 동그라미
-          value: _selectedProducts[label],
-          onChanged: (bool? value) {
+        scale: 1.5, // 라디오 버튼 크기 조정
+        child: Radio<String>(
+          value: label,
+          groupValue: _selectedOption,
+          onChanged: (String? value) {
             setState(() {
-              _selectedProducts[label] = value ?? false;
+              _selectedOption = value; // 선택된 값 변경
             });
           },
-          activeColor: const Color.fromARGB(255, 87, 204, 222), // 선택된 체크박스 색상 주기
+          activeColor: const Color.fromARGB(255, 87, 204, 222), 
         ),
       ),
     );

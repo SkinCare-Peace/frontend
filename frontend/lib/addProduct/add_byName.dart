@@ -1,9 +1,9 @@
 // 제품명으로 검색하기 로직
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+//토리든
+// 3.34.5.57
 class SearchByName extends StatefulWidget {
   final String searchQuery;
 
@@ -38,12 +38,14 @@ Future<void> _fetchSearchResults(String query) async {
     if (response.statusCode == 200) {
   // 이 부분에 UTF-8 디코딩 추가
   final List<dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
+  print(utf8.decode(response.bodyBytes));
   _searchResults = decodedData.map((item) {
     return {
-      "_id" : item['id'],  // 화장품 id
+      "_id" : item['_id'],  // 화장품 id
       'name': item['name'], // 한글 텍스트
       'image': item['image_url'] ?? 'https://via.placeholder.com/150',
-      'volume': item['volume'] ?? '알 수 없음',
+      'volume': item['volume'] ?? '알 수 없음', // 용량
+      'selling_price' : item['selling_price'] ?? '가격 모름'
     };
   }).toList();
 }
@@ -96,6 +98,14 @@ Future<void> _fetchSearchResults(String query) async {
               const SizedBox(height: 10),
               Text(
                 '용량 : ${product['volume']}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '판매 가격 : ${product['selling_price']}',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
