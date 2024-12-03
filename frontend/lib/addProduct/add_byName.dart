@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 //토리든
-
+// 3.34.5.57
 class SearchByName extends StatefulWidget {
   final String searchQuery;
 
@@ -32,7 +32,7 @@ Future<void> _fetchSearchResults(String query) async {
 
   try {
     // 실제 백엔드 요청 URL
-    final uri = Uri.parse("http://00/cosmetics?q=$query&limit=10");
+    final uri = Uri.parse("http://3.34.5.57/cosmetics?q=$query&limit=10");
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {

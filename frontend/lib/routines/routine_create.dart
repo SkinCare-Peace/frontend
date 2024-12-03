@@ -40,7 +40,7 @@ class _RoutinePageState extends State<RoutinePage> {
   }) async {
 
     print("Fetching routine with time: $timeMinutes, money: $moneyWon"); // 뭐 전송하는지 확인
-    final uri = Uri.parse("http://00/routine").replace(queryParameters: {
+    final uri = Uri.parse("http://3.34.5.57/routine").replace(queryParameters: {
       "time_minutes": timeMinutes.toString(),
       "money_won": moneyWon.toString(),
     });
@@ -58,37 +58,42 @@ class _RoutinePageState extends State<RoutinePage> {
 
   // 추천 화장품 가져오기
   Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
-    required String skinType,
-    required String cosmeticType,
-    required int budget,
-  }) async {
-    final uri = Uri.parse("http://00/cosmetics/recommendation").replace(queryParameters: {
-      "user_skin_type": skinType,
-      "cosmetic_types": cosmeticType,
-      "budget": budget.toString(),
-    });
+  required String skinType,
+  required String cosmeticType,
+  required int budget,
+}) async {
+  final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation").replace(queryParameters: {
+    "user_skin_type": skinType, // 피부 타입
+    "cosmetic_types": cosmeticType, // 화장품 타입
+    "budget": budget.toString(), // 예산
+  });
 
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "user_concerns": ["dryness", "redness"], // 예시 데이터
-        "allergic_ingredients": ["parabens"], // 예시 데이터
-      }),
-    );
+  // 요청 본문 생성
+  final requestBody = jsonEncode({
+    "user_concerns": ["건성", "지성"], // 피부 고민
+    "allergic_ingredients": ["parabens"], // 알레르기 성분
+  });
 
-    if (response.statusCode == 200) {
-      try {
-        final decodedResponse = utf8.decode(response.bodyBytes);
-        final data = json.decode(decodedResponse);
-        return List<Map<String, dynamic>>.from(data);
-      } catch (e) {
-        throw FormatException("Invalid JSON format: ${response.body}");
-      }
-    } else {
-      throw Exception("Failed to fetch recommended cosmetics: ${response.body}");
+  // POST 요청
+  final response = await http.post(
+    uri,
+    headers: {"Content-Type": "application/json"},
+    body: requestBody,
+  );
+
+  if (response.statusCode == 200) {
+    try {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final data = json.decode(decodedResponse);
+      return List<Map<String, dynamic>>.from(data); // 결과 반환
+    } catch (e) {
+      throw FormatException("Invalid JSON format: ${response.body}");
     }
+  } else {
+    throw Exception("Failed to fetch recommended cosmetics: ${response.body}");
   }
+}
+
 
   // 데이터 가져와서 UI 업데이트
   void fetchAndUpdateRoutine() async {
@@ -117,28 +122,41 @@ class _RoutinePageState extends State<RoutinePage> {
     }
   }
 
-  // 추천 화장품 요청 및 업데이트
+  // 추천 화장품 요청 및 업데이트 
+  /*(수정: 여기 응답이 스킨/토너로 들어옴)
+  - /를 기준으로 분리해서 하나씩 요청할꺼임
+  */
   void fetchAndUpdateCosmetics(int index, String cosmeticType) async {
-    try {
-      final cosmetics = await fetchRecommendedCosmetics(
-        skinType: "dry", // 임시 피부 타입
-        cosmeticType: cosmeticType,
-        budget: widget.moneyWon,
-      );
+  try {
+    // `/`를 기준으로 화장품 유형 분리 후 첫 번째 항목만 사용
+    final String trimmedCosmeticType = cosmeticType.contains('/') 
+        ? cosmeticType.split('/').first.trim() 
+        : cosmeticType.trim();
 
-      setState(() {
-        recommendedCosmetics[index] = cosmetics;
-      });
-    } catch (e) {
-      print("Error fetching cosmetics for step $index: $e");
-      print("Query parameters: ${{
-        "user_skin_type": "dry",
-        "cosmetic_types": cosmeticType,
-        "budget": widget.moneyWon.toString(),
-      }}");
-    }
+    final cosmetics = await fetchRecommendedCosmetics(
+      skinType: "건성", // 피부 타입
+      cosmeticType: trimmedCosmeticType, // 첫 번째 화장품 타입만 전송
+      budget: widget.moneyWon,
+    );
+
+    setState(() {
+      recommendedCosmetics[index] = cosmetics;
+    });
+  } catch (e) {
+    print("Error fetching cosmetics for step $index: $e");
+    print("Query parameters: ${{
+      "user_skin_type": "건성",
+      "cosmetic_types": cosmeticType, // 원본 값
+      "budget": widget.moneyWon.toString(),
+    }}");
   }
+}
 
+
+
+
+
+// ************************************************ UI *******************************************
   @override
   void initState() {
     super.initState();
@@ -235,38 +253,62 @@ class _RoutinePageState extends State<RoutinePage> {
                                       style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
                                     )
                                   else
-                                    ...cosmetics.map((cosmetic) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 8.0),
-                                        child: Row(
-                                          children: [
-                                            Image.network(
-                                              cosmetic['img_url'] ?? '',
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.cover,
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    cosmetic['name'] ?? '제품 이름 없음',
-                                                    style: const TextStyle(
-                                                        fontWeight: FontWeight.bold, fontSize: 14),
-                                                  ),
-                                                  Text(
-                                                    cosmetic['brand'] ?? '브랜드 없음',
-                                                    style: const TextStyle(fontSize: 12),
-                                                  ),
-                                                ],
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text('추천 화장품:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 10),
+                                  
+                                        // 첫 번째 추천 화장품
+                                        if (cosmetics.isNotEmpty) ...[
+                                          Row(
+                                            children: [
+                                             Image.network(
+                                                cosmetics[0]['img_url'] ?? '', // 화장품 이미지 URL
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                cosmetics[0]['name'] ?? '제품 이름 없음', // 제품 이름
+                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                        ],
+
+                                        // 두 번째 추천 화장품
+                                        if (cosmetics.length > 1) ...[
+                                          Row(
+                                            children: [
+                                              Image.network(
+                                                cosmetics[1]['img_url'] ?? '',
+                                                width: 50,
+                                                height: 50,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                cosmetics[1]['name'] ?? '제품 이름 없음',
+                                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                        ],
+                                        // 데이터 부족 시 안내 문구
+                                        if (cosmetics.isEmpty)
+                                          const Text(
+                                            '추천할 제품이 없습니다.',
+                                            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                                          ),
+                                      ],
+                                    )
+                                  ,
+
+                             
                                   const SizedBox(height: 10),
                                   const Text('추천 시간대:', style: TextStyle(fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 10),
