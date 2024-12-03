@@ -250,7 +250,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                           child: Row(
                                             children: [
                                               Image.network(
-                                                cosmetic['img_url'] ?? 'https://dummyimage.com/150', //사진 없으면 임시 사진 
+                                                cosmetic['img_url'] ?? '', //사진 없으면 임시 사진 
                                                 width: 50,
                                                 height: 50,
                                                 fit: BoxFit.cover,
