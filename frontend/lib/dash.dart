@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
 import 'package:frontend/buttonLayout/text.dart';
 import 'routines/routine_start.dart';
 
 
 class DashPage extends StatefulWidget {
-  const DashPage({super.key});
+
+  final UserData userData; // UserData 필드 추가
+  const DashPage(this.userData, {super.key});
 
   @override
   State<DashPage> createState() => _DashPageState();
@@ -59,14 +62,14 @@ class _DashPageState extends State<DashPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ContentText(
-              text: "DSPT 유지민님의\n피부 데이터",
+             ContentText(
+              text: "DSPT ${widget.userData.name}님의\n피부 데이터",
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
             const SizedBox(height: 10),
-            const ContentText(
-              text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
+             ContentText(
+              text: "${widget.userData.name}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),

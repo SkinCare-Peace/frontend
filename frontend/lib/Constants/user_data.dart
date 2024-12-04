@@ -21,24 +21,45 @@ class UserData {
     required this.hashedPassword,
   });
 
-  factory UserData.fromJson(Map<String, dynamic> json) {
-    return UserData(
-      email: json['email'],
-      name: json['name'],
-      id: json['_id'],
-      skinType: json['skin_type'],
-      skinConcerns: List<String>.from(json['skin_concerns']),
-      avoidIngredients: Map<String, Map<String, int>>.from(
-        json['avoid_ingredients'].map((key, value) {
-          return MapEntry(
-            key,
-            Map<String, int>.from(value),
-          );
-        }),
-      ),
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      hashedPassword: json['hashed_password'],
-    );
-  }
+factory UserData.fromJson(Map<String, dynamic> json) {
+  return UserData(
+    email: json['email'] ?? '',
+    name: json['name'] ?? '',
+    id: json['_id'] ?? '',
+    skinType: json['skin_type'] ?? '',
+    skinConcerns: json['skin_concerns'] is Iterable
+        ? List<String>.from(json['skin_concerns'])
+        : [],
+    avoidIngredients: json['avoid_ingredients'] is Map
+        ? Map<String, Map<String, int>>.from(
+            json['avoid_ingredients'].map((key, value) {
+              return MapEntry(
+                key,
+                value is Map
+                    ? Map<String, int>.from(value)
+                    : {}, // 비어 있는 Map 기본값
+              );
+            }),
+          )
+        : {},
+    createdAt: json['created_at'] != null
+        ? DateTime.parse(json['created_at'])
+        : DateTime.now(),
+    updatedAt: json['updated_at'] != null
+        ? DateTime.parse(json['updated_at'])
+        : DateTime.now(),
+    hashedPassword: json['hashed_password'] ?? '',
+  );
+}
+
+}
+
+bool isUserDataEmpty(UserData userData) {
+  return userData.email.isEmpty &&
+      userData.name.isEmpty &&
+      userData.id.isEmpty &&
+      userData.skinType.isEmpty &&
+      userData.skinConcerns.isEmpty &&
+      userData.avoidIngredients.isEmpty &&
+      userData.hashedPassword.isEmpty;
 }
