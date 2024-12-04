@@ -1,4 +1,5 @@
 
+import 'package:frontend/routines/routine_sucessfuly_create.dart';
 import 'package:url_launcher/url_launcher.dart'; // url 열기용
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -327,7 +328,12 @@ class _RoutinePageState extends State<RoutinePage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // 루틴 결정시 동작 추가
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RoutineSuccessfullyCreated(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 58),
@@ -390,6 +396,8 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: 20),
+              Text("${cosmetic['reason'] ?? '추천 이유 정보 없음'}"),
               if (cosmetic['image_url'] != null)
                 Image.network(
                   cosmetic['image_url'],
@@ -416,7 +424,9 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
                 onPressed: () async {
                   final url = cosmetic['link'];
                   if (url != null && await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                    await launchUrl(
+                      Uri.parse(url), 
+                      mode: LaunchMode.externalApplication);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("유효하지 않은 링크입니다")),
@@ -435,10 +445,10 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 20),
-              Text("총 점수: ${cosmetic['total_score'] ?? '정보 없음'}"),
-              Text("피부 타입 점수: ${cosmetic['skin_type_score'] ?? '정보 없음'}"),
-              Text("관심사 점수: ${cosmetic['concern_score'] ?? '정보 없음'}"),
+              //const SizedBox(height: 20),
+              //Text("총 점수: ${cosmetic['total_score'] ?? '정보 없음'}"),
+              //Text("피부 타입 점수: ${cosmetic['skin_type_score'] ?? '정보 없음'}"),
+              //Text("관심사 점수: ${cosmetic['concern_score'] ?? '정보 없음'}"),
             ],
           ),
         ),

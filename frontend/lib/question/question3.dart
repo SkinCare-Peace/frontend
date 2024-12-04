@@ -16,7 +16,7 @@ class _QuestionPage3State extends State<QuestionPage3> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> options = ['10,000', '30,000', '50,000', '100,000'];
+    final List<String> options = ['10,000', '30,000', '50,000', '100,000','200,000'];
 
     return Scaffold(
       body: Center(
