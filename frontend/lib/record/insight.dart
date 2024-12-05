@@ -19,25 +19,25 @@ class _InsightState extends State<Insight> {
   // 데이터 정의
   final Map<DateTime, Map<String, int>> skinData = {
     DateTime(2024, 8, 20): {
-      "수분": 21,
-      "모공": 27,
-      "여드름": 74,
-      "주름": 57,
-      "색소침착": 32,
+      "수분": 90,
+      "모공": 60,
+      "여드름": 75,
+      "주름": 96,
+      "색소침착": 81,
     },
     DateTime(2024, 8, 21): {
-      "수분": 25,
-      "모공": 30,
-      "여드름": 70,
-      "주름": 55,
-      "색소침착": 28,
+      "수분": 45,
+      "모공": 87,
+      "여드름": 78,
+      "주름": 90,
+      "색소침착": 46,
     },
     DateTime(2024, 8, 22): {
-      "수분": 18,
-      "모공": 25,
-      "여드름": 20,
-      "주름": 60,
-      "색소침착": 40,
+      "수분": 90,
+      "모공": 78,
+      "여드름": 66,
+      "주름": 89,
+      "색소침착": 47,
     },
   };
 
@@ -57,7 +57,7 @@ class _InsightState extends State<Insight> {
           children: [
             const TitleText(text: "피부 데이터 통계"),
             const ContentText_bk(text: "당신의 피부는 어떻게 변화하고 있을까요?"),
-             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
 
             // 회색 컨테이너
             Expanded(
@@ -70,7 +70,8 @@ class _InsightState extends State<Insight> {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(
+                      top: 35, bottom: 20, left: 10, right: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -81,6 +82,10 @@ class _InsightState extends State<Insight> {
                           children: items.asMap().entries.map((entry) {
                             int index = entry.key;
                             String item = entry.value;
+
+                            // 가장 최근 날짜의 점수
+                            final int recentScore =
+                                skinData[dates.last]?[item] ?? 0;
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
@@ -93,7 +98,9 @@ class _InsightState extends State<Insight> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: selectedIndex == index
-                                        ? Colors.blueAccent
+                                        ? (recentScore >= 80
+                                            ? AppColors.positiveScore // 80 이상
+                                            : AppColors.negativeScore) // 80 미만
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: Colors.grey),
@@ -103,10 +110,8 @@ class _InsightState extends State<Insight> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        skinData[dates.last]![item].toString(),
+                                        item,
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
                                           color: selectedIndex == index
                                               ? Colors.white
                                               : Colors.black,
@@ -114,8 +119,10 @@ class _InsightState extends State<Insight> {
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
-                                        item,
+                                        skinData[dates.last]![item].toString(),
                                         style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
                                           color: selectedIndex == index
                                               ? Colors.white
                                               : Colors.black,
