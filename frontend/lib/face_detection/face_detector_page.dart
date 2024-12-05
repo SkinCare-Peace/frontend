@@ -48,8 +48,8 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
               final boundingBox = regions[areaName]!;
               print('Sending $areaName with bbox: ${boundingBox.toString()}');
 
-              // 서버로 전송
-              await sendFaceDataToServer(areaName, boundingBox, imageFile);
+              // ignore: use_build_context_synchronously
+              await sendFaceDataToServer(areaName, boundingBox, imageFile , context);
             }
           }
         } else {

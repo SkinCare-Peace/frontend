@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ee6614ce-2a79-474c-bc4c-ef3e0acb5ae0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/camera_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/camera_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/face_detector_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/face_detector_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/toServer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/toServer.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
