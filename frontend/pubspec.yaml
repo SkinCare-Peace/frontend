@@ -39,6 +39,7 @@ flutter:
     - assets/BBIpimple.png
     - assets/BBIsad.png
     - assets/BBIblush.png
+    - assets/BBIcongs.png
 
     # 이모티콘
     - assets/emoji/apple.png
