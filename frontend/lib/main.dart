@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       /** home 변경할때, 주석처리로! **/
-      // home: LoadingPage0(), //로딩 페이지 0 (얼굴인식 ) 이거 없애도 될 것 같은데 이제 아마?
       // home : LoadingPage1(),
       // home: const DashPage(), // 피부 측정 기록과 루틴 기록이 하나라도 있을 때의 메인화면
        home: const LoginPage(), // 로그인 페이지
