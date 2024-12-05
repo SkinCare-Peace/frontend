@@ -14,7 +14,6 @@ class RoutineSuccessfullyCreated extends StatelessWidget {
         context,
         MaterialPageRoute(builder: (context) => DashPage(userData)),
       );
-
     });
 
     return Scaffold(
