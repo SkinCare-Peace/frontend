@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/dash.dart';
 
 class RoutineSuccessfullyCreated extends StatelessWidget {
@@ -10,7 +11,7 @@ class RoutineSuccessfullyCreated extends StatelessWidget {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => DashPage()),
+        MaterialPageRoute(builder: (context) => DashPage(UserData as UserData)),
       );
     });
 
