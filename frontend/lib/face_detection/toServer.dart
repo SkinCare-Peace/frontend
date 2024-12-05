@@ -1,3 +1,5 @@
+// 사진 서버 전송 코드
+
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -36,8 +38,6 @@ Future<void> sendFaceDataToServer( String areaName, Rect boundingBox, File image
           builder: (context) => const BSTI(),
         ),
       );
-      
-
 
     } else {
       print('####### 전송 실패 : ${response.statusCode}');

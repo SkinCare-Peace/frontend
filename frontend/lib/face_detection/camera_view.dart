@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
+
 class CameraView extends StatefulWidget {
   const CameraView({super.key});
 

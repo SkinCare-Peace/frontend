@@ -20,8 +20,8 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
     final inputImage = InputImage.fromFile(imageFile);
     final faceDetector = FaceDetector(
       options: FaceDetectorOptions(
-        enableContours: false, 
-        enableLandmarks: false,
+        enableContours: true, 
+        enableLandmarks: true,
         performanceMode: FaceDetectorMode.fast, // 빠른 모드
       ),
     );
@@ -29,39 +29,40 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
     final faces = await faceDetector.processImage(inputImage);
     return faces;
   }
+  
 
   // 사진 촬영 및 서버 전송
-  Future<void> _captureAndSend() async {
-    if (_cameraViewKey.currentState != null) {
-      final filePath = await _cameraViewKey.currentState!.takePicture();
-      if (filePath != null) {
-        final imageFile = File(filePath);
+Future<void> _captureAndSend() async {
+  if (_cameraViewKey.currentState != null) {
+    final filePath = await _cameraViewKey.currentState!.takePicture();
+    if (filePath != null) {
+      final imageFile = File(filePath);
 
-        // 얼굴 탐지
-        final faces = await detectFaces(imageFile);
+      // 얼굴 탐지
+      final faces = await detectFaces(imageFile);
 
-        if (faces.isNotEmpty) {
-          for (var i = 0; i < faces.length; i++) {
-            final regions = extractFaceRegions(faces[i]);
+      if (faces.isNotEmpty) {
+        for (var i = 0; i < faces.length; i++) {
+          final regions = extractFaceRegionsWithLandmarks(faces[i]);
 
-            for (var areaName in regions.keys) {
-              final boundingBox = regions[areaName]!;
-              print('Sending $areaName with bbox: ${boundingBox.toString()}');
+          for (var areaName in regions.keys) {
+            final boundingBox = regions[areaName]!;
+            print('Sending $areaName with bbox: ${boundingBox.toString()}');
 
-              // ignore: use_build_context_synchronously
-              await sendFaceDataToServer(areaName, boundingBox, imageFile , context);
-            }
+            // ignore: use_build_context_synchronously
+            await sendFaceDataToServer(areaName, boundingBox, imageFile, context);
           }
-        } else {
-          print('No faces detected.');
         }
       } else {
-        print('Failed to take picture.');
+        print('No faces detected.');
       }
     } else {
-      print('Camera is not initialized.');
+      print('Failed to take picture.');
     }
+  } else {
+    print('Camera is not initialized.');
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
             child: Center(
               child: ElevatedButton(
                 onPressed: _captureAndSend,
-                child: const Text('찰칵'),
+                child: const Text('찰칵', style: TextStyle(fontWeight: FontWeight.bold),),
               ),
             ),
           ),

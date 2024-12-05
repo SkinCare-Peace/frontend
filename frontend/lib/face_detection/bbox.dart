@@ -1,84 +1,78 @@
-// 바운딩 박스 값 따기
 import 'dart:ui';
+
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
-Map<String, Rect> extractFaceRegions(Face face) {
+Map<String, Rect> extractFaceRegionsWithLandmarks(Face face) {
+  final landmarks = face.landmarks;
+
+  // 필요한 랜드마크 가져오기
+  final leftEye = landmarks[FaceLandmarkType.leftEye]?.position;
+  final rightEye = landmarks[FaceLandmarkType.rightEye]?.position;
+  final nose = landmarks[FaceLandmarkType.noseBase]?.position;
+  final leftMouth = landmarks[FaceLandmarkType.leftMouth]?.position;
+  final rightMouth = landmarks[FaceLandmarkType.rightMouth]?.position;
+
+  if (leftEye == null || rightEye == null || nose == null || leftMouth == null || rightMouth == null) {
+    throw Exception('얼굴이 인식되지 않았습니다. 얼굴이 보이도록 사진을 찍어주세요.');
+  }
+
+  // 얼굴 전체 바운딩 박스
   final boundingBox = face.boundingBox;
-/*
-area_names = {
-        "0": "full_face",
-        "1": "forehead",
-        "2": "glabellus",
-        "3": "l_perocular",
-        "4": "r_perocular",
-        "5": "l_cheek",
-        "6": "r_cheek",
-        "7": "lip",
-        "8": "chin"
-*/
+
   return {
-    //얼굴 전체
-    'full_face':Rect.fromLTRB( 
-      boundingBox.left, 
-      boundingBox.top, 
-      boundingBox.right, 
-      boundingBox.left
-      ),
-    //이마
+    'full_face': Rect.fromLTRB(
+      boundingBox.left.toDouble(),
+      boundingBox.top.toDouble(),
+      boundingBox.right.toDouble(),
+      boundingBox.bottom.toDouble(),
+    ),
     'forehead': Rect.fromLTRB(
-      boundingBox.left,
-      boundingBox.top,
-      boundingBox.right,
-      boundingBox.top + boundingBox.height * 0.2,
+      boundingBox.left.toDouble(),
+      boundingBox.top.toDouble(),
+      boundingBox.right.toDouble(),
+      nose.y.toDouble(),
     ),
-    //미간
     'glabellus': Rect.fromLTRB(
-      boundingBox.left + boundingBox.width * 0.3,
-      boundingBox.top + boundingBox.height * 0.2,
-      boundingBox.right - boundingBox.width * 0.3,
-      boundingBox.top + boundingBox.height * 0.35,
+      leftEye.x.toDouble(),
+      leftEye.y.toDouble(),
+      rightEye.x.toDouble(),
+      nose.y.toDouble(),
     ),
-    // 왼쪽 눈가
     'l_perocular': Rect.fromLTRB(
-      boundingBox.left,
-      boundingBox.top + boundingBox.height * 0.25,
-      boundingBox.left + boundingBox.width * 0.4,
-      boundingBox.top + boundingBox.height * 0.4,
+      boundingBox.left.toDouble(),
+      boundingBox.top.toDouble(),
+      leftEye.x.toDouble(),
+      leftEye.y.toDouble(),
     ),
-    //오른쪽 눈가
     'r_perocular': Rect.fromLTRB(
-      boundingBox.right - boundingBox.width * 0.4,
-      boundingBox.top + boundingBox.height * 0.25,
-      boundingBox.right,
-      boundingBox.top + boundingBox.height * 0.4,
+      rightEye.x.toDouble(),
+      boundingBox.top.toDouble(),
+      boundingBox.right.toDouble(),
+      rightEye.y.toDouble(),
     ),
-    //왼쪽 볼
     'l_cheek': Rect.fromLTRB(
-      boundingBox.left,
-      boundingBox.top + boundingBox.height * 0.4,
-      boundingBox.left + boundingBox.width * 0.4,
-      boundingBox.bottom - boundingBox.height * 0.2,
+      boundingBox.left.toDouble(),
+      leftEye.y.toDouble(),
+      nose.x.toDouble(),
+      leftMouth.y.toDouble(),
     ),
-    //오른쪽 볼
     'r_cheek': Rect.fromLTRB(
-      boundingBox.right - boundingBox.width * 0.4,
-      boundingBox.top + boundingBox.height * 0.4,
-      boundingBox.right,
-      boundingBox.bottom - boundingBox.height * 0.2,
+      nose.x.toDouble(),
+      rightEye.y.toDouble(),
+      boundingBox.right.toDouble(),
+      rightMouth.y.toDouble(),
     ),
-    //입술
     'lip': Rect.fromLTRB(
-      boundingBox.left + boundingBox.width * 0.3,
-      boundingBox.bottom - boundingBox.height * 0.25,
-      boundingBox.right - boundingBox.width * 0.3,
-      boundingBox.bottom - boundingBox.height * 0.15,
+      leftMouth.x.toDouble(),
+      leftMouth.y.toDouble(),
+      rightMouth.x.toDouble(),
+      boundingBox.bottom.toDouble(),
     ),
-    //턱
     'chin': Rect.fromLTRB(
-      boundingBox.left + boundingBox.width * 0.2,
-      boundingBox.bottom - boundingBox.height * 0.2,
-      boundingBox.right - boundingBox.width * 0.2,
-      boundingBox.bottom,
+      boundingBox.left.toDouble(),
+      rightMouth.y.toDouble(),
+      boundingBox.right.toDouble(),
+      boundingBox.bottom.toDouble(),
     ),
   };
 }
