@@ -7,7 +7,6 @@ import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/loading/loading_page1.dart';
 import 'package:frontend/loading/loading_page0.dart';
 import 'package:frontend/logIn/log_in.dart';
-import 'package:frontend/question/bsti.dart';
 import 'package:frontend/routines/routine_create.dart';
 
 List<CameraDescription> cameras = [];
