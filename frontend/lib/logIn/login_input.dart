@@ -76,7 +76,7 @@ class LoginInput extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        LoadingPage0(userData.name),
+                                        LoadingPage0(userData),
                                   ));
                             } else {
                               if (userData.skinType.isNotEmpty) {

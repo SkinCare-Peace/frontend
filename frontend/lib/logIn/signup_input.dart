@@ -83,7 +83,7 @@ class SignupInput extends StatelessWidget {
                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoadingPage0(userData.name),
+                                  builder: (context) => LoadingPage0(userData),
                                 ));
                           }
                         },
