@@ -3,7 +3,8 @@ import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/dash.dart';
 
 class RoutineSuccessfullyCreated extends StatelessWidget {
-  const RoutineSuccessfullyCreated({super.key});
+  final UserData userData; // UserData 필드 추가
+  const RoutineSuccessfullyCreated(this.userData, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class RoutineSuccessfullyCreated extends StatelessWidget {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => DashPage(UserData as UserData)),
+        MaterialPageRoute(builder: (context) => DashPage(userData)),
       );
     });
 

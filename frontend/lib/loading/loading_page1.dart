@@ -1,9 +1,11 @@
 import 'dart:async'; 
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/question/question1.dart'; 
 
 class LoadingPage1 extends StatefulWidget {
-  const LoadingPage1({Key? key}) : super(key: key);
+   final UserData userData; // UserData 필드 추가
+  const LoadingPage1(this.userData, {super.key});
 
   @override
   _LoadingPage1State createState() => _LoadingPage1State();
@@ -19,7 +21,7 @@ class _LoadingPage1State extends State<LoadingPage1> {
     Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => QuestionPage1()),
+        MaterialPageRoute(builder: (context) => QuestionPage1(widget.userData)),
       );
     });
   }

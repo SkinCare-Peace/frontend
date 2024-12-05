@@ -1,11 +1,13 @@
 // 추가한 제품 보는 곳
 
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 
 class AddedProduct extends StatefulWidget {
+  final UserData userData; // UserData 필드 추가
   final List<Map<String, dynamic>> products; // 보유 제품 리스트
 
-  const AddedProduct({super.key, required this.products});
+  const AddedProduct(this.userData, {super.key, required this.products});
 
   @override
   State<AddedProduct> createState() => _AddedProductState();

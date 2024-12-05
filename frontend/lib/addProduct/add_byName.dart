@@ -1,13 +1,15 @@
 // 제품명으로 검색하기 로직
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http;
 //토리든
 // 3.34.5.57
 class SearchByName extends StatefulWidget {
+  final UserData userData;
   final String searchQuery;
 
-  const SearchByName({Key? key, required this.searchQuery}) : super(key: key);
+  const SearchByName(this.userData, {super.key, required this.searchQuery});
 
   @override
   State<SearchByName> createState() => _SearchByNameState();

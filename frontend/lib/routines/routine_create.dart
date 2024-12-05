@@ -1,4 +1,5 @@
 
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/routines/routine_sucessfuly_create.dart';
 import 'package:url_launcher/url_launcher.dart'; // url 열기용
 import 'package:flutter/material.dart';
@@ -8,8 +9,10 @@ import 'package:http/http.dart' as http;
 class RoutinePage extends StatefulWidget {
   final int timeMinutes; // 시간
   final int moneyWon; // 돈
+  final UserData userData;
 
-  const RoutinePage({
+  const RoutinePage(this.userData,
+  {
     super.key,
     required this.timeMinutes,
     required this.moneyWon,
@@ -337,7 +340,7 @@ Future<List<dynamic>> fetchRoutine({
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RoutineSuccessfullyCreated(),
+                              builder: (context) => RoutineSuccessfullyCreated(widget.userData),
                             ),
                           );
                         },
@@ -402,7 +405,7 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text("${cosmetic['reason'] ?? '추천 이유 정보 없음'}"),
               if (cosmetic['image_url'] != null)
                 Image.network(
