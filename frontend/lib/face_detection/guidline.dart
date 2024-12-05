@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/addProduct/add_main.dart';
+import 'package:frontend/addProduct/added_product.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
 
 class PicGuideline extends StatelessWidget {
@@ -84,7 +86,7 @@ class PicGuidelineHome extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const FaceDetectorPage()),
+                      MaterialPageRoute(builder: (context) => const AddSkinCareMain()),
                     );
                   },
                   style: ElevatedButton.styleFrom(

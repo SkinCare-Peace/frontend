@@ -36,27 +36,33 @@ class _RoutinePageState extends State<RoutinePage> {
     return totalTime;
   }
 
-  // 루틴 가져오기
-  Future<List<dynamic>> fetchRoutine({
-    required int timeMinutes,
-    required int moneyWon,
-  }) async {
-    print("Fetching routine with time: $timeMinutes, money: $moneyWon");
-    final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
-      "time_minutes": timeMinutes.toString(),
-      "money_won": moneyWon.toString(),
-    });
+// 루틴 가져오기
+Future<List<dynamic>> fetchRoutine({
+  required int timeMinutes,
+  required int moneyWon,
+}) async {
+  print("Fetching routine with time: $timeMinutes, money: $moneyWon");
 
-    final response = await http.get(uri);
+  final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
+    "time_minutes": timeMinutes.toString(),
+    "money_won": moneyWon.toString(),
+  });
 
-    if (response.statusCode == 200) {
-      final decodedResponse = utf8.decode(response.bodyBytes);
-      final data = json.decode(decodedResponse);
-      return data['routine'];
-    } else {
-      throw Exception("Failed to fetch routine: ${response.body}");
-    }
+  final response = await http.post(
+    uri,
+    headers: {"Content-Type": "application/json"},
+  );
+
+  if (response.statusCode == 200) {
+    final decodedResponse = utf8.decode(response.bodyBytes);
+    final data = json.decode(decodedResponse);
+    return data['routine'];
+  } else {
+    throw Exception("Failed to fetch routine: ${response.body}");
   }
+}
+
+
 
   // 추천 화장품 가져오기
   Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
