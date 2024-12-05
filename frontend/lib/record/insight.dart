@@ -39,7 +39,15 @@ class _InsightState extends State<Insight> {
       "주름": 89,
       "색소침착": 47,
     },
+    DateTime(2024, 8, 25): {
+      "수분": 95,
+      "모공": 781,
+      "여드름": 75,
+      "주름": 89,
+      "색소침착": 43,
+    },
   };
+  final int pivot = 80;
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +107,13 @@ class _InsightState extends State<Insight> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: recentScore >= 80
-                                              ? AppColors.positiveScore // 80 이상
-                                              : AppColors.negativeScore, width: selectedIndex == index ? 4.5:1),
+                                    border: Border.all(
+                                        color: recentScore >= pivot
+                                            ? AppColors
+                                                .positiveScore // pivot 이상
+                                            : AppColors.negativeScore,
+                                        width:
+                                            selectedIndex == index ? 4.5 : 1),
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
@@ -129,14 +141,17 @@ class _InsightState extends State<Insight> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          color: recentScore >= 80
-                                              ? AppColors.positiveScore // 80 이상
+                                          color: recentScore >= pivot
+                                              ? AppColors
+                                                  .positiveScore // pivot 이상
                                               : AppColors.negativeScore,
-                                        ), // 80 미만
+                                        ), // pivot 미만
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Text(
-                                            recentScore >= 80 ? "좋음" : "관심 필요",
+                                            recentScore >= pivot
+                                                ? "좋음"
+                                                : "관심 필요",
                                             style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold),
@@ -154,56 +169,97 @@ class _InsightState extends State<Insight> {
                       const SizedBox(height: 20),
                       // 그래프 영역
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: LineChart(
-                            LineChartData(
-                              gridData: const FlGridData(show: true),
-                              titlesData: FlTitlesData(
-                                bottomTitles: AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    interval: 1,
-                                    getTitlesWidget: (value, meta) {
-                                      int index = value.toInt();
-                                      if (index >= dates.length) {
-                                        return Container(); // 범위를 벗어나면 빈 위젯
-                                      }
-                                      // 날짜를 x축에 표시
-                                      return Text(
-                                        "${dates[index].month}.${dates[index].day}",
-                                        style: const TextStyle(fontSize: 12),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                leftTitles: const AxisTitles(
-                                  sideTitles: SideTitles(
-                                    showTitles: true,
-                                    interval: 10, // y축 값 간격 설정
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
+                              child: SizedBox(
+                                // 그래프 너비 동적 설정
+                                width: dates.length > 6
+                                    ? MediaQuery.of(context).size.width /
+                                        6 *
+                                        dates.length
+                                    : MediaQuery.of(context)
+                                        .size
+                                        .width, // 그래프 너비 동적 설정
+                                child: LineChart(
+                                  LineChartData(
+                                    gridData: const FlGridData(show: true),
+                                    titlesData: FlTitlesData(
+                                      bottomTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          interval: 1,
+                                          getTitlesWidget: (value, meta) {
+                                            int index = value.toInt();
+                                            if (index >= dates.length) {
+                                              return Container(); // 범위를 벗어나면 빈 위젯
+                                            }
+                                            // 날짜를 x축에 표시
+                                            return Text(
+                                              "${dates[index].month}.${dates[index].day}",
+                                              style:
+                                                  const TextStyle(fontSize: 12),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      leftTitles: const AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          interval: 10, // y축 값 간격 설정
+                                        ),
+                                      ),
+                                    ),
+                                    borderData:
+                                        FlBorderData(show: false), // 테두리 제거
+                                    lineBarsData: [
+                                      LineChartBarData(
+                                        spots: List.generate(
+                                          dates.length,
+                                          (index) {
+                                            final value = skinData[dates[index]]
+                                                    ?[selectedItem] ??
+                                                0;
+                                            return FlSpot(index.toDouble(),
+                                                value.toDouble());
+                                          },
+                                        ),
+                                        isCurved: false, // 직선 그래프
+                                        dotData: const FlDotData(
+                                          show: true,
+                                          // getDotPainter:
+                                          //     (spot, percent, barData, index) {
+                                          //   return FlDotCirclePainter(
+                                          //     radius: 5, // 점 크기 설정
+                                          //     color: recentScore >= pivot
+                                          //         ? AppColors
+                                          //             .positiveScore // pivot 이상
+                                          //         : AppColors
+                                          //             .negativeScore, // 점 색상 설정
+                                          //     strokeWidth: 0, // 점 테두리 두께
+                                          //     strokeColor: Colors
+                                          //         .transparent, // 점 테두리 색상
+                                          //   );
+                                          // },
+                                        ), // 점 색상 설정
+                                        belowBarData: BarAreaData(show: false),
+                                        color: const Color.fromARGB(
+                                            255, 162, 162, 162), // 그래프 선 색상
+                                        barWidth: 3, // 선 두께
+                                      ),
+                                    ],
+                                    minX: 0, // x축 최소값
+                                    maxX:
+                                        dates.length - 1.toDouble(), // 최대 6개 표시
                                   ),
                                 ),
                               ),
-                              borderData: FlBorderData(show: true),
-                              lineBarsData: [
-                                LineChartBarData(
-                                  spots: List.generate(
-                                    dates.length,
-                                    (index) {
-                                      final value = skinData[dates[index]]
-                                              ?[selectedItem] ??
-                                          0; // null일 경우 0으로 대체
-                                      return FlSpot(
-                                          index.toDouble(), value.toDouble());
-                                    },
-                                  ),
-                                  isCurved: false, // 직선 그래프
-                                  dotData: const FlDotData(show: true),
-                                  belowBarData: BarAreaData(show: false),
-                                  color: Colors.blueAccent, // 그래프 선 색상
-                                  barWidth: 3, // 선 두께
-                                ),
-                              ],
                             ),
                           ),
                         ),
