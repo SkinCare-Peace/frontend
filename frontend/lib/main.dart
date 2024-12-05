@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/addProduct/add_main.dart';
-import 'package:frontend/dash.dart';
+import 'package:frontend/record/dash.dart';
 import 'package:frontend/face_detection/guidline.dart';
 import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/loading/loading_page1.dart';

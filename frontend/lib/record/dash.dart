@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/addProduct/added_product.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
 import 'package:frontend/buttonLayout/text.dart';
 import 'package:frontend/loading/loading_page0.dart';
-import 'routines/routine_start.dart';
+import 'package:frontend/record/insight.dart';
+import '../routines/routine_start.dart';
 
 class DashPage extends StatefulWidget {
   final UserData userData; // UserData 필드 추가
@@ -109,16 +111,11 @@ class _DashPageState extends State<DashPage> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      // 통합 결과
-                    },
-                    child: const ContentText(
-                      text: "통합 결과",
-                      fontSize: 14,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // 결과 통계
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Insight(widget.userData),
+                          ));
                     },
                     child: const ContentText(
                       text: "결과 통계",
@@ -127,12 +124,14 @@ class _DashPageState extends State<DashPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // 보유 제품 관리 AddedProduct
-                      //  Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => AddedProduct(),
-                      //     ));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddedProduct(
+                              widget.userData,
+                              products: const [],
+                            ),
+                          ));
                     },
                     child: const ContentText(
                       text: "보유 제품 관리",
