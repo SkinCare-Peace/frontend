@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
-import 'package:frontend/buttonLayout/mainButton.dart';
-import 'package:frontend/buttonLayout/text.dart';
+import 'package:frontend/layout/mainButton.dart';
+import 'package:frontend/layout/text.dart';
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 
 class BSTI extends StatefulWidget {

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/addProduct/added_product.dart';
-import 'package:frontend/buttonLayout/mainButton.dart';
-import 'package:frontend/buttonLayout/text.dart';
+import 'package:frontend/layout/mainButton.dart';
+import 'package:frontend/layout/text.dart';
 import 'package:frontend/loading/loading_page0.dart';
 import 'package:frontend/record/insight.dart';
 import '../routines/routine_start.dart';
@@ -61,18 +62,33 @@ class _DashPageState extends State<DashPage> {
         padding:
             const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ContentText(
-              text: "DSPT ${widget.userData.name}님의\n피부 데이터",
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-            const SizedBox(height: 10),
-            ContentText(
-              text: "${widget.userData.name}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ContentTextLeft(
+                      text: "DSPT ${widget.userData.name}님의\n피부 데이터",
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    const SizedBox(height: 10),
+                    ContentTextLeft(
+                      text: "${widget.userData.name}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ],
+                ),
+                //Image.asset(BBISTI(widget.userData.bsti)),
+                Image.asset(
+                  BBISTI.bstiBBI("OSPT"),
+                  width: MediaQuery.of(context).size.width*0.3,
+                  fit: BoxFit.fitWidth,
+                ),
+              ],
             ),
             const SizedBox(height: 20),
 
@@ -107,7 +123,7 @@ class _DashPageState extends State<DashPage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
                     onPressed: () {
@@ -122,6 +138,7 @@ class _DashPageState extends State<DashPage> {
                       fontSize: 14,
                     ),
                   ),
+                  const Text("|", style: TextStyle(fontSize: 25),),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
