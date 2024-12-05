@@ -1,7 +1,10 @@
 import 'dart:convert'; // JSON 변환을 위해 필요
+import 'package:frontend/Constants/null_parsing.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http; // HTTP 요청을 위해 필요
 
-Future<void> userRegister(String name, String email, String password) async {
+Future<UserData?> userRegister(
+    String name, String email, String password) async {
   final url = Uri.parse('http://3.34.5.57/users/'); // 백엔드의 엔드포인트
   final headers = {'Content-Type': 'application/json'}; // 요청 헤더 설정
   final body = jsonEncode({
@@ -20,14 +23,17 @@ Future<void> userRegister(String name, String email, String password) async {
     if (response.statusCode == 201) {
       // 성공 (201 Created)
       final responseData = jsonDecode(response.body);
+      final parsedData = replaceNullWithEmptyString(responseData);
       print("User registered successfully!");
       print("Response Data: $responseData");
+      return UserData.fromJson(parsedData);
     } else if (response.statusCode == 404) {
       // 404 Not Found
       print("Error: Endpoint not found.");
     } else if (response.statusCode == 422) {
       // 422 Validation Error
       print("Error: Validation failed. Please check the input data.");
+      return null;
     } else {
       // 기타 에러
       print("Error: Unexpected status code ${response.statusCode}");
@@ -35,5 +41,7 @@ Future<void> userRegister(String name, String email, String password) async {
   } catch (e) {
     // 예외 처리
     print("Error: $e");
+    return null;
   }
+  return null;
 }

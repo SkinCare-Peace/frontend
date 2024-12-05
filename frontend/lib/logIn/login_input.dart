@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/dash.dart';
 import 'package:frontend/loading/loading_page0.dart';
 import 'package:frontend/logIn/login_post.dart';
+import 'package:frontend/Constants/user_data.dart';
 
 class LoginInput extends StatelessWidget {
   LoginInput({super.key});
@@ -43,8 +45,8 @@ class LoginInput extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                       TextField(
-                        controller: _emailController, 
+                      TextField(
+                        controller: _emailController,
                         decoration: const InputDecoration(
                           labelText: '이메일',
                         ),
@@ -67,12 +69,25 @@ class LoginInput extends StatelessWidget {
                         onPressed: () async {
                           final userData =
                               await fetchUserData(_emailController.text);
-                          if (userData != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoadingPage0(),
-                                ));
+                          if (userData != null && !isUserDataEmpty(userData)) {
+                            print("로그인 성공! $userData");
+                            if (userData.skinType.isEmpty) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        LoadingPage0(userData.name),
+                                  ));
+                            } else {
+                              if (userData.skinType.isNotEmpty) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          DashPage(userData),
+                                    ));
+                              }
+                            }
                           } else {
                             print("로그인에 실패했습니다.");
                           } // 추후 팝업으로 변경 필요

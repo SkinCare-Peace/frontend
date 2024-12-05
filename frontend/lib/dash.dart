@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/buttonLayout/mainButton.dart';
 import 'package:frontend/buttonLayout/text.dart';
+import 'package:frontend/loading/loading_page0.dart';
 import 'routines/routine_start.dart';
 
-
 class DashPage extends StatefulWidget {
-  const DashPage({super.key});
+  final UserData userData; // UserData 필드 추가
+  const DashPage(this.userData, {super.key});
 
   @override
   State<DashPage> createState() => _DashPageState();
@@ -59,14 +61,14 @@ class _DashPageState extends State<DashPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ContentText(
-              text: "DSPT 유지민님의\n피부 데이터",
+            ContentText(
+              text: "DSPT ${widget.userData.name}님의\n피부 데이터",
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
             const SizedBox(height: 10),
-            const ContentText(
-              text: "유지민님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
+            ContentText(
+              text: "${widget.userData.name}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),
@@ -83,7 +85,16 @@ class _DashPageState extends State<DashPage> {
                   );
                 }),
             const SizedBox(height: 10),
-            MainButton(text: "오늘 피부 기록하기", onPressed: () {}),
+            MainButton(
+              text: "오늘 피부 기록하기",
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoadingPage0(widget.userData.name),
+                    ));
+              },
+            ),
             const SizedBox(height: 20),
 
             // 통합 결과, 결과 통계, 보유 제품 관리 버튼들 ->  하나의 컨테이너로 묶음
@@ -116,7 +127,12 @@ class _DashPageState extends State<DashPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // 보유 제품 관리
+                      // 보유 제품 관리 AddedProduct
+                      //  Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => AddedProduct(),
+                      //     ));
                     },
                     child: const ContentText(
                       text: "보유 제품 관리",
