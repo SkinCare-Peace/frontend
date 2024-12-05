@@ -97,13 +97,11 @@ class _InsightState extends State<Insight> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: selectedIndex == index
-                                        ? (recentScore >= 80
-                                            ? AppColors.positiveScore // 80 이상
-                                            : AppColors.negativeScore) // 80 미만
-                                        : Colors.white,
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.grey),
+                                    border: Border.all(color: recentScore >= 80
+                                              ? AppColors.positiveScore // 80 이상
+                                              : AppColors.negativeScore, width: selectedIndex == index ? 4.5:1),
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
@@ -111,23 +109,40 @@ class _InsightState extends State<Insight> {
                                     children: [
                                       Text(
                                         item,
-                                        style: TextStyle(
-                                          color: selectedIndex == index
-                                              ? Colors.white
-                                              : Colors.black,
+                                        style: const TextStyle(
+                                          color: Colors.black,
                                         ),
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
                                         skinData[dates.last]![item].toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          color: selectedIndex == index
-                                              ? Colors.white
-                                              : Colors.black,
+                                          color: Colors.black,
                                         ),
                                       ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: recentScore >= 80
+                                              ? AppColors.positiveScore // 80 이상
+                                              : AppColors.negativeScore,
+                                        ), // 80 미만
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(
+                                            recentScore >= 80 ? "좋음" : "관심 필요",
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -137,7 +152,6 @@ class _InsightState extends State<Insight> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       // 그래프 영역
                       Expanded(
                         child: Padding(
