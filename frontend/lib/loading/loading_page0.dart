@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
 
+
 class LoadingPage0 extends StatefulWidget {
 
-  final String name; // UserData 필드 추가
-  const LoadingPage0(this.name, {super.key}); // UserData를 생성자에서 받음
+  final UserData userData; // UserData 필드 추가
+  const LoadingPage0(this.userData, {super.key}); // UserData를 생성자에서 받음
 
   @override
   _LoadingPage0 createState() => _LoadingPage0();
@@ -57,6 +58,8 @@ class _LoadingPage0 extends State<LoadingPage0> {
           children: [
              Text(
               '${utf8.decode(widget.name.runes.toList())}의 피부 상태는\n몇점일까요?',
+
+      
               style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -72,6 +75,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
               child: Column(
                 children: [
                    Text(
+
                     '${utf8.decode(widget.name.runes.toList())}님의 피부 점수는 ?? 점',
                     style: const TextStyle(
                         fontSize: 15,
@@ -125,7 +129,11 @@ class _LoadingPage0 extends State<LoadingPage0> {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
+
                       builder: (context) => const FaceDetectorPage())), //카메라로 이동
+
+
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(

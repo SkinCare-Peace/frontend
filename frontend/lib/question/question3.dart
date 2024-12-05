@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/routines/routine_create.dart';
 
 class QuestionPage3 extends StatefulWidget {
   final String timeMinutes; // 설문2에서 전달된 시간 데이터
+    final UserData userData;
 
-  const QuestionPage3({Key? key, required this.timeMinutes}) : super(key: key);
+  const QuestionPage3(this.userData, {super.key, required this.timeMinutes});
 
   @override
   _QuestionPage3State createState() => _QuestionPage3State();
@@ -44,7 +46,7 @@ class _QuestionPage3State extends State<QuestionPage3> {
                     const SizedBox(height: 18), 
                   ],
                 );
-              }).toList(),
+              }),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
@@ -53,6 +55,7 @@ class _QuestionPage3State extends State<QuestionPage3> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => RoutinePage(
+                          widget.userData,
                           timeMinutes: int.parse(widget.timeMinutes.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
                           moneyWon: int.parse(_selectedOption!.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
                         ),

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/question/question3.dart';
 
 class QuestionPage2 extends StatefulWidget {
+  final UserData userData;
+
+  const QuestionPage2(this.userData, {super.key,});
   @override
   _QuestionPage2State createState() => _QuestionPage2State();
 }
@@ -36,11 +40,11 @@ class _QuestionPage2State extends State<QuestionPage2> {
               ...options.map((option) {
                 return Column(
                   children: [
-                    _buildCustomRadioOption(option), 
-                    const SizedBox(height: 18), 
+                    _buildCustomRadioOption(option),
+                    const SizedBox(height: 18),
                   ],
                 );
-              }).toList(),
+              }),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
@@ -49,7 +53,7 @@ class _QuestionPage2State extends State<QuestionPage2> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => QuestionPage3(
-                          timeMinutes: _selectedOption!, // 선택된 시간을 전달
+                         widget.userData , timeMinutes: _selectedOption!, // 선택된 시간을 전달
                         ),
                       ),
                     );
@@ -82,7 +86,7 @@ class _QuestionPage2State extends State<QuestionPage2> {
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
     );
   }
 
@@ -92,7 +96,7 @@ class _QuestionPage2State extends State<QuestionPage2> {
         label,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 25, 
+          fontSize: 25,
         ),
       ),
       trailing: Transform.scale(
@@ -105,7 +109,7 @@ class _QuestionPage2State extends State<QuestionPage2> {
               _selectedOption = value; // 선택된 값 변경
             });
           },
-          activeColor: const Color.fromARGB(255, 87, 204, 222), 
+          activeColor: const Color.fromARGB(255, 87, 204, 222),
         ),
       ),
     );

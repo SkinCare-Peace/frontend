@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:frontend/addProduct/add_main.dart';
 import 'package:frontend/addProduct/added_product.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
+import 'package:frontend/Constants/user_data.dart';
 
 class PicGuideline extends StatelessWidget {
-  const PicGuideline({super.key});
+  final UserData userData; // UserData 필드 추가
+  const PicGuideline(this.userData, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const PicGuidelineHome();
+    return PicGuidelineHome(userData);
   }
 }
 
 class PicGuidelineHome extends StatelessWidget {
-  const PicGuidelineHome({super.key});
+  final UserData userData;
+  const PicGuidelineHome(this.userData, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class PicGuidelineHome extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(40.0), 
+          padding: const EdgeInsets.all(40.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -31,8 +34,8 @@ class PicGuidelineHome extends StatelessWidget {
                   '촬영은 이렇게 하세요!',
                   style: TextStyle(
                     fontSize: 25,
-                    fontWeight: FontWeight.bold, 
-                    color:  Color.fromARGB(255, 43, 43, 43),
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 43, 43, 43),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -48,7 +51,7 @@ class PicGuidelineHome extends StatelessWidget {
                       '   올바른 촬영 TIP',
                       style: TextStyle(
                         fontSize: 19,
-                        fontWeight: FontWeight.w700,    
+                        fontWeight: FontWeight.w700,
                         color: Color.fromARGB(255, 83, 83, 83),
                       ),
                     ),
@@ -57,25 +60,25 @@ class PicGuidelineHome extends StatelessWidget {
                       '얼굴을 가이드에 맞춰주세요!',
                       fontSize: 17,
                       color: const Color.fromARGB(255, 74, 74, 74),
-                      fontWeight: FontWeight.w600, 
+                      fontWeight: FontWeight.w600,
                     ),
                     _buildTipItem(
                       '설명이 나오면 따라주세요!',
                       fontSize: 17,
                       color: const Color.fromARGB(255, 74, 74, 74),
-                      fontWeight: FontWeight.w600, 
+                      fontWeight: FontWeight.w600,
                     ),
                     _buildTipItem(
                       '실내, 밝은 조명에서 찍어주세요!',
                       fontSize: 17,
                       color: const Color.fromARGB(255, 74, 74, 74),
-                      fontWeight: FontWeight.w600, 
+                      fontWeight: FontWeight.w600,
                     ),
                     _buildTipItem(
                       '세수를 마친 후 얼굴 전체가 나오게!',
                       fontSize: 17,
                       color: const Color.fromARGB(255, 74, 74, 74),
-                      fontWeight: FontWeight.w600, 
+                      fontWeight: FontWeight.w600,
                     ),
                   ],
                 ),
@@ -84,7 +87,9 @@ class PicGuidelineHome extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const AddSkinCareMain()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              AddSkinCareMain(userData)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -92,7 +97,8 @@ class PicGuidelineHome extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 60, vertical: 16),
                   ),
                   child: const Text(
                     '확인했어요!',
@@ -113,7 +119,9 @@ class PicGuidelineHome extends StatelessWidget {
   }
 
   Widget _buildTipItem(String text,
-      {required double fontSize, required Color color, required FontWeight fontWeight}) {
+      {required double fontSize,
+      required Color color,
+      required FontWeight fontWeight}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0), // 줄 간격 조정
       child: Row(
