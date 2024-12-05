@@ -8,7 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/guidline.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/guidline.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/routines/routine_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/routines/routine_create.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/question/question3.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/question/question3.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/routines/routine_sucessfuly_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/routines/routine_sucessfuly_create.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

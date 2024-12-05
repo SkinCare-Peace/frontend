@@ -12,6 +12,7 @@ class RoutineSuccessfullyCreated extends StatelessWidget {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
+
         MaterialPageRoute(builder: (context) => DashPage(userData)),
       );
     });
