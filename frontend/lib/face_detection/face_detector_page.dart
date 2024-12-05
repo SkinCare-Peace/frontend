@@ -1,194 +1,91 @@
-import 'dart:convert';
-import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/addProduct/add_main.dart';
-import 'package:http/http.dart' as http;
-import 'package:camera/camera.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:frontend/face_detection/face_detector_painter.dart';
-import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:frontend/face_detection/toServer.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart'; // ML Kit import
 import 'camera_view.dart';
-
-//  서버로 얼굴 전체 bbox 전송
-Future<void> sendFaceDataToServer(List<Face> faces) async {
-  const String url = 'https://your-backend-url.com/face-data';
-
-  // 얼굴 전체 바운딩 박스 정보만 전송
-  List<Map<String, dynamic>> faceData = faces.map((face) {
-    final boundingBox = face.boundingBox;
-
-    return {
-      'boundingBox': boundingBoxToJson(boundingBox),
-      'eulerAngles': {
-        'x': face.headEulerAngleX,
-        'y': face.headEulerAngleY,
-        'z': face.headEulerAngleZ,
-      },
-    };
-  }).toList();
-
-  // POST 요청
-  try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'faces': faceData}),
-    );
-
-    if (response.statusCode == 200) {
-      print('Face data sent successfully');
-    } else {
-      print('Failed to send face data: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error sending face data: $e');
-  }
-}
-
-Map<String, dynamic> boundingBoxToJson(Rect boundingBox) {
-  return {
-    'left': boundingBox.left,
-    'top': boundingBox.top,
-    'right': boundingBox.right,
-    'bottom': boundingBox.bottom,
-    'width': boundingBox.width,
-    'height': boundingBox.height,
-  };
-}
+import 'bbox.dart';
 
 class FaceDetectorPage extends StatefulWidget {
-  final UserData userData;
-  const FaceDetectorPage(this.userData, {super.key});
+  const FaceDetectorPage({super.key});
 
   @override
   State<FaceDetectorPage> createState() => _FaceDetectorPageState();
 }
 
 class _FaceDetectorPageState extends State<FaceDetectorPage> {
-  final FaceDetector _faceDetector = FaceDetector(
-    options: FaceDetectorOptions(
-      enableContours: true,
-      enableClassification: true,
-    ),
-  );
+  final GlobalKey<CameraViewState> _cameraViewKey = GlobalKey();
 
-  bool _canProcess = true;
-  bool _isBusy = false;
-  CustomPaint? _customPaint;
-  String? _text;
+  // 얼굴 탐지
+  Future<List<Face>> detectFaces(File imageFile) async {
+    final inputImage = InputImage.fromFile(imageFile);
+    final faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        enableContours: true, 
+        enableLandmarks: true,
+        performanceMode: FaceDetectorMode.fast, // 빠른 모드
+      ),
+    );
 
-  @override
-  void dispose() {
-    _canProcess = false;
-    _faceDetector.close();
-    super.dispose();
+    final faces = await faceDetector.processImage(inputImage);
+    return faces;
   }
+  
+
+  // 사진 촬영 및 서버 전송
+Future<void> _captureAndSend() async {
+  if (_cameraViewKey.currentState != null) {
+    final filePath = await _cameraViewKey.currentState!.takePicture();
+    if (filePath != null) {
+      final imageFile = File(filePath);
+
+      // 얼굴 탐지
+      final faces = await detectFaces(imageFile);
+
+      if (faces.isNotEmpty) {
+        for (var i = 0; i < faces.length; i++) {
+          final regions = extractFaceRegionsWithLandmarks(faces[i]);
+
+          for (var areaName in regions.keys) {
+            final boundingBox = regions[areaName]!;
+            print('Sending $areaName with bbox: ${boundingBox.toString()}');
+
+            // ignore: use_build_context_synchronously
+            await sendFaceDataToServer(areaName, boundingBox, imageFile, context);
+          }
+        }
+      } else {
+        print('No faces detected.');
+      }
+    } else {
+      print('Failed to take picture.');
+    }
+  } else {
+    print('Camera is not initialized.');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
             flex: 3,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CameraView(
-                  customPaint: _customPaint,
-                  text: _text,
-                  onImage: (inputImage) {
-                    processImage(inputImage);
-                  },
-                  initialDirection: CameraLensDirection.front,
-                  title: '',
-                ),
-              ],
+            child: CameraView(
+              key: _cameraViewKey,
             ),
           ),
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    '얼굴이 인식되면\n‘찰칵’ 버튼을 눌러주세요!',
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AddSkinCareMain(widget.userData)), // 결과 페이지로 넘어가야함 임시로 제품추가로 건너뜀
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 16),
-                      elevation: 10,
-                      shadowColor: Colors.black,
-                    ),
-                    child: const Text(
-                      '찰칵',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+            child: Center(
+              child: ElevatedButton(
+                onPressed: _captureAndSend,
+                child: const Text('찰칵', style: TextStyle(fontWeight: FontWeight.bold),),
               ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  Future<void> processImage(final InputImage inputImage) async {
-    if (!_canProcess) return;
-    if (_isBusy) return;
-    _isBusy = true;
-
-    setState(() {
-      _text = '';
-    });
-
-    final faces = await _faceDetector.processImage(inputImage);
-
-    // 얼굴 전체 바운딩 박스 정보만 서버로 전송
-    await sendFaceDataToServer(faces);
-
-    if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null) {
-      final painter = FaceDetectorPainter(
-        faces,
-        inputImage.metadata!.size,
-        inputImage.metadata!.rotation,
-      );
-      setState(() {
-        _customPaint = CustomPaint(painter: painter);
-      });
-    } else {
-      setState(() {
-        _customPaint = null;
-        _text = 'Faces found: ${faces.length}\n\n';
-      });
-    }
-
-    _isBusy = false;
   }
 }
