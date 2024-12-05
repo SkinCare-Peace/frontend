@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
+import 'package:frontend/Constants/user_data.dart';
 
 class PicGuideline extends StatelessWidget {
-  const PicGuideline({super.key});
+  final UserData userData; // UserData 필드 추가
+   const PicGuideline(this.userData, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PicGuidelineHome(),
-    );
+    return const PicGuidelineHome();
   }
 }
 
@@ -84,7 +84,7 @@ class PicGuidelineHome extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const FaceDetectorPage()),
+                      MaterialPageRoute(builder: (context) => FaceDetectorPage(userData)),
                     );
                   },
                   style: ElevatedButton.styleFrom(

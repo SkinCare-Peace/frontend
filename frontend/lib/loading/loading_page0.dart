@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/face_detection/guidline.dart';
 
 class LoadingPage0 extends StatefulWidget {
 
-  final String name; // UserData 필드 추가
-  const LoadingPage0(this.name, {super.key}); // UserData를 생성자에서 받음
+  final UserData userData; // UserData 필드 추가
+  const LoadingPage0(this.userData, {super.key}); // UserData를 생성자에서 받음
 
   @override
   _LoadingPage0 createState() => _LoadingPage0();
@@ -55,7 +56,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
              Text(
-              '${widget.name}의 피부 상태는\n몇점일까요?',
+              '${widget.userData.name}의 피부 상태는\n몇점일까요?',
               style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -71,7 +72,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
               child: Column(
                 children: [
                    Text(
-                    '${widget.name}님의 피부 점수는 ?? 점',
+                    '${widget.userData.name}님의 피부 점수는 ?? 점',
                     style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w900, //글씨체 바꿔야할듯
@@ -124,7 +125,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const PicGuideline())),
+                      builder: (context) => PicGuideline(widget.userData))),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(

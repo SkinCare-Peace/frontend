@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/loading/loading_page1.dart';
 import 'add_byName.dart';
 import 'added_product.dart'; // AddedProduct import
 
 class AddSkinCareMain extends StatefulWidget {
-  const AddSkinCareMain({super.key});
+  final UserData userData;
+  const AddSkinCareMain(this.userData, {super.key});
 
   @override
   State<AddSkinCareMain> createState() => _AddSkinCareMainState();
@@ -12,7 +14,7 @@ class AddSkinCareMain extends StatefulWidget {
 
 class _AddSkinCareMainState extends State<AddSkinCareMain> {
   // 보유 제품 리스트
- //List<Map<String, dynamic>> addedProducts = [];
+  //List<Map<String, dynamic>> addedProducts = [];
   List<Map<String, dynamic>> addedProducts = []; //추가된 제품들용 리스트
 
   // ****************** 카테고리 팝업 로직 ****************** //
@@ -25,7 +27,8 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
       backgroundColor: Colors.white,
       builder: (BuildContext context) {
         return Padding(
-          padding: const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 30),
+          padding:
+              const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 30),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,27 +153,27 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                       horizontal: 16,
                     ),
                   ),
-
-
-                  onSubmitted: (query) { //제품들 제출된거
+                  onSubmitted: (query) {
+                    //제품들 제출된거
                     if (query.isNotEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SearchByName(
+                          builder: (context) => SearchByName(widget.userData,
                             searchQuery: query,
                           ), // 검색어 전달
                         ),
                       ).then((result) {
-                        // SearchByName에서 추가된 제품 병합 
-                        if (result != null && result is List<Map<String, dynamic>>) {
-                            setState(() {
+                        // SearchByName에서 추가된 제품 병합
+                        if (result != null &&
+                            result is List<Map<String, dynamic>>) {
+                          setState(() {
                             addedProducts.addAll(result.where((product) {
-                            // 중복 방지: 동일한 이름의 제품 제외
-                            return !addedProducts.any((existingProduct) =>
-                          existingProduct['name'] == product['name']);
-                          }));
-                           });
+                              // 중복 방지: 동일한 이름의 제품 제외
+                              return !addedProducts.any((existingProduct) =>
+                                  existingProduct['name'] == product['name']);
+                            }));
+                          });
                         }
                       });
                     }
@@ -186,7 +189,8 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                     _showCategoryPopup(context); // 팝업 표시
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 25, horizontal: 16),
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 246, 246, 246),
                       borderRadius: BorderRadius.circular(25),
@@ -220,15 +224,17 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddedProduct(products: addedProducts),
-                        ),
-                        ).then((updatedProducts) {
-                          if (updatedProducts != null) {
-                            setState(() {
-                              addedProducts = updatedProducts; // 업데이트된 리스트 반영
-                              });
-                        }});
-                    },
+                        builder: (context) => AddedProduct(widget.userData,
+                            products: addedProducts),
+                      ),
+                    ).then((updatedProducts) {
+                      if (updatedProducts != null) {
+                        setState(() {
+                          addedProducts = updatedProducts; // 업데이트된 리스트 반영
+                        });
+                      }
+                    });
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -252,11 +258,12 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                 child: OutlinedButton(
                   onPressed: () {
                     Navigator.push(
-                       context,
+                      context,
                       MaterialPageRoute(
-                      builder: (context) => const LoadingPage1(), // 건너뛰기 누르면 로딩화면으로 ㄱㄱ 
+                        builder: (context) =>
+                            LoadingPage1(widget.userData), // 건너뛰기 누르면 로딩화면으로 ㄱㄱ
                       ),
-                      );
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 238, 237, 237),
@@ -264,7 +271,8 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
                     ),
-                    side: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                    side: const BorderSide(
+                        color: Color.fromARGB(255, 255, 255, 255)),
                   ),
                   child: Text(
                     "넘어가기",
