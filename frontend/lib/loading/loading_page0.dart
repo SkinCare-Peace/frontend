@@ -47,38 +47,38 @@ class _LoadingPage0 extends State<LoadingPage0> {
       }
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      body: Center(
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    resizeToAvoidBottomInset: true, // 키보드 띄어지면 자동으로 조정
+    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+    body: SingleChildScrollView( // 전체 화면을 스크롤 가능하게 설정
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             Text(
+            const SizedBox(height: 150), // 상단 여백
+            Text(
               '${utf8.decode(widget.userData.name.runes.toList())}의 피부 상태는\n몇점일까요?',
-      
               style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10), //몇점일까요에서 박스까지 거리
+            const SizedBox(height: 10), // 몇점일까요에서 박스까지 거리
             Container(
-              padding: const EdgeInsets.only(bottom: 50, top: 20), //컨테이너 안 패딩
+              padding: const EdgeInsets.only(bottom: 50, top: 20), // 컨테이너 안 패딩
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 255, 255, 255),
               ),
               child: Column(
                 children: [
-                   Text(
-
+                  Text(
                     '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
                     style: const TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w900, 
+                        fontWeight: FontWeight.w900,
                         color: Color.fromARGB(255, 106, 106, 106)),
                   ),
                   const SizedBox(height: 90),
@@ -123,16 +123,12 @@ class _LoadingPage0 extends State<LoadingPage0> {
                 ],
               ),
             ),
-            const SizedBox(height: 80), //컨테이너에서 버튼까지 거리
+            const SizedBox(height: 80), // 컨테이너에서 버튼까지 거리
             ElevatedButton(
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-
-                      builder: (context) => const FaceDetectorPage())), //카메라로 이동
-
-
-
+                      builder: (context) => const FaceDetectorPage())), // 카메라로 이동
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(
@@ -150,9 +146,11 @@ class _LoadingPage0 extends State<LoadingPage0> {
                 ),
               ),
             ),
+            const SizedBox(height: 20), 
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
