@@ -62,7 +62,7 @@ class _BSTIState extends State<BSTI> {
               ),
               SubText_grey(
                 text: "$name님은",
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.bold, 
               ),
               const SizedBox(
                 height: 10,
@@ -70,7 +70,7 @@ class _BSTIState extends State<BSTI> {
               SubText_bk(
                 text: bsti_detail,
                 fontSize: 24,
-                fontweight: FontWeight.normal,
+                fontweight: FontWeight.bold,
               ),
               const SizedBox(
                 height: 5,
@@ -138,7 +138,7 @@ class _BSTIState extends State<BSTI> {
                                         ),
                                       ),
                                     ],
-                                  ),
+                                  ),  
                                 );
                               },
                             ).toList(),
