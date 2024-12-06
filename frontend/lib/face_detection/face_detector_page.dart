@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:frontend/face_detection/bboxToString.dart';
 import 'package:frontend/face_detection/face_result.dart';
 import 'package:frontend/loading/loading_face_result.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -164,29 +164,40 @@ void _showNoFaceDetectedPopup() {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    body: Column(
+    body: Stack(
       children: [
-        Expanded(
-          flex: 0,
-          child: CameraView(
-            key: _cameraViewKey,
+        // 카메라 화면
+        CameraView(
+          key: _cameraViewKey,
+        ),
+        // 흐림 처리 + 타원 가이드라인
+        ClipPath(
+          clipper: OvalClipper(), // 타원 모양 클리퍼
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // 흐림 강도
+            child: Container(
+              color: Colors.black.withOpacity(0.1), // 흐림 위에 반투명 검은색
+            ),
           ),
         ),
-        Expanded(
-          flex: 1,
-          child: Center(
+        // 타원 테두리
+
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 30),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // 안내문 텍스트
                 const Padding(
-                  padding: EdgeInsets.only(bottom: 25), 
+                  padding: EdgeInsets.only(bottom: 25),
                   child: Text(
-                    '정면으로 가이드라인 안에 얼굴을 맞추고 \n"찰칵" 버튼을 눌러주세요!',
+                    '정면으로 가이드라인 안에 얼굴을 맞추고\n"찰칵" 버튼을 눌러주세요!',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      color: Color.fromARGB(178, 0, 0, 0), // 안내문 색상
+                      color: Colors.black54,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -195,7 +206,7 @@ Widget build(BuildContext context) {
                 ElevatedButton(
                   onPressed: _captureAndSend,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 87, 204, 222), 
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -220,5 +231,25 @@ Widget build(BuildContext context) {
       ],
     ),
   );
-}
+}}
+
+// 타원 바깥 부분 클리핑을 위한 CustomClipper
+class OvalClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path()
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height)) // 전체 화면
+      ..addOval(
+        Rect.fromCenter(
+          center: Offset(size.width / 2, size.height / 2 - 100), // 타원 위치
+          width: 300,
+          height: 400,
+        ),
+      )
+      ..fillType = PathFillType.evenOdd; // 타원 바깥 영역만 클립
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
