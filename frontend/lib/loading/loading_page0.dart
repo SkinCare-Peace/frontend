@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
-
 
 class LoadingPage0 extends StatefulWidget {
 
@@ -57,8 +57,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
              Text(
-              '${utf8.decode(widget.name.runes.toList())}의 피부 상태는\n몇점일까요?',
-
+              '${utf8.decode(widget.userData.name.runes.toList())}의 피부 상태는\n몇점일까요?',
       
               style: const TextStyle(
                 fontSize: 25,
@@ -76,7 +75,7 @@ class _LoadingPage0 extends State<LoadingPage0> {
                 children: [
                    Text(
 
-                    '${utf8.decode(widget.name.runes.toList())}님의 피부 점수는 ?? 점',
+                    '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
                     style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w900, 

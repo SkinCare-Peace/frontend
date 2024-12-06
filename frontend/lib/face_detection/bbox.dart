@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 Map<String, Rect> extractFaceRegionsWithLandmarks(Face face) {

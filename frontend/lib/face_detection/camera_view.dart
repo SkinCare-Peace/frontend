@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-
 class CameraView extends StatefulWidget {
   const CameraView({super.key});
 
@@ -27,10 +26,9 @@ class CameraViewState extends State<CameraView> {
       orElse: () => cameras.first,
     );
 
-    // 전면 카메라로 설정
     _controller = CameraController(
       frontCamera,
-      ResolutionPreset.high,
+      ResolutionPreset.high, 
       enableAudio: false, // 오디오 비활성화
     );
 
