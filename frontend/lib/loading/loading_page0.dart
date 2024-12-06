@@ -128,7 +128,7 @@ Widget build(BuildContext context) {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const FaceDetectorPage())), // 카메라로 이동
+                      builder: (context) => FaceDetectorPage(widget.userData))), // 카메라로 이동
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(

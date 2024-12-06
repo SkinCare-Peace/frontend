@@ -56,7 +56,7 @@ class SubText_grey extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 16,
+        fontSize: 17,
         color: AppColors.textgrey,
       ),
     );
