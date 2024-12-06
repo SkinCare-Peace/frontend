@@ -92,11 +92,26 @@ class _InsightState extends State<Insight> {
     return Scaffold(
       backgroundColor: Colors.white, // 배경색 흰색
       body: Padding(
-        padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {Navigator.pop(context);},
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.calendar_month),
+                  )
+                ],
+              ),
+            ),
             const TitleText(text: "피부 데이터 통계"),
             const ContentText_bk(text: "당신의 피부는 어떻게 변화하고 있을까요?"),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -224,15 +239,16 @@ class _InsightState extends State<Insight> {
                                       show: true,
                                       verticalInterval: 1,
                                       getDrawingVerticalLine: (value) {
-                                        return  FlLine(
+                                        return FlLine(
                                           color: Colors.grey[350], // 수직선 색상
                                           strokeWidth: 0.5, // 수직선 두께
                                           dashArray: [5, 5], // 점선 스타일: 대시와 간격
                                         );
                                       },
                                       getDrawingHorizontalLine: (value) {
-                                        return  FlLine(
-                                          color: Colors.grey[350], // 수평선 색상 (연한 회색)
+                                        return FlLine(
+                                          color: Colors
+                                              .grey[350], // 수평선 색상 (연한 회색)
                                           strokeWidth: 0.5, // 수평선 두께
                                           dashArray: [5, 5], // 점선 스타일: 대시와 간격
                                         );
@@ -451,8 +467,8 @@ class _InsightState extends State<Insight> {
 
   Color chooseColor(int score, int pivot) {
     if (score >= pivot) {
-      return AppColors.positiveScore; // pivot 이상
+      return AppColors.positivePoint; // pivot 이상
     }
-    return AppColors.negativeScore;
+    return AppColors.negativePoint;
   }
 }

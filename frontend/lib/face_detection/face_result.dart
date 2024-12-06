@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/addProduct/add_main.dart';
 import 'package:frontend/layout/mainButton.dart';
 import 'package:frontend/layout/text.dart';
 
