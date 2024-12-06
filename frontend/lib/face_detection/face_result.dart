@@ -8,7 +8,7 @@ import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/user_data.dart'; // UserData import
 
 class BSTI extends StatefulWidget {
-  final UserData userData; // UserData 전달받음
+  final UserData userData; // UserData받기
   const BSTI(this.userData, {super.key});
 
   @override
@@ -30,10 +30,8 @@ class _BSTIState extends State<BSTI> {
     },
   };
 
-  final String user_bsti = "OSPT";
+  final String user_bsti = "DSPT";
   final String bsti_detail = "피부가 반짝 빛나는";
-  final String describe =
-      "OSPT는 이러이러한 유형입니다.\n이러이러하니 이러이러하면 좋아요.\n파이팅!\n왜 안 나오지\n뭐지\n제대로 안 나옴 글자가;;";
 
   @override
   Widget build(BuildContext context) {
@@ -57,30 +55,36 @@ class _BSTIState extends State<BSTI> {
               Text(
                 "${utf8.decode(widget.userData.name.runes.toList())}님은",
                 style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black54
-                ),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black54),
               ),
               const SizedBox(height: 10),
               Text(
                 "$bsti_detail,",
                 style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Color.fromARGB(230, 0, 0, 0)
-                ),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Color.fromARGB(230, 0, 0, 0)),
               ),
               const SizedBox(height: 5),
               Text(
                 "$user_bsti",
                 style: const TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w900,
-                  color: Color.fromARGB(230, 0, 0, 0)
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
+                    color: Color.fromARGB(230, 0, 0, 0)),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ContentText(
+                  text: BBISTI.bstiDescription(user_bsti), // bsti 별 설명
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               if (currentData.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -99,14 +103,11 @@ class _BSTIState extends State<BSTI> {
                                   fontSize: 13,
                                 ),
                                 const SizedBox(width: 7),
-                                Text(
-                                  "${entry.value}점",
-                                  style:const TextStyle(
-                                    color: Color.fromARGB(179, 0, 0, 0),
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700
-                                  )
-                                ),
+                                Text("${entry.value}점",
+                                    style: const TextStyle(
+                                        color: Color.fromARGB(179, 0, 0, 0),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700)),
                               ],
                             ),
                             const SizedBox(height: 7),
@@ -132,23 +133,13 @@ class _BSTIState extends State<BSTI> {
                   text: "데이터가 없습니다.",
                   fontSize: 16,
                 ),
-              const SizedBox(height: 25),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ContentText(
-                  text: describe,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
               const SizedBox(height: 30),
               const Text(
                 "결과는 나중에도 볼 수 있어요!",
                 style: TextStyle(
-                  fontWeight: FontWeight.w600, 
-                  color: Colors.grey,
-                  fontSize: 12),
-                
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                    fontSize: 12),
               ),
               const SizedBox(height: 5),
               Padding(
