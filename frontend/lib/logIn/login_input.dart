@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
-import 'package:frontend/dash.dart';
+import 'package:frontend/record/dash.dart';
 import 'package:frontend/loading/loading_page0.dart';
 import 'package:frontend/logIn/login_post.dart';
 import 'package:frontend/Constants/user_data.dart';

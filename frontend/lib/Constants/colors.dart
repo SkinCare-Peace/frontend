@@ -14,8 +14,8 @@ class AppColors {
   static const Color success = Color(0xFF4CAF50);
 
   // 점수 상태 색상
-  static const Color positiveScore = Color(0xFFDCFCDB); // 긍정적인 점수 (연한 초록색)
-  static const Color negativeScore = Color(0xFFFFB8B8); // 부정적인 점수 (연한 빨간색)
+  static const Color positiveScore = Color.fromARGB(255, 87, 204, 222); // 긍정적인 점수 (연한 초록색)
+  static const Color negativeScore = Color(0xFFFF7778); // 부정적인 점수 (연한 빨간색)
   static const Color negative = Color(0xFFFF7778);
 
   // 기타 색상

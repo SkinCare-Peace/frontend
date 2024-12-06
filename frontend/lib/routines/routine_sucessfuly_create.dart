@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/dash.dart';
+import 'package:frontend/record/dash.dart';
 
 class RoutineSuccessfullyCreated extends StatelessWidget {
   final UserData userData; // UserData 필드 추가
