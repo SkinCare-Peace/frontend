@@ -26,7 +26,7 @@ class _InsightState extends State<Insight> {
       "색소침착": 81,
     },
     DateTime(2024, 8, 21): {
-      "수분": 45,
+      "수분": 80,
       "모공": 87,
       "여드름": 78,
       "주름": 90,
@@ -41,13 +41,47 @@ class _InsightState extends State<Insight> {
     },
     DateTime(2024, 8, 25): {
       "수분": 95,
-      "모공": 781,
+      "모공": 81,
       "여드름": 75,
       "주름": 89,
       "색소침착": 43,
     },
+    DateTime(2024, 8, 26): {
+      "수분": 89,
+      "모공": 25,
+      "여드름": 75,
+      "주름": 16,
+      "색소침착": 78,
+    },
+    DateTime(2024, 8, 28): {
+      "수분": 95,
+      "모공": 81,
+      "여드름": 75,
+      "주름": 89,
+      "색소침착": 43,
+    },
+    DateTime(2024, 8, 29): {
+      "수분": 96,
+      "모공": 75,
+      "여드름": 80,
+      "주름": 85,
+      "색소침착": 40,
+    },
   };
+
   final int pivot = 80;
+  Color dot = const Color.fromARGB(255, 162, 162, 162);
+
+  late DateTime latestDate; // 가장 최근 날짜
+  late int latestMoistureScore; // 가장 최근 "수분" 점수
+
+  @override
+  void initState() {
+    super.initState();
+    latestDate = skinData.keys.reduce((a, b) => a.isAfter(b) ? a : b);
+    latestMoistureScore = skinData[latestDate]?["수분"] ?? 0;
+    dot = chooseColor(latestMoistureScore, pivot);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +93,7 @@ class _InsightState extends State<Insight> {
       backgroundColor: Colors.white, // 배경색 흰색
       body: Padding(
         padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -101,6 +135,7 @@ class _InsightState extends State<Insight> {
                                 onTap: () {
                                   setState(() {
                                     selectedIndex = index;
+                                    dot = chooseColor(recentScore, pivot);
                                   });
                                 },
                                 child: Container(
@@ -108,10 +143,7 @@ class _InsightState extends State<Insight> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                        color: recentScore >= pivot
-                                            ? AppColors
-                                                .positiveScore // pivot 이상
-                                            : AppColors.negativeScore,
+                                        color: chooseColor(recentScore, pivot),
                                         width:
                                             selectedIndex == index ? 4.5 : 1),
                                   ),
@@ -139,18 +171,15 @@ class _InsightState extends State<Insight> {
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: recentScore >= pivot
-                                              ? AppColors
-                                                  .positiveScore // pivot 이상
-                                              : AppColors.negativeScore,
-                                        ), // pivot 미만
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: chooseColor(
+                                                recentScore, pivot)),
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Text(
                                             recentScore >= pivot
-                                                ? "좋음"
+                                                ? " 좋음 "
                                                 : "관심 필요",
                                             style: const TextStyle(
                                                 color: Colors.white,
@@ -180,16 +209,35 @@ class _InsightState extends State<Insight> {
                               scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
                               child: SizedBox(
                                 // 그래프 너비 동적 설정
-                                width: dates.length > 6
-                                    ? MediaQuery.of(context).size.width /
-                                        6 *
-                                        dates.length
-                                    : MediaQuery.of(context)
-                                        .size
-                                        .width, // 그래프 너비 동적 설정
+                                width:
+                                    //MediaQuery.of(context).size.height ,
+                                    dates.length > 6
+                                        ? MediaQuery.of(context).size.width /
+                                            5 *
+                                            dates.length
+                                        : MediaQuery.of(context)
+                                            .size
+                                            .width, // 그래프 너비 동적 설정
                                 child: LineChart(
                                   LineChartData(
-                                    gridData: const FlGridData(show: true),
+                                    gridData: FlGridData(
+                                      show: true,
+                                      verticalInterval: 1,
+                                      getDrawingVerticalLine: (value) {
+                                        return  FlLine(
+                                          color: Colors.grey[350], // 수직선 색상
+                                          strokeWidth: 0.5, // 수직선 두께
+                                          dashArray: [5, 5], // 점선 스타일: 대시와 간격
+                                        );
+                                      },
+                                      getDrawingHorizontalLine: (value) {
+                                        return  FlLine(
+                                          color: Colors.grey[350], // 수평선 색상 (연한 회색)
+                                          strokeWidth: 0.5, // 수평선 두께
+                                          dashArray: [5, 5], // 점선 스타일: 대시와 간격
+                                        );
+                                      },
+                                    ),
                                     titlesData: FlTitlesData(
                                       bottomTitles: AxisTitles(
                                         sideTitles: SideTitles(
@@ -203,18 +251,100 @@ class _InsightState extends State<Insight> {
                                             // 날짜를 x축에 표시
                                             return Text(
                                               "${dates[index].month}.${dates[index].day}",
-                                              style:
-                                                  const TextStyle(fontSize: 12),
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
                                             );
                                           },
                                         ),
                                       ),
-                                      leftTitles: const AxisTitles(
+                                      leftTitles: AxisTitles(
                                         sideTitles: SideTitles(
                                           showTitles: true,
                                           interval: 10, // y축 값 간격 설정
+                                          getTitlesWidget: (value, meta) {
+                                            // y축 최대값과 최소값 계산
+                                            final double minValue = ((skinData
+                                                        .values
+                                                        .map((e) =>
+                                                            e[selectedItem] ??
+                                                            0)
+                                                        .reduce((a, b) =>
+                                                            a < b ? a : b)) -
+                                                    5)
+                                                .toDouble();
+                                            final double maxValue = ((skinData
+                                                        .values
+                                                        .map((e) =>
+                                                            e[selectedItem] ??
+                                                            0)
+                                                        .reduce((a, b) =>
+                                                            a > b ? a : b)) +
+                                                    5)
+                                                .toDouble();
+
+                                            // 최소값과 최대값일 경우 빈 위젯 반환
+                                            if (value == minValue ||
+                                                value == maxValue) {
+                                              return Container();
+                                            }
+
+                                            // 그 외 값만 표시
+                                            return Text(
+                                              value.toInt().toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
+                                      rightTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          interval: 10, // y축 값 간격 설정
+                                          getTitlesWidget: (value, meta) {
+                                            // y축 최대값과 최소값 계산
+                                            final double minValue = ((skinData
+                                                        .values
+                                                        .map((e) =>
+                                                            e[selectedItem] ??
+                                                            0)
+                                                        .reduce((a, b) =>
+                                                            a < b ? a : b)) -
+                                                    5)
+                                                .toDouble();
+                                            final double maxValue = ((skinData
+                                                        .values
+                                                        .map((e) =>
+                                                            e[selectedItem] ??
+                                                            0)
+                                                        .reduce((a, b) =>
+                                                            a > b ? a : b)) +
+                                                    5)
+                                                .toDouble();
+
+                                            // 최소값과 최대값일 경우 빈 위젯 반환
+                                            if (value == minValue ||
+                                                value == maxValue) {
+                                              return Container();
+                                            }
+
+                                            // 그 외 값만 표시
+                                            return Text(
+                                              value.toInt().toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      topTitles: const AxisTitles(
+                                          sideTitles: SideTitles(
+                                              showTitles: false)), // 위쪽 x축 비활성화
                                     ),
                                     borderData:
                                         FlBorderData(show: false), // 테두리 제거
@@ -231,22 +361,18 @@ class _InsightState extends State<Insight> {
                                           },
                                         ),
                                         isCurved: false, // 직선 그래프
-                                        dotData: const FlDotData(
+                                        dotData: FlDotData(
                                           show: true,
-                                          // getDotPainter:
-                                          //     (spot, percent, barData, index) {
-                                          //   return FlDotCirclePainter(
-                                          //     radius: 5, // 점 크기 설정
-                                          //     color: recentScore >= pivot
-                                          //         ? AppColors
-                                          //             .positiveScore // pivot 이상
-                                          //         : AppColors
-                                          //             .negativeScore, // 점 색상 설정
-                                          //     strokeWidth: 0, // 점 테두리 두께
-                                          //     strokeColor: Colors
-                                          //         .transparent, // 점 테두리 색상
-                                          //   );
-                                          // },
+                                          getDotPainter:
+                                              (spot, percent, barData, index) {
+                                            return FlDotCirclePainter(
+                                              radius: 5, // 점 크기 설정
+                                              color: dot, // 점 색상 설정
+                                              strokeWidth: 0, // 점 테두리 두께
+                                              strokeColor: Colors
+                                                  .transparent, // 점 테두리 색상
+                                            );
+                                          },
                                         ), // 점 색상 설정
                                         belowBarData: BarAreaData(show: false),
                                         color: const Color.fromARGB(
@@ -254,9 +380,57 @@ class _InsightState extends State<Insight> {
                                         barWidth: 3, // 선 두께
                                       ),
                                     ],
+                                    lineTouchData: LineTouchData(
+                                      touchTooltipData: LineTouchTooltipData(
+                                        getTooltipColor: (touchedSpot) =>
+                                            Colors.black,
+                                        tooltipRoundedRadius: 8, // 툴팁 모서리 반경
+                                        fitInsideHorizontally:
+                                            true, // 수평 방향에서 툴팁이 그래프 안에 유지되도록 설정
+                                        fitInsideVertically:
+                                            true, // 수직 방향에서 툴팁이 그래프 안에 유지되도록 설정
+                                        getTooltipItems: (touchedSpots) {
+                                          return touchedSpots.map((spot) {
+                                            final index = spot.x.toInt();
+                                            final date = dates[index];
+                                            final value = skinData[date]
+                                                    ?[selectedItem] ??
+                                                0;
+                                            return LineTooltipItem(
+                                              "${date.year}년 ${date.month}월 ${date.day}일\n$value점",
+                                              const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
+                                            );
+                                          }).toList();
+                                        },
+                                      ),
+
+                                      handleBuiltInTouches: true, // 내장 터치 동작 사용
+                                    ),
                                     minX: 0, // x축 최소값
                                     maxX:
                                         dates.length - 1.toDouble(), // 최대 6개 표시
+                                    minY: ((skinData.values
+                                                    .map((e) =>
+                                                        e[selectedItem] ?? 0)
+                                                    .reduce(
+                                                      (a, b) => a < b ? a : b,
+                                                    ) -
+                                                9) ~/
+                                            10) *
+                                        10.toDouble(), // y축 최솟값
+                                    maxY: ((skinData.values
+                                                    .map((e) =>
+                                                        e[selectedItem] ?? 0)
+                                                    .reduce(
+                                                      (a, b) => a > b ? a : b,
+                                                    ) +
+                                                9) ~/
+                                            10) *
+                                        10.toDouble(), // y축 최댓값
                                   ),
                                 ),
                               ),
@@ -273,5 +447,12 @@ class _InsightState extends State<Insight> {
         ),
       ),
     );
+  }
+
+  Color chooseColor(int score, int pivot) {
+    if (score >= pivot) {
+      return AppColors.positiveScore; // pivot 이상
+    }
+    return AppColors.negativeScore;
   }
 }
