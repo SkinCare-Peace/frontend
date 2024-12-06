@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 
 class LoadingPage2 extends StatefulWidget {
+  final UserData userData; // UserData 필드 추가
+  const LoadingPage2(this.userData, {super.key}); // UserData를 생성자에서 받음
+
   @override
-  _LoadingPage2  createState() => _LoadingPage2 ();
+  _LoadingPage2 createState() => _LoadingPage2();
 }
 
-class _LoadingPage2  extends State<LoadingPage2 > {
+class _LoadingPage2 extends State<LoadingPage2> {
   final ScrollController _scrollController = ScrollController();
   late Timer _timer;
 
@@ -27,7 +32,7 @@ class _LoadingPage2  extends State<LoadingPage2 > {
     _timer = Timer.periodic(const Duration(milliseconds: 50), (Timer timer) {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
-      double scrollStep = 3.0; // 스크롤 속도 조정하는거 
+      double scrollStep = 3.0; // 스크롤 속도 조정
 
       if (currentScroll + scrollStep >= maxScroll) {
         _scrollController.jumpTo(0); // 끝에 도달하면 처음으로 돌아감
@@ -49,17 +54,17 @@ class _LoadingPage2  extends State<LoadingPage2 > {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              '유지민 님의\n루틴을 생성 중입니다',
-              style: TextStyle(
+            Text(
+              '${utf8.decode(widget.userData.name.runes.toList())} 님의\n루틴을 생성 중입니다',
+              style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 30), //루틴을 생성중입니다 부터 박스까지 거리
+            const SizedBox(height: 30), // 텍스트와 컨테이너 간 거리
             Container(
-              padding: const EdgeInsets.only( bottom: 50,  top: 20),  //컨테이너 안 패딩
+              padding: const EdgeInsets.only(bottom: 50, top: 20), // 컨테이너 안 패딩
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 255, 255, 255),
                 boxShadow: [
@@ -71,11 +76,11 @@ class _LoadingPage2  extends State<LoadingPage2 > {
               ),
               child: Column(
                 children: [
-                  const Text(
-                    '유지민님의 피부 점수는 ?? 점',
-                    style: TextStyle(
+                  Text(
+                    '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
+                    style: const TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w900,//글씨체 바꿔야할듯
+                      fontWeight: FontWeight.w900, // 텍스트 스타일
                     ),
                   ),
                   const SizedBox(height: 60),
@@ -86,34 +91,33 @@ class _LoadingPage2  extends State<LoadingPage2 > {
                       scrollDirection: Axis.horizontal,
                       children: [
                         const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/apple.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBIpimple.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/lotion.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBImask.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/heart.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBIhappy.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/soap.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBIsad.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/icc.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/paint.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
+                        Image.asset('assets/BBI.png'),
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/apple.png'),
-                        
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIpimple.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/lotion.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBImask.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/heart.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIhappy.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/soap.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIsad.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/icc.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBI.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/paint.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBI.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/apple.png'),
                       ],
                     ),
                   ),
@@ -121,7 +125,7 @@ class _LoadingPage2  extends State<LoadingPage2 > {
                 ],
               ),
             ),
-            const SizedBox(height: 60), //컨테이너에서 버튼까지 거리
+            const SizedBox(height: 60), // 컨테이너와 버튼 간 거리
           ],
         ),
       ),
