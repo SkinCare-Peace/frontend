@@ -21,6 +21,7 @@ dependencies:
   uuid: ^4.5.1
   http_parser: ^4.0.1
   google_ml_kit: ^0.17.0
+  fl_chart: ^0.69.2
 
 dev_dependencies:
   flutter_test:

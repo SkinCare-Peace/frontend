@@ -111,3 +111,29 @@ class ContentText extends StatelessWidget {
     );
   }
 }
+
+class ContentTextLeft extends StatelessWidget {
+  final String text;
+  final double fontSize;
+  final FontWeight fontWeight;
+
+  const ContentTextLeft({
+    super.key,
+    required this.text,
+    this.fontSize = 18,
+    this.fontWeight = FontWeight.w500,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: Colors.black,
+      ),
+      textAlign: TextAlign.start,
+    );
+  }
+}

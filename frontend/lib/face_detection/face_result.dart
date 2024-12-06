@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/addProduct/add_main.dart';
-import 'package:frontend/buttonLayout/mainButton.dart';
-import 'package:frontend/buttonLayout/text.dart';
+
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/layout/mainButton.dart';
+import 'package:frontend/layout/text.dart';
+
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/user_data.dart'; // UserData import
 
@@ -69,7 +70,7 @@ class _BSTIState extends State<BSTI> {
               ),
               const SizedBox(height: 5),
               Text(
-                "$user_bsti",
+                user_bsti,
                 style: const TextStyle(
                     fontSize: 23,
                     fontWeight: FontWeight.w900,
