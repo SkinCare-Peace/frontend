@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:frontend/face_detection/bboxToString.dart';
 import 'package:frontend/face_detection/face_result.dart';
 import 'package:frontend/loading/loading_face_result.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
