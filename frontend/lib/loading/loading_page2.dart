@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 
 class LoadingPage2 extends StatefulWidget {
-  final UserData userData; // UserData 필드 추가
-  const LoadingPage2(this.userData, {super.key}); // UserData를 생성자에서 받음
+  final UserData userData; 
+  const LoadingPage2(this.userData, {super.key}); 
 
   @override
   _LoadingPage2 createState() => _LoadingPage2();

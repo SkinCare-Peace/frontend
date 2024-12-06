@@ -13,11 +13,8 @@ class AddSkinCareMain extends StatefulWidget {
 }
 
 class _AddSkinCareMainState extends State<AddSkinCareMain> {
-  // 보유 제품 리스트
-  //List<Map<String, dynamic>> addedProducts = [];
-  List<Map<String, dynamic>> addedProducts = []; //추가된 제품들용 리스트
+  List<Map<String, dynamic>> addedProducts = []; // 추가된 제품들용 리스트
 
-  // ****************** 카테고리 팝업 로직 ****************** //
   void _showCategoryPopup(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -27,13 +24,11 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
       backgroundColor: Colors.white,
       builder: (BuildContext context) {
         return Padding(
-          padding:
-              const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 30),
+          padding: const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 30),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 팝업 상단 핸들러
               Center(
                 child: Container(
                   width: 70,
@@ -53,7 +48,6 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                 ),
               ),
               const SizedBox(height: 20),
-              // 카테고리 리스트
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -100,12 +94,12 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
     );
   }
 
-  // ****************** 제품 추가 메인 화면 ****************** //
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, 
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      body: Center(
+      body: SingleChildScrollView( // 전체 화면을 스크롤 가능하게 설정
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -123,20 +117,15 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                 ),
               ),
               const SizedBox(height: 90),
-              // 첫 번째 TextField (검색어 입력 필드)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
                 child: TextField(
                   style: const TextStyle(fontSize: 15),
                   decoration: InputDecoration(
-                    prefixIcon: const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Icon(
-                        Icons.search,
-                        size: 20,
-                        color: Colors.grey,
-                      ),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.grey,
                     ),
                     hintText: "제품명으로 검색",
                     hintStyle: const TextStyle(
@@ -149,27 +138,22 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                       borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 25, // 세로 크기 조정
+                      vertical: 25,
                       horizontal: 16,
                     ),
                   ),
                   onSubmitted: (query) {
-                    //제품들 제출된거
                     if (query.isNotEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SearchByName(widget.userData,
-                            searchQuery: query,
-                          ), // 검색어 전달
+                              searchQuery: query),
                         ),
                       ).then((result) {
-                        // SearchByName에서 추가된 제품 병합
-                        if (result != null &&
-                            result is List<Map<String, dynamic>>) {
+                        if (result != null && result is List<Map<String, dynamic>>) {
                           setState(() {
                             addedProducts.addAll(result.where((product) {
-                              // 중복 방지: 동일한 이름의 제품 제외
                               return !addedProducts.any((existingProduct) =>
                                   existingProduct['name'] == product['name']);
                             }));
@@ -181,12 +165,11 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                 ),
               ),
               const SizedBox(height: 15),
-              // 두 번째 TextField
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
                 child: GestureDetector(
                   onTap: () {
-                    _showCategoryPopup(context); // 팝업 표시
+                    _showCategoryPopup(context);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -215,8 +198,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                   ),
                 ),
               ),
-              const Spacer(),
-              // 내 보유 스킨케어 버튼
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: ElevatedButton(
@@ -224,13 +206,13 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddedProduct(widget.userData,
-                            products: addedProducts),
+                        builder: (context) =>
+                            AddedProduct(widget.userData, products: addedProducts),
                       ),
                     ).then((updatedProducts) {
                       if (updatedProducts != null) {
                         setState(() {
-                          addedProducts = updatedProducts; // 업데이트된 리스트 반영
+                          addedProducts = updatedProducts;
                         });
                       }
                     });
@@ -261,7 +243,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            LoadingPage1(widget.userData), // 건너뛰기 누르면 로딩화면으로 ㄱㄱ
+                            LoadingPage1(widget.userData),
                       ),
                     );
                   },
