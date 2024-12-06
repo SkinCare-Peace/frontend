@@ -259,16 +259,20 @@ Future<List<dynamic>> fetchRoutine({
                                           padding: const EdgeInsets.only(bottom: 10.0),
                                           child: Row(
                                             children: [
-                                              Image.network(
-                                                cosmetic['img_url'] ?? '', //사진 없으면 임시 사진 
-                                                width: 50,
-                                                height: 50,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error, stackTrace) {
-                                                  print("Image load error: $error for URL: ${cosmetic['img_url']}");
-                                                  return const Icon(Icons.broken_image, size: 50); //오류날때 이거 출력
-                                                },
-                                              ),
+                                              
+                                              if (cosmetic['image_url'] != null)
+  ClipRRect(
+    borderRadius: BorderRadius.circular(5), 
+    child: Image.network(
+      cosmetic['image_url'],
+      height: 50,
+      width: 50,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return const Icon(Icons.broken_image, size: 50);
+      },
+    ),
+  ),
 
                                               const SizedBox(width: 10),
                                               Expanded(
@@ -407,7 +411,10 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
             children: [
               const SizedBox(height: 20),
               Text("${cosmetic['reason'] ?? '추천 이유 정보 없음'}"),
+              const SizedBox(height: 15),
               if (cosmetic['image_url'] != null)
+              ClipRRect( borderRadius: BorderRadius.circular(10), 
+              child: 
                 Image.network(
                   cosmetic['image_url'],
                   height: 300,
@@ -416,14 +423,14 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(Icons.broken_image, size: 300);
                   },
-                ),
-              const SizedBox(height: 10),
+                ),),
+              const SizedBox(height: 15),
               Text("브랜드: ${cosmetic['brand'] ?? '정보 없음'}",style: const TextStyle(
-                 fontWeight: FontWeight.bold, 
-                 fontSize: 16,
+                 fontWeight: FontWeight.w600, 
+                 fontSize: 12,
                  ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 14),
               Text("가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",style: const TextStyle(
                 fontWeight: FontWeight.bold, 
                 fontSize: 16, 
