@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/face_detection/guidline.dart';
+import 'package:frontend/face_detection/face_detector_page.dart';
 
 class LoadingPage0 extends StatefulWidget {
 
@@ -56,7 +57,8 @@ class _LoadingPage0 extends State<LoadingPage0> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
              Text(
-              '${widget.userData.name}의 피부 상태는\n몇점일까요?',
+              '${utf8.decode(widget.userData.name.runes.toList())}의 피부 상태는\n몇점일까요?',
+      
               style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -72,10 +74,11 @@ class _LoadingPage0 extends State<LoadingPage0> {
               child: Column(
                 children: [
                    Text(
-                    '${widget.userData.name}님의 피부 점수는 ?? 점',
+
+                    '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
                     style: const TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w900, //글씨체 바꿔야할듯
+                        fontWeight: FontWeight.w900, 
                         color: Color.fromARGB(255, 106, 106, 106)),
                   ),
                   const SizedBox(height: 90),
@@ -125,7 +128,11 @@ class _LoadingPage0 extends State<LoadingPage0> {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PicGuideline(widget.userData))),
+
+                      builder: (context) => const FaceDetectorPage())), //카메라로 이동
+
+
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(

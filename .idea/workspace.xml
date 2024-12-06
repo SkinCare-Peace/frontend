@@ -5,11 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee6614ce-2a79-474c-bc4c-ef3e0acb5ae0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/frontend/lib/face_detection/face_painter.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/lib/face_detection/painter.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/guidline.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/guidline.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/bbox.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/bbox.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/camera_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/camera_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/face_detector_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/face_detector_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/face_result.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/face_result.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/face_detection/toServer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/face_detection/toServer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/loading/loading_page0.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/loading/loading_page0.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/question/question3.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/question/question3.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/routines/routine_sucessfuly_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/routines/routine_sucessfuly_create.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,20 +35,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feature/cameraLo",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/shu/frontend",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/cameraLo&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/shu/frontend&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
