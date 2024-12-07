@@ -14,9 +14,15 @@ class AppColors {
   static const Color success = Color(0xFF4CAF50);
 
   // 점수 상태 색상
-  static const Color negativeScore = Color.fromARGB(255, 255, 203, 203); // 긍정적인 점수 (연한 초록색)
-  static const Color positiveScore = Color.fromARGB(255, 228, 252, 219); // 부정적인 점수 (연한 빨간색)
-  static const Color negative = Color(0xFFFF7778);
+  static const Color negativeScore =
+      Color.fromARGB(255, 255, 203, 203); // 긍정적인 점수 (연한 초록색)
+  static const Color positiveScore =
+      Color.fromARGB(255, 228, 252, 219); // 부정적인 점수 (연한 빨간색)
+
+  static const Color negativePoint = Color(0xFFFF7778);
+  static const Color positivePoint = Color.fromARGB(255, 115, 221, 237);
+
+  static const Color marker = Color(0xFFFF7778);
 
   // 기타 색상
   static const Color progressBar = Color(0xFFE0E0E0); // 프로그래스 바 배경색

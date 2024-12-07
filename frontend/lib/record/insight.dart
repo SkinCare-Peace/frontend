@@ -3,6 +3,8 @@ import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/layout/text.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:frontend/record/calendar.dart';
+import 'package:frontend/record/calendar_post.dart';
 
 class Insight extends StatefulWidget {
   final UserData userData; // UserData 필드 추가
@@ -93,10 +95,62 @@ class _InsightState extends State<Insight> {
       backgroundColor: Colors.white, // 배경색 흰색
       body: Padding(
         padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          List<DateTime> fetchedDates =
+                              await fetchMarkedDates(widget.userData);
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: MediaQuery.of(context).size.height *
+                                    0.9, // 모달 높이 크기
+                                width: MediaQuery.of(context).size.width,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white, // 모달 배경색
+                                  borderRadius: BorderRadius.only(
+                                    topLeft:
+                                        Radius.circular(30), // 모달 좌상단 라운딩 처리
+                                    topRight:
+                                        Radius.circular(30), // 모달 우상단 라운딩 처리
+                                  ),
+                                ),
+                                child: Calander(widget.userData,
+                                    fetchedDates), // 모달 내부 디자인 영역
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.calendar_month),
+                      ),
+                      const Text(
+                        "루틴 달성 기록",
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
             const TitleText(text: "피부 데이터 통계"),
             const ContentText_bk(text: "당신의 피부는 어떻게 변화하고 있을까요?"),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -224,15 +278,16 @@ class _InsightState extends State<Insight> {
                                       show: true,
                                       verticalInterval: 1,
                                       getDrawingVerticalLine: (value) {
-                                        return  FlLine(
+                                        return FlLine(
                                           color: Colors.grey[350], // 수직선 색상
                                           strokeWidth: 0.5, // 수직선 두께
                                           dashArray: [5, 5], // 점선 스타일: 대시와 간격
                                         );
                                       },
                                       getDrawingHorizontalLine: (value) {
-                                        return  FlLine(
-                                          color: Colors.grey[350], // 수평선 색상 (연한 회색)
+                                        return FlLine(
+                                          color: Colors
+                                              .grey[350], // 수평선 색상 (연한 회색)
                                           strokeWidth: 0.5, // 수평선 두께
                                           dashArray: [5, 5], // 점선 스타일: 대시와 간격
                                         );
@@ -451,8 +506,8 @@ class _InsightState extends State<Insight> {
 
   Color chooseColor(int score, int pivot) {
     if (score >= pivot) {
-      return AppColors.positiveScore; // pivot 이상
+      return AppColors.positivePoint; // pivot 이상
     }
-    return AppColors.negativeScore;
+    return AppColors.negativePoint;
   }
 }
