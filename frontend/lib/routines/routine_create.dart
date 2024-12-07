@@ -117,22 +117,36 @@ Future<Map<String, dynamic>> fetchRoutine({
   }
 
  // 루틴 불러오기 *******************************************
-  void fetchAndUpdateRoutine() async {
-    try {
-      final routineData = await fetchRoutine(
-        timeMinutes: widget.timeMinutes,
-        moneyWon: widget.moneyWon,
-      );
+void fetchAndUpdateRoutine() async {
+  setState(() {
+    routineSteps = []; // 로딩 상태를 나타내기 위해 비웁니다.
+    isExpandedList = [];
+    // 기존 화장품 추천 데이터를 초기화
+    recommendedCosmetics = {
+      "morning": {}, // 아침 화장품 초기화
+      "evening": {}, // 저녁 화장품 초기화
+    };
+  });
 
-      setState(() {
-        routines["morning"] = List<Map<String, dynamic>>.from(routineData["morning_routine"]);
-        routines["evening"] = List<Map<String, dynamic>>.from(routineData["evening_routine"]);
-        updateRoutineSteps(); // 초기 루틴
-      });
-    } catch (e) {
-      print("Error fetching routine: $e");
-    }
+  try {
+    final routineData = await fetchRoutine(
+      timeMinutes: widget.timeMinutes,
+      moneyWon: widget.moneyWon,
+    );
+
+    setState(() {
+      routines["morning"] = List<Map<String, dynamic>>.from(routineData["morning_routine"]);
+      routines["evening"] = List<Map<String, dynamic>>.from(routineData["evening_routine"]);
+      updateRoutineSteps(); // 초기 루틴 업데이트
+    });
+  } catch (e) {
+    print("Error fetching routine: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("새로운 루틴 요청 중 오류 발생: $e")),
+    );
   }
+}
+
 
   // 현재 선택된 루틴에 따라 routineSteps 업데이트함 + 화장품도 다시 요청 *******************************************
   
