@@ -26,11 +26,16 @@ class _RoutinePageState extends State<RoutinePage> {
   List<Map<String, dynamic>> routineSteps = [];
   late List<bool> isExpandedList;
   Map<int, List<Map<String, dynamic>>> recommendedCosmetics = {}; // 추천 화장품 저장
+  Map<String, List<Map<String, dynamic>>> routines = {
+    "morning": [],
+    "evening": [],
+  }; // 낮/밤 루틴 저장
+  String selectedRoutine = "morning"; // 기본은 낮으로
 
-  // 총 소요 시간 계산
-  int calculateTotalTime() {
+  // 소요 시간 계산 (낮밤 분리)
+  int calculateTotalTime(String routineType) {
     int totalTime = 0;
-    for (var step in routineSteps) {
+    for (var step in routines[routineType] ?? []) {
       if (step['time'] != null) {
         String timeString = step['time']!.replaceAll('분', '');
         totalTime += int.parse(timeString);
@@ -39,35 +44,37 @@ class _RoutinePageState extends State<RoutinePage> {
     return totalTime;
   }
 
-// 루틴 가져오기
-Future<List<dynamic>> fetchRoutine({
-  required int timeMinutes,
-  required int moneyWon,
-}) async {
-  print("Fetching routine with time: $timeMinutes, money: $moneyWon");
+// 루틴 가져오기 *******************************************
+Future<Map<String, dynamic>> fetchRoutine({
+    required int timeMinutes,
+    required int moneyWon,
+  }) async {
+    print("Fetching routine with time: $timeMinutes, money: $moneyWon");
 
-  final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
-    "time_minutes": timeMinutes.toString(),
-    "money_won": moneyWon.toString(),
-  });
+    final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
+      "time_minutes": timeMinutes.toString(),
+      "money_won": moneyWon.toString(),
+    });
 
-  final response = await http.post(
-    uri,
-    headers: {"Content-Type": "application/json"},
-  );
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+    );
 
-  if (response.statusCode == 200) {
-    final decodedResponse = utf8.decode(response.bodyBytes);
-    final data = json.decode(decodedResponse);
-    return data['routine'];
-  } else {
-    throw Exception("Failed to fetch routine: ${response.body}");
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> data = json.decode(decodedResponse);
+      return {
+        "morning_routine": data['morning_routine'] ?? [], // 아침루틴
+        "evening_routine": data['evening_routine'] ?? [], //밤 루틴
+      };
+    } else {
+      throw Exception("Failed to fetch routine: ${response.body}");
+    }
   }
-}
 
 
-
-  // 추천 화장품 가져오기
+  // 추천 화장품 가져오기 *******************************************
   Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
     required String skinType,
     required String cosmeticType,
@@ -103,34 +110,34 @@ Future<List<dynamic>> fetchRoutine({
     }
   }
 
-// 루틴 불러오기
+ // 루틴 불러오기 *******************************************
   void fetchAndUpdateRoutine() async {
     try {
-      final data = await fetchRoutine(
+      final routineData = await fetchRoutine(
         timeMinutes: widget.timeMinutes,
         moneyWon: widget.moneyWon,
       );
 
       setState(() {
-        routineSteps = List<Map<String, dynamic>>.from(data.map((item) {
-          return {
-            "name": item["name"] ?? "단계 이름 없음",
-            "time": item["usage_time"] != null ? "${item["usage_time"].length}분" : "0분",
-            "sequence": item["sequence"] ?? 0,
-            "frequency": item["frequency"] ?? 0,
-            "usage_time": item["usage_time"] ?? [],
-          };
-        })).toList();
-
-        routineSteps.sort((a, b) => a['sequence'].compareTo(b['sequence']));
-        isExpandedList = List<bool>.filled(routineSteps.length, false);
+        routines["morning"] = List<Map<String, dynamic>>.from(routineData["morning_routine"]);
+        routines["evening"] = List<Map<String, dynamic>>.from(routineData["evening_routine"]);
+        updateRoutineSteps(); // 초기 루틴
       });
     } catch (e) {
       print("Error fetching routine: $e");
     }
   }
 
-// 화장품 불러오기
+  // 현재 선택된 루틴에 따라 routineSteps 업데이트함 *******************************************
+  void updateRoutineSteps() {
+    setState(() {
+      routineSteps = routines[selectedRoutine] ?? [];
+      isExpandedList = List<bool>.filled(routineSteps.length, false);
+    });
+  }
+
+
+// 화장품 불러오기 *******************************************
   void fetchAndUpdateCosmetics(int index, String cosmeticType) async {
     try {
       final String trimmedCosmeticType = cosmeticType.contains('/')
@@ -157,39 +164,102 @@ Future<List<dynamic>> fetchRoutine({
   }
 
 // ************************************************ UI *******************************************
-  @override
+   @override
   void initState() {
     super.initState();
     fetchAndUpdateRoutine();
   }
+
   @override
   Widget build(BuildContext context) {
-    int totalTime = calculateTotalTime();
+    int totalTime = calculateTotalTime(selectedRoutine);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
-      body: routineSteps.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 30.0, left: 30, top: 80, bottom: 10),
+            child: Text(
+              '${utf8.decode(widget.userData.name.runes.toList())} 님에게 가장 잘 맞는 루틴',
+              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 25),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
+            child: Text(
+              '${selectedRoutine == "morning" ? "아침" : "저녁"} 루틴 (총 소요시간 $totalTime분)',
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            ),
+          ),
+          // 낮/밤 선택 버튼
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(right: 30.0, left: 30, top: 80, bottom: 10),
-                  child: Text(
-                    '${utf8.decode(widget.userData.name.runes.toList())} 님에게 가장 잘 맞는 루틴',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 25),
-                    textAlign: TextAlign.center,
+                Expanded(child:
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedRoutine = "morning";
+                      updateRoutineSteps();
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: selectedRoutine == "morning"
+                        ? const Color.fromARGB(255, 255, 245, 183)
+                        : const Color.fromARGB(255, 230, 230, 230),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
                   child: Text(
-                    '1일 2회 (총 소요시간 $totalTime분)',
-                    style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                    "낮",
+                    style: TextStyle(
+                      color: selectedRoutine == "morning" ? const Color.fromARGB(255, 0, 0, 0) : Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: ListView.builder(
+                ),),
+                const SizedBox(width: 10),
+                Expanded(child:
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedRoutine = "evening";
+                      updateRoutineSteps();
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: selectedRoutine == "evening"
+                        ? const Color.fromARGB(255, 50, 82, 157)
+                        : const Color.fromARGB(255, 230, 230, 230),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
+                    "밤",
+                    style: TextStyle(
+                      color: selectedRoutine == "evening" ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          // 루틴 리스트
+          Expanded(
+            child: routineSteps.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 26.0),
                     itemCount: routineSteps.length,
                     itemBuilder: (context, index) {
@@ -237,7 +307,7 @@ Future<List<dynamic>> fetchRoutine({
                                         ),
                                       ],
                                     ),
-                                    Text(step['time']!),
+                                    //Text(step['time']!),
                                   ],
                                 ),
                                 if (isExpanded) ...[
@@ -259,21 +329,19 @@ Future<List<dynamic>> fetchRoutine({
                                           padding: const EdgeInsets.only(bottom: 10.0),
                                           child: Row(
                                             children: [
-                                              
                                               if (cosmetic['image_url'] != null)
-  ClipRRect(
-    borderRadius: BorderRadius.circular(5), 
-    child: Image.network(
-      cosmetic['image_url'],
-      height: 50,
-      width: 50,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return const Icon(Icons.broken_image, size: 50);
-      },
-    ),
-  ),
-
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  child: Image.network(
+                                                    cosmetic['image_url'],
+                                                    height: 50,
+                                                    width: 50,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return const Icon(Icons.broken_image, size: 50);
+                                                    },
+                                                  ),
+                                                ),
                                               const SizedBox(width: 10),
                                               Expanded(
                                                 child: Text(
@@ -283,46 +351,15 @@ Future<List<dynamic>> fetchRoutine({
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
-                                              IconButton(icon: const Icon(
-                                                Icons.info_outline
-                                              ),
-                                              onPressed: () => {showCosmeticDetails(context, cosmetic)},
+                                              IconButton(
+                                                icon: const Icon(Icons.info_outline),
+                                                onPressed: () => {showCosmeticDetails(context, cosmetic)},
                                               )
                                             ],
                                           ),
                                         );
                                       }).toList(),
                                     ),
-                                  const SizedBox(height: 10),
-                                  const Text('추천 시간대:', style: TextStyle(fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 10),
-                                  Wrap(
-                                    spacing: 10,
-                                    children: (step['usage_time'] as List<dynamic>).map((time) {
-                                      final String timeString = time.toString();
-                                      Color chipColor;
-                                      if (timeString == 'morning') {
-                                        chipColor = const Color.fromARGB(255, 255, 249, 195);
-                                      } else if (timeString == 'evening') {
-                                        chipColor = const Color.fromARGB(255, 185, 223, 255);
-                                      } else {
-                                        chipColor = const Color.fromARGB(255, 216, 238, 217);
-                                      }
-                                      return Chip(
-                                        label: Text(
-                                          timeString == 'morning' ? '아침' : '저녁',
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        backgroundColor: chipColor,
-                                        side: BorderSide(color: chipColor),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: -4),
-                                      );
-                                    }).toList(),
-                                  ),
                                 ],
                               ],
                             ),
@@ -331,59 +368,57 @@ Future<List<dynamic>> fetchRoutine({
                       );
                     },
                   ),
+          ),
+          const SizedBox(height: 20),
+          // 하단 버튼
+          Padding(
+            padding: const EdgeInsets.all(40.0),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RoutineSuccessfullyCreated(widget.userData),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 58),
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(17),
+                    ),
+                  ),
+                  child: const Text(
+                    '이 루틴으로 결정 !',
+                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                 ),
- 
-
-                // ************************** 하단 결정 버튼 **************************
-                Padding(
-                  padding: const EdgeInsets.all(40.0),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RoutineSuccessfullyCreated(widget.userData),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 58),
-                          backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17),
-                          ),
-                        ),
-                        child: const Text(
-                          '이 루틴으로 결정 !',
-                          style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: fetchAndUpdateRoutine, // 새로운 루틴 요청
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 58),
-                          backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17),
-                          ),
-                        ),
-                        child: const Text(
-                          '새로운 루틴 추천받기',
-                          style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: fetchAndUpdateRoutine, // 새로운 루틴 요청
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 58),
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(17),
+                    ),
+                  ),
+                  child: const Text(
+                    '새로운 루틴 추천받기',
+                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }
-
 
 // ************************************  화장품 정보 표시 다이얼로그 ************************************ 
 void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
@@ -398,10 +433,10 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
         title: Center(
           child: Text(
             cosmetic['name'] ?? '제품 이름 없음',
-            textAlign: TextAlign.center, 
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18, 
+              fontSize: 18,
             ),
           ),
         ),
@@ -413,36 +448,43 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
               Text("${cosmetic['reason'] ?? '추천 이유 정보 없음'}"),
               const SizedBox(height: 15),
               if (cosmetic['image_url'] != null)
-              ClipRRect( borderRadius: BorderRadius.circular(10), 
-              child: 
-                Image.network(
-                  cosmetic['image_url'],
-                  height: 300,
-                  width: 300,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image, size: 300);
-                  },
-                ),),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    cosmetic['image_url'],
+                    height: 300,
+                    width: 300,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.broken_image, size: 300);
+                    },
+                  ),
+                ),
               const SizedBox(height: 15),
-              Text("브랜드: ${cosmetic['brand'] ?? '정보 없음'}",style: const TextStyle(
-                 fontWeight: FontWeight.w600, 
-                 fontSize: 12,
-                 ),
+              Text(
+                "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
               ),
               const SizedBox(height: 14),
-              Text("가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",style: const TextStyle(
-                fontWeight: FontWeight.bold, 
-                fontSize: 16, 
-                ),),
+              Text(
+                "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   final url = cosmetic['link'];
                   if (url != null && await canLaunchUrl(Uri.parse(url))) {
                     await launchUrl(
-                      Uri.parse(url), 
-                      mode: LaunchMode.externalApplication);
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("유효하지 않은 링크입니다")),
@@ -469,12 +511,13 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('닫기', style: TextStyle(
-            fontWeight: FontWeight.w400, 
-            fontSize: 16, 
+            child: const Text(
+              '닫기',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
               ),
-              )
-            ,
+            ),
           ),
         ],
       );
