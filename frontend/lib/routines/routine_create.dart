@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/routines/routine_sucessfuly_create.dart';
 import 'package:url_launcher/url_launcher.dart'; // url 열기용
@@ -25,7 +27,11 @@ class RoutinePage extends StatefulWidget {
 class _RoutinePageState extends State<RoutinePage> {
   List<Map<String, dynamic>> routineSteps = [];
   late List<bool> isExpandedList;
-  Map<int, List<Map<String, dynamic>>> recommendedCosmetics = {}; // 추천 화장품 저장
+  Map<String, Map<int, List<Map<String, dynamic>>>> recommendedCosmetics = {
+  "morning": {}, // 아침 화장품 
+  "evening": {}, // 저녁 화장품
+};
+
   Map<String, List<Map<String, dynamic>>> routines = {
     "morning": [],
     "evening": [],
@@ -128,40 +134,41 @@ Future<Map<String, dynamic>> fetchRoutine({
     }
   }
 
-  // 현재 선택된 루틴에 따라 routineSteps 업데이트함 *******************************************
-  void updateRoutineSteps() {
-    setState(() {
-      routineSteps = routines[selectedRoutine] ?? [];
-      isExpandedList = List<bool>.filled(routineSteps.length, false);
-    });
-  }
+  // 현재 선택된 루틴에 따라 routineSteps 업데이트함 + 화장품도 다시 요청 *******************************************
+  
+void updateRoutineSteps() {
+  setState(() {
+    routineSteps = routines[selectedRoutine] ?? [];
+    isExpandedList = List<bool>.filled(routineSteps.length, false);
+  });
 
-
-// 화장품 불러오기 *******************************************
-  void fetchAndUpdateCosmetics(int index, String cosmeticType) async {
-    try {
-      final String trimmedCosmeticType = cosmeticType.contains('/')
-          ? cosmeticType.split('/').first.trim()
-          : cosmeticType.trim();
-
-      final cosmetics = await fetchRecommendedCosmetics(
-        skinType: "건성",
-        cosmeticType: trimmedCosmeticType,
-        budget: widget.moneyWon,
-      );
-
-      setState(() {
-        recommendedCosmetics[index] = cosmetics;
-      });
-    } catch (e) {
-      print("Error fetching cosmetics for step $index: $e");
-      print("Query parameters: ${{
-        "user_skin_type": "건성",
-        "cosmetic_types": cosmeticType,
-        "budget": widget.moneyWon.toString(),
-      }}");
+  // 초기화 시 선택된 루틴의 화장품 데이터 요청
+  for (int i = 0; i < routineSteps.length; i++) {
+    if (!recommendedCosmetics[selectedRoutine]!.containsKey(i)) {
+      fetchAndUpdateCosmetics(i, routineSteps[i]['name'], selectedRoutine);
     }
   }
+}
+  // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
+void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType) async {
+  try {
+    final skinType = routineType == "morning" ? "건성" : "지성"; // 루틴에 따른 스킨 타입 설정
+    final cosmetics = await fetchRecommendedCosmetics(
+      skinType: skinType,
+      cosmeticType: cosmeticType,
+      budget: widget.moneyWon,
+    );
+
+    setState(() {
+      if (!recommendedCosmetics[routineType]!.containsKey(index)) {
+        recommendedCosmetics[routineType]![index] = [];
+      }
+      recommendedCosmetics[routineType]![index] = cosmetics;
+    });
+  } catch (e) {
+    print("Error fetching cosmetics for step $index in $routineType routine: $e");
+  }
+}
 
 // ************************************************ UI *******************************************
    @override
@@ -265,7 +272,8 @@ Future<Map<String, dynamic>> fetchRoutine({
                     itemBuilder: (context, index) {
                       bool isExpanded = isExpandedList[index];
                       var step = routineSteps[index];
-                      var cosmetics = recommendedCosmetics[index] ?? [];
+                      var cosmetics = recommendedCosmetics[selectedRoutine]?[index] ?? []; 
+                      // 현재 선택된 낮밤 루틴에 맞춰서 접근
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -276,7 +284,7 @@ Future<Map<String, dynamic>> fetchRoutine({
                             });
 
                             if (cosmetics.isEmpty) {
-                              fetchAndUpdateCosmetics(index, step['name']);
+                              fetchAndUpdateCosmetics(index, step['name'], selectedRoutine);
                             }
                           },
                           child: AnimatedContainer(
@@ -311,6 +319,9 @@ Future<Map<String, dynamic>> fetchRoutine({
                                   ],
                                 ),
                                 if (isExpanded) ...[
+                                  const SizedBox(height: 30),
+                                  const Text('사용 방법:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(step['instructions'] ?? "사용 방법 없음"),
                                   const SizedBox(height: 30),
                                   const Text('빈도:', style: TextStyle(fontWeight: FontWeight.bold)),
                                   Text("${step['frequency']}회"),
