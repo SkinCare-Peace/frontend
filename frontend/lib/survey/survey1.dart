@@ -1,72 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/question/question2.dart';
+import 'package:frontend/layout/text.dart';
+import 'package:frontend/survey/survey2.dart';
+import 'package:frontend/survey/survey_info.dart';
 
-class QuestionPage1 extends StatefulWidget {
+class Survey1 extends StatefulWidget {
   final UserData userData;
+  final SurveyInfo surveyInfo;
 
-  const QuestionPage1(this.userData, {super.key});
+  const Survey1(
+    this.userData, this.surveyInfo,{
+    super.key,
+    required ,
+  });
 
   @override
-  _QuestionPage1State createState() => _QuestionPage1State();
+  _Survey1State createState() => _Survey1State();
 }
 
-class _QuestionPage1State extends State<QuestionPage1> {
-  // 선택된 제품들 저장할 map
-  final Map<String, bool> _selectedProducts = {
-    '선크림': false,
-    '폼 클렌징': false,
-    '로션': false,
-    '마스크팩': false,
-    '립밤': false,
-    '올인원': false,
-  };
+class _Survey1State extends State<Survey1> {
+  String? _selectedOption;
+
+  final List<Map<String, dynamic>> options = [
+    {'label': '느껴지지 않는다.', 'oil': 0},
+    {'label': '직후는 아니지만, 일정 시간이 지나면 느껴진다.', 'oil': 20},
+    {'label': '세수하고 물이 마르면서 느껴진다.', 'oil': 50},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
           width: 350,
+          color: Colors.white,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '스킨케어 제품 중 자주 사용해본 제품을 선택해주세요',
+                '세수 후 얼굴이 당기거나\n조여지는 느낌을 받나요?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              const ContentText(text: "(아무것도 바르지 않은 상태에서)"),
               const SizedBox(height: 40),
-              ..._selectedProducts.keys.map((product) {
-                return Column(
-                  children: [
-                    _buildCustomCheckboxOption(product), // 만든 체크박스
-                    const SizedBox(height: 18), // 항목 간격 조절
-                  ],
-                );
-              }),
+              ...options.map((option) => _buildCustomRadioOption(option)),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                   Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => QuestionPage2(widget.userData)), // 다음 질문으로 넘어감
-                      );
-        
-                  // 제출 버튼 클릭 시의 동작
-                  List<String> selectedItems = _selectedProducts.entries
-                      .where((entry) => entry.value)
-                      .map((entry) => entry.key)
-                      .toList();
+                  if (_selectedOption != null) {
+                    final selected = options
+                        .firstWhere((o) => o['label'] == _selectedOption);
+                    widget.surveyInfo.oil = selected['oil'];
 
-                  print('$selectedItems');
-
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Survey2(
+                          userData: widget.userData,
+                          surveyInfo: widget.surveyInfo,
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('하나의 옵션을 선택해주세요!'),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
@@ -77,7 +82,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                   child: Text(
-                    '제출하기',
+                    '다음 질문으로',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -89,33 +94,37 @@ class _QuestionPage1State extends State<QuestionPage1> {
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // 배경 색상
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
     );
   }
 
-  // 커스텀 체크박스 
-  Widget _buildCustomCheckboxOption(String label) {
-    return ListTile(
-      title: Text(
-        label,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 25, // 글씨 크기 크게
+  Widget _buildCustomRadioOption(Map<String, dynamic> option) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            option['label'],
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          trailing: Transform.scale(
+            scale: 1.5,
+            child: Radio<String>(
+              value: option['label'],
+              groupValue: _selectedOption,
+              onChanged: (String? value) {
+                setState(() {
+                  _selectedOption = value;
+                });
+              },
+              activeColor: const Color.fromARGB(255, 87, 204, 222),
+            ),
+          ),
         ),
-      ),
-      trailing: Transform.scale(
-        scale: 1.5, // 체크박스 크기 조정
-        child: Checkbox(
-          shape: const CircleBorder(), // 체크박스 동그라미
-          value: _selectedProducts[label],
-          onChanged: (bool? value) {
-            setState(() {
-              _selectedProducts[label] = value ?? false;
-            });
-          },
-          activeColor: const Color.fromARGB(255, 87, 204, 222), // 선택된 체크박스 색상 주기
-        ),
-      ),
+        const SizedBox(height: 18),
+      ],
     );
   }
 }

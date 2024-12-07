@@ -1,24 +1,26 @@
+// survey4.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/face_detection/face_result.dart';
 import 'package:frontend/survey/survey_info.dart';
-import 'package:frontend/survey/survey3.dart';
+// 필요하다면 SurveyComplete 같은 다음 페이지 import
 
-class Survey2 extends StatefulWidget {
+class Survey4 extends StatefulWidget {
   final UserData userData;
   final SurveyInfo surveyInfo;
 
-  const Survey2({
+  const Survey4({
     super.key,
     required this.userData,
     required this.surveyInfo,
   });
 
   @override
-  _Survey2State createState() => _Survey2State();
+  _Survey4State createState() => _Survey4State();
 }
 
-class _Survey2State extends State<Survey2> {
-  String? _selectedOption; // 'Y' 또는 'N'
+class _Survey4State extends State<Survey4> {
+  String? _selectedOption; // '네' 또는 '아니오'
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +35,10 @@ class _Survey2State extends State<Survey2> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '기초 스킨 케어 후 따갑거나\n붉어졌던 적이 있나요?',
+                '코나 턱에 까만 점을 짜면 노란 피지가 나옵니까?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -53,16 +55,19 @@ class _Survey2State extends State<Survey2> {
               ElevatedButton(
                 onPressed: () {
                   if (_selectedOption != null) {
-                    widget.surveyInfo.sensitive1 = (_selectedOption == '네');
-                    Navigator.push(
+                    // "네"면 pizi = true, "아니오"면 pizi = false
+                    widget.surveyInfo.pizi = (_selectedOption == '네');
+                                        Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Survey3(
-                          userData: widget.userData,
-                          surveyInfo: widget.surveyInfo,
-                        ),
+                        builder: (context) => BSTI(widget.userData),
                       ),
                     );
+                    // 여기서 다음 페이지로 이동하거나,
+                    // 데이터를 서버로 전송하는 로직을 추가할 수 있습니다.
+                    // 예: Navigator.push(...);
+                    // 또는 단순히 print로 확인:
+                    //print('피지 상태: ${widget.surveyInfo.pizi}');
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -80,7 +85,7 @@ class _Survey2State extends State<Survey2> {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                   child: Text(
-                    '다음 질문으로',
+                    '완료하기',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
