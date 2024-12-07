@@ -32,6 +32,7 @@
  - face_result.dart : 얼굴 인식결과 (더미데이터)
  - bbox.dart : 얼굴의 각 영역을 bbox로 따오는 부분
  - toserver.dart : 얼굴 인식을 백에게 전송하는 로직
+
 </br>
 
 ### record
@@ -60,6 +61,7 @@
  - routine_create.dart : 루틴을 생성하는 화면 (화장품 추천로직 포함)
  - routine_start.dart : 생성된 루틴이 있으면, 이 페이지에서 루틴을 실천할 수 있다
  - routine_sucessfuly_create : "루틴을 저장중이에요" 로딩페이지
+
 </br>
 
 ### main.dart : 메인
