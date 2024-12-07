@@ -315,7 +315,10 @@ void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType)
                                         ),
                                       ],
                                     ),
-                                    //Text(step['time']!),
+                                    Text(
+                                      step['time'] ?? '시간 정보 없음', // null일 경우 기본 텍스트 표시됨
+                                      style: const TextStyle(fontSize: 14), 
+                                      ),
                                   ],
                                 ),
                                 if (isExpanded) ...[
