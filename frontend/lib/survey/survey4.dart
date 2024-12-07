@@ -1,7 +1,9 @@
 // survey4.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/Constants/which_bsti.dart';
 import 'package:frontend/face_detection/face_result.dart';
+import 'package:frontend/layout/text.dart';
 import 'package:frontend/survey/survey_info.dart';
 // 필요하다면 SurveyComplete 같은 다음 페이지 import
 
@@ -35,12 +37,20 @@ class _Survey4State extends State<Survey4> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '코나 턱에 까만 점을 짜면 노란 피지가 나옵니까?',
+                '블랙헤드가 있나요?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              const ContentText(
+                  text: "(오돌토돌하거나 검정 점 같은 부분을\n압출하면 노란색 피지가 나오나요?)"),
+              const SizedBox(height: 20),
+              Image.asset(
+                "assets/images/pizi.jpg",
+                width: 200,
+                fit: BoxFit.fitWidth,
               ),
               const SizedBox(height: 40),
               ...options.map((option) {
@@ -57,17 +67,14 @@ class _Survey4State extends State<Survey4> {
                   if (_selectedOption != null) {
                     // "네"면 pizi = true, "아니오"면 pizi = false
                     widget.surveyInfo.pizi = (_selectedOption == '네');
-                                        Navigator.push(
+                    final String userBSTI = DecideBSTI.whichBSTI(widget.surveyInfo);
+                    // 위 userBSTI string을 사용자 정보로 push하는 api 추가
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => BSTI(widget.userData),
                       ),
                     );
-                    // 여기서 다음 페이지로 이동하거나,
-                    // 데이터를 서버로 전송하는 로직을 추가할 수 있습니다.
-                    // 예: Navigator.push(...);
-                    // 또는 단순히 print로 확인:
-                    //print('피지 상태: ${widget.surveyInfo.pizi}');
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

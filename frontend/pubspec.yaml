@@ -57,6 +57,7 @@ flutter:
     - assets/images/background.png
     - assets/images/logo.png
     - assets/images/glogo.png
+    - assets/images/pizi.jpg
 
     # 제품 사진
     - assets/product/carrotCarming.png
