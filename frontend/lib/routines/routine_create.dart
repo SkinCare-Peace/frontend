@@ -119,12 +119,13 @@ Future<Map<String, dynamic>> fetchRoutine({
  // 루틴 불러오기 *******************************************
 void fetchAndUpdateRoutine() async {
   setState(() {
-    routineSteps = []; // 로딩 상태를 나타내기 위해 비웁니다.
+    routineSteps = []; //루틴 새로 생성하면 초기화
     isExpandedList = [];
-    // 기존 화장품 추천 데이터를 초기화
+
+    // 기존 화장품 추천 데이터 초기화
     recommendedCosmetics = {
-      "morning": {}, // 아침 화장품 초기화
-      "evening": {}, // 저녁 화장품 초기화
+      "morning": {}, 
+      "evening": {}, 
     };
   });
 
@@ -166,11 +167,18 @@ void updateRoutineSteps() {
   // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
 void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType) async {
   try {
-    final skinType = routineType == "morning" ? "건성" : "지성"; // 루틴에 따른 스킨 타입 설정
+    final int stepCount = routineSteps.length; // 루틴 개수 (비용 나눠야함)
+    if (stepCount == 0) {
+      throw Exception("루틴 단계가 없습니다.");
+    }
+
+    final int budgetPerStep = (widget.moneyWon / stepCount).floor(); // 단계별로 예산 계산
+    final skinType = routineType == "morning" ? "건성" : "지성"; // 루틴에 따른 스킨 타입 설정 (임시 값)
+
     final cosmetics = await fetchRecommendedCosmetics(
       skinType: skinType,
       cosmeticType: cosmeticType,
-      budget: widget.moneyWon,
+      budget: budgetPerStep, // 각 루틴별로 나눠진 비용 전달
     );
 
     setState(() {
@@ -183,6 +191,7 @@ void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType)
     print("Error fetching cosmetics for step $index in $routineType routine: $e");
   }
 }
+
 
 // ************************************************ UI *******************************************
    @override
