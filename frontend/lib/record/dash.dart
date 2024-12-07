@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/colors.dart';
@@ -70,13 +72,13 @@ class _DashPageState extends State<DashPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ContentTextLeft(
-                      text: "DSPT ${widget.userData.name}님의\n피부 데이터",
+                      text: "DSPT ${utf8.decode(widget.userData.name.runes.toList())}님의\n피부 데이터",
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                     const SizedBox(height: 10),
                     ContentTextLeft(
-                      text: "${widget.userData.name}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
+                      text: "${utf8.decode(widget.userData.name.runes.toList())}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
