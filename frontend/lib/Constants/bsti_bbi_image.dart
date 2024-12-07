@@ -35,4 +35,22 @@ static String bstiDescription(String bsti) {
       return "피부가 달걀처럼 매끈하시네요! 지성 피부로 주로 넓은 모공과 번들거림이 특징이에요. 피지 조절과 보습에 신경을 써볼까요?";
     }
   }
+
+static String bstiMent(String bsti) {
+    if (bsti == "ORPT" || bsti == "ORNT" || bsti == "OSPT" || bsti == "OSNT") {
+      return "피부가 반짝 빛나는";
+    } else if (bsti == "DRNT" ||
+        bsti == "DRNW" ||
+        bsti == "DSNT" ||
+        bsti == "DSNW") {
+      return "도화지 피부";
+    } else if (bsti == "DRPT" ||
+        bsti == "DRPW" ||
+        bsti == "DSPT" ||
+        bsti == "DSPW") {
+      return "발그레한 피부";
+    } else {
+      return "달걀같은 피부";
+    }
+  }
 }
