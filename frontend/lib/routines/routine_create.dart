@@ -456,7 +456,11 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              Text("${cosmetic['reason'] ?? '추천 이유 정보 없음'}"),
+              Text(
+                  "${cosmetic['reason'] ?? '추천 이유 정보 없음'}",
+                  textAlign: TextAlign.center, 
+                  style: const TextStyle(fontSize: 12), 
+                  ),      
               const SizedBox(height: 15),
               if (cosmetic['image_url'] != null)
                 ClipRRect(
@@ -471,15 +475,16 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
                     },
                   ),
                 ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
               Text(
                 "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
+                  color: Colors.black54
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 6),
               Text(
                 "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
                 style: const TextStyle(
