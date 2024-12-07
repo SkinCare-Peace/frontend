@@ -4,6 +4,7 @@ import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/layout/text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:frontend/record/calendar.dart';
+import 'package:frontend/record/calendar_post.dart';
 
 class Insight extends StatefulWidget {
   final UserData userData; // UserData 필드 추가
@@ -109,27 +110,43 @@ class _InsightState extends State<Insight> {
                     },
                     icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Container(
-                            height: MediaQuery.of(context).size.height*0.9, // 모달 높이 크기
-                            width: MediaQuery.of(context).size.width,
-                            decoration: const BoxDecoration(
-                              color: Colors.white, // 모달 배경색
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30), // 모달 좌상단 라운딩 처리
-                                topRight: Radius.circular(30), // 모달 우상단 라운딩 처리
-                              ),
-                            ),
-                            child: Calander(widget.userData), // 모달 내부 디자인 영역
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          List<DateTime> fetchedDates =
+                              await fetchMarkedDates(widget.userData);
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: MediaQuery.of(context).size.height *
+                                    0.9, // 모달 높이 크기
+                                width: MediaQuery.of(context).size.width,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white, // 모달 배경색
+                                  borderRadius: BorderRadius.only(
+                                    topLeft:
+                                        Radius.circular(30), // 모달 좌상단 라운딩 처리
+                                    topRight:
+                                        Radius.circular(30), // 모달 우상단 라운딩 처리
+                                  ),
+                                ),
+                                child: Calander(widget.userData,
+                                    fetchedDates), // 모달 내부 디자인 영역
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                    icon: const Icon(Icons.calendar_month),
+                        icon: const Icon(Icons.calendar_month),
+                      ),
+                      const Text(
+                        "루틴 달성 기록",
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),

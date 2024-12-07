@@ -6,26 +6,14 @@ import 'package:table_calendar/table_calendar.dart';
 
 class Calander extends StatefulWidget {
   final UserData userData;
-  const Calander(this.userData, {super.key});
+  final List<DateTime> markedDates;
+  const Calander(this.userData, this.markedDates, {super.key});
 
   @override
   State<Calander> createState() => _CalanderState();
 }
 
 class _CalanderState extends State<Calander> {
-  final List<DateTime> markedDates = [
-    DateTime(2024, 12, 04),
-    DateTime(2024, 12, 07),
-    DateTime(2024, 11, 08),
-    DateTime(2024, 11, 09),
-    DateTime(2024, 11, 13),
-    DateTime(2024, 11, 18),
-    DateTime(2024, 11, 20),
-    DateTime(2024, 11, 29),
-    DateTime(2024, 11, 23),
-    DateTime(2024, 11, 27),
-  ];
-
   late DateTime _focusedDay;
   late DateTime _firstDay;
   late DateTime _lastDay;
@@ -33,6 +21,19 @@ class _CalanderState extends State<Calander> {
   @override
   void initState() {
     super.initState();
+
+    // markedDates는 이제 위젯 외부에서 주입받음
+    List<DateTime> markedDates = widget.markedDates;
+
+    if (markedDates.isEmpty) {
+      // 만약 데이터가 비어 있다면 현재 날짜 기준으로 달력을 구성하거나
+      // 특정 기본값을 줄 수 있음
+      DateTime today = DateTime.now();
+      _firstDay = DateTime(today.year, today.month, 1);
+      _lastDay = DateTime(today.year, today.month + 1, 0);
+      _focusedDay = today;
+      return;
+    }
 
     // 오늘 날짜
     DateTime today = DateTime.now();
@@ -101,7 +102,7 @@ class _CalanderState extends State<Calander> {
 
             // 이벤트 로더를 이용해 마커 표시
             eventLoader: (day) {
-              if (markedDates.any((markedDate) =>
+              if (widget.markedDates.any((markedDate) =>
                   markedDate.year == day.year &&
                   markedDate.month == day.month &&
                   markedDate.day == day.day)) {
