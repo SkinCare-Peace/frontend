@@ -148,7 +148,6 @@ class _DashPageState extends State<DashPage> {
                           MaterialPageRoute(
                             builder: (context) => AddedProduct(
                               widget.userData,
-                              products: const [],
                             ),
                           ));
                     },

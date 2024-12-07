@@ -207,7 +207,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            AddedProduct(widget.userData, products: addedProducts),
+                            AddedProduct(widget.userData),
                       ),
                     ).then((updatedProducts) {
                       if (updatedProducts != null) {

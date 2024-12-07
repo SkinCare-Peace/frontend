@@ -17,7 +17,6 @@ class SearchByName extends StatefulWidget {
 
 class _SearchByNameState extends State<SearchByName> {
   List<Map<String, dynamic>> _searchResults = [];
-  List<Map<String, dynamic>> addedProducts = []; // 보유 제품 저장 리스트
   bool _isLoading = false;
 
   @override
@@ -81,7 +80,8 @@ void _addProductToUser(String userId, String productId) async {
       );
     } else if (response.statusCode == 404) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("오류ㅋ: ${json.decode(response.body)['detail']}")),
+        //SnackBar(content: Text("오류발생: ${json.decode(response.body)['detail']}")),
+        SnackBar(content: Text("이미 추가된 제품입니다!")), //이거 지금 이미 추가된거 추가하면 오류떠서 걍 이렇게 함
       );
     } else {
       print("제품 추가 실패. 상태 코드: ${response.statusCode}");
