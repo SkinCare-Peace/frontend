@@ -315,7 +315,7 @@ class _InsightState extends State<Insight> {
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: SideTitles(
-                                          showTitles: true,
+                                          showTitles: false,
                                           interval: 10, // y축 값 간격 설정
                                           getTitlesWidget: (value, meta) {
                                             // y축 최대값과 최소값 계산
@@ -357,7 +357,7 @@ class _InsightState extends State<Insight> {
                                       ),
                                       rightTitles: AxisTitles(
                                         sideTitles: SideTitles(
-                                          showTitles: true,
+                                          showTitles: false,
                                           interval: 10, // y축 값 간격 설정
                                           getTitlesWidget: (value, meta) {
                                             // y축 최대값과 최소값 계산
