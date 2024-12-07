@@ -75,7 +75,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LoadingFaceResult(),
+                builder: (context) => LoadingFaceResult(widget.userData),
               ),
             );
             for (var i = 0; i < faces.length; i++) {

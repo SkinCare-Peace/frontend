@@ -1,7 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/user_data.dart';
 
 class LoadingFaceResult extends StatefulWidget {
+
+  final UserData userData; // UserData 필드 추가
+  const LoadingFaceResult(this.userData, {super.key}); // UserData를 생성자에서 받음
+
   @override
   _LoadingFaceResult  createState() => _LoadingFaceResult();
 }
@@ -49,8 +55,8 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              '유지민 님의\n피부를 검사하고 있어요!',
+            Text(
+              '${utf8.decode(widget.userData.name.runes.toList())}님의\n피부를 검사하고 있어요!',
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
