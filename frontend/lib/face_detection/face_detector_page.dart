@@ -163,75 +163,81 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // 카메라 화면
-          CameraView(
-            key: _cameraViewKey,
-          ),
-          // 흐림 처리 + 타원 가이드라인
-          ClipPath(
-            clipper: OvalClipper(), // 타원 모양 클리퍼
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // 흐림 강도
-              child: Container(
-                color: Colors.black.withOpacity(0.1), // 흐림 위에 반투명 검은색
-              ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Stack(
+      children: [
+        // 카메라 화면
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.75, // 화면 3/4 높이
+            width: MediaQuery.of(context).size.width, // 화면 전체 너비
+            child: CameraView(
+              key: _cameraViewKey,
             ),
           ),
-          // 하단 텍스트 및 버튼
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 25),
-                    child: Text(
-                      '정면으로 가이드라인 안에 얼굴을 맞추고\n"찰칵" 버튼을 눌러주세요!',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black54,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _captureAndSend,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                    ),
-                    child: const Text(
-                      '찰칵',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+        ),
+        // 흐림 처리 + 타원 가이드라인
+        ClipPath(
+          clipper: OvalClipper(), // 타원 모양 클리퍼
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // 흐림 강도
+            child: Container(
+              color: Colors.black.withOpacity(0.1), // 흐림 위에 반투명 검은색
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
+        ),
+        // 하단 텍스트 및 버튼
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 25),
+                  child: Text(
+                    '정면으로 가이드라인 안에 얼굴을 맞추고\n"찰칵" 버튼을 눌러주세요!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black54,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _captureAndSend,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                  ),
+                  child: const Text(
+                    '찰칵',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}}
 
 // 타원 바깥 부분 클리핑을 위한 CustomClipper
 class OvalClipper extends CustomClipper<Path> {
