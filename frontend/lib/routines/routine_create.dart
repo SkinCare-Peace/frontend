@@ -173,10 +173,10 @@ Future<List<dynamic>> fetchRoutine({
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(right: 30.0, left: 30, top: 80, bottom: 10),
                   child: Text(
-                    '유지민 님에게 가장 잘 맞는 루틴',
+                    '${utf8.decode(widget.userData.name.runes.toList())} 님에게 가장 잘 맞는 루틴',
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 25),
                     textAlign: TextAlign.center,
                   ),

@@ -97,7 +97,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, 
+      resizeToAvoidBottomInset: true, // 키보드가 올라와도 화면 크기 조정
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView( // 전체 화면을 스크롤 가능하게 설정
         child: Padding(
