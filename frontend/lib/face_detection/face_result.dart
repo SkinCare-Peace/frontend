@@ -19,7 +19,7 @@ class _BSTIState extends State<BSTI> {
   final int criterion = 50; // 점수 기준
   Map<String, int> skinData = {}; // 정규화된 데이터를 저장할 곳
   final String user_bsti = "DSPT";
-  final String bsti_detail = "피부가 반짝 빛나는";
+
 
 
   // 예제 데이터를 정규화해서 UI 업데이트
@@ -65,16 +65,16 @@ class _BSTIState extends State<BSTI> {
               Text(
                 "${utf8.decode(widget.userData.name.runes.toList())}님은",
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.black54,
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                "$bsti_detail,",
+                BBISTI.bstiMent(user_bsti),
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 19,
                   fontWeight: FontWeight.w700,
                   color: Color.fromARGB(230, 0, 0, 0),
                 ),
@@ -90,11 +90,11 @@ class _BSTIState extends State<BSTI> {
               ),
               const SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ContentText(
                   text: BBISTI.bstiDescription(user_bsti), // BSTI 설명
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 15),

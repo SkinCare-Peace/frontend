@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http;
-//토리든
-// 3.34.5.57
+
+
 class SearchByName extends StatefulWidget {
   final UserData userData;
   final String searchQuery;
@@ -17,7 +17,6 @@ class SearchByName extends StatefulWidget {
 
 class _SearchByNameState extends State<SearchByName> {
   List<Map<String, dynamic>> _searchResults = [];
-  List<Map<String, dynamic>> addedProducts = []; // 보유 제품 저장 리스트
   bool _isLoading = false;
 
   @override
@@ -62,6 +61,42 @@ Future<void> _fetchSearchResults(String query) async {
     });
   }
 }
+void _addProductToUser(String userId, String productId) async {
+  final uri = Uri.parse("http://3.34.5.57/users/$userId/cosmetics/$productId");
+  print("API 요청 URL: $uri"); // 요청 URL 디버깅
+
+  try {
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    print("Response status: ${response.statusCode}");
+    print("Response body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("제품이 성공적으로 추가되었습니다!")),
+      );
+    } else if (response.statusCode == 404) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        //SnackBar(content: Text("오류발생: ${json.decode(response.body)['detail']}")),
+        SnackBar(content: Text("이미 추가된 제품입니다!")), //이거 지금 이미 추가된거 추가하면 오류떠서 걍 이렇게 함
+      );
+    } else {
+      print("제품 추가 실패. 상태 코드: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("제품 추가에 실패했습니다 :(")),
+      );
+    }
+  } catch (e) {
+    print("다른 오류: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("네트워크 오류가 발생했습니다 :(")),
+    );
+  }
+}
+
 
  
 
@@ -125,13 +160,10 @@ Future<void> _fetchSearchResults(String query) async {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-               onPressed: () {
+               onPressed: () async {
                   Navigator.pop(context); // 팝업 닫고 
-                  setState(() {
-                    addedProducts.add(product); // 보유 제품에 추가
-                  });
-                  print('${product['name']} 추가됨 (ID: ${product['_id']})');
-                  Navigator.pop(context, addedProducts); //그리고 추가된거 add_main.dart에 반환
+                  _addProductToUser(widget.userData.id, product['_id']); //제품 추가 요청
+                  
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
