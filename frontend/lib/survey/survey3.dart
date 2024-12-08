@@ -1,9 +1,10 @@
-// survey3.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/layout/text.dart';
 import 'package:frontend/survey/survey_info.dart';
 import 'package:frontend/survey/survey4.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Survey3 extends StatefulWidget {
   final UserData userData;
@@ -71,33 +72,7 @@ class _Survey3State extends State<Survey3> {
                 ],
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_selectedOption != null) {
-                      if (_selectedOption == '그렇다') {
-                        widget.surveyInfo.allergy = _controller.text;
-                        widget.surveyInfo.sensitive2 = true;
-                      } else {
-                        widget.surveyInfo.allergy = '';
-                        widget.surveyInfo.sensitive2 = false;
-                      }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Survey4(
-                            userData: widget.userData,
-                            surveyInfo: widget.surveyInfo,
-                          ),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('하나의 옵션을 선택해주세요!'),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _handleNextQuestion,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                     shape: RoundedRectangleBorder(
@@ -147,5 +122,77 @@ class _Survey3State extends State<Survey3> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleNextQuestion() async {
+    if (_selectedOption != null) {
+      if (_selectedOption == '그렇다') {
+        widget.surveyInfo.allergy = _controller.text;
+        widget.surveyInfo.sensitive2 = true;
+      } else {
+        widget.surveyInfo.allergy = '';
+        widget.surveyInfo.sensitive2 = false;
+      }
+
+      // PUT 요청 전송
+      final response = await _sendDataToServer();
+
+      if (response.statusCode == 200) {
+        // 성공적으로 전송한 경우
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Survey4(
+              userData: widget.userData,
+              surveyInfo: widget.surveyInfo,
+            ),
+          ),
+        );
+      } else if (response.statusCode == 404) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('서버를 찾을 수 없습니다.'),
+          ),
+        );
+      } else if (response.statusCode == 402) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('데이터 유효성 검사에 실패했습니다.'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('알 수 없는 오류가 발생했습니다.'),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('하나의 옵션을 선택해주세요!'),
+        ),
+      );
+    }
+  }
+
+  Future<http.Response> _sendDataToServer() async {
+    String url = 'http://3.34.5.57/users/${widget.userData.id}'; // API URL 변경
+    final Map<String, dynamic> body = {
+      "avoid_ingredients":
+          _controller.text.isNotEmpty ? [_controller.text] : [], // 텍스트 필드 데이터
+    };
+
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(body),
+      );
+      return response;
+    } catch (e) {
+      debugPrint('서버 요청 오류: $e');
+      rethrow;
+    }
   }
 }
