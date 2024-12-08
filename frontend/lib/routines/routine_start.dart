@@ -210,9 +210,9 @@ class _RoutinePageState extends State<RoutineStartPage> {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Row(
                       children: [
-                        
                         Text(
-                          step,style: const TextStyle(
+                          step,
+                          style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
                           ),
@@ -227,32 +227,35 @@ class _RoutinePageState extends State<RoutineStartPage> {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton( // 건너뛸래요 누르면
-                  
-onPressed: () {
-  bool hasCompletedAny = completedSteps.any((step) => step); // 완료된 항목 확인
-  if (hasCompletedAny) {
-    // 완료된 항목이 하나라도 있으면 CompletePage로 이동함
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CompletePage()),
-    );
-  } else {
-    // 완료된 항목 없으면 SnackBar 메시지 표시
-     Navigator.pop(context); // 팝업 닫기
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          '하나라도 항목을 완료해 주세요!',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        duration: Duration(seconds: 2), 
-        backgroundColor: Color.fromARGB(255, 0, 0, 0), 
-      ),
-    );
-  }
-},
+                    child: ElevatedButton(
+                      // 건너뛸래요 누르면
 
+                      onPressed: () {
+                        bool hasCompletedAny =
+                            completedSteps.any((step) => step); // 완료된 항목 확인
+                        if (hasCompletedAny) {
+                          // 완료된 항목이 하나라도 있으면 CompletePage로 이동함
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CompletePage()),
+                          );
+                        } else {
+                          // 완료된 항목 없으면 SnackBar 메시지 표시
+                          Navigator.pop(context); // 팝업 닫기
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '하나라도 항목을 완료해 주세요!',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          );
+                        }
+                      },
 
                       style: ElevatedButton.styleFrom(
                         backgroundColor:

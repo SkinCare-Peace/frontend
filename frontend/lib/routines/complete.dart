@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/record/dash.dart';
 
 class CompletePage extends StatelessWidget {
   @override
@@ -11,25 +12,18 @@ class CompletePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 축하 이미지
-              Icon(
-                Icons.check_circle_outline,
-                color: Colors.green,
-                size: 100,
-              ),
-              const SizedBox(height: 20),
-              // 완료 메시지
+
               const Text(
-                '축하합니다!',
+                '루틴을 완료하셨어요!',
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 27,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 10),
               const Text(
-                '루틴을 성공적으로 완료하셨어요!',
+                '지금처럼만 한다면 피부가 엄청 좋아질꺼에요!',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black54,
@@ -37,16 +31,22 @@ class CompletePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
+              Image.asset(
+              'assets/BBIcongs.png',
+              width: 200,
+              height: 200,
+            ),
+            const SizedBox(height: 80),
               // 홈으로 돌아가기 버튼
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); // 이전 화면으로 돌아가기
+
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 child: const Text(
@@ -54,6 +54,7 @@ class CompletePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
+                    fontWeight: FontWeight.w700
                   ),
                 ),
               ),
