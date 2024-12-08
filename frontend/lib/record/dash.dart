@@ -100,7 +100,7 @@ class _DashPageState extends State<DashPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RoutineStartPage(),
+                      builder: (context) => RoutineStartPage(widget.userData),
                     ),
                   );
                 }),

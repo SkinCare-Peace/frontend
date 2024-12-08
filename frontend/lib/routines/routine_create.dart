@@ -1,6 +1,3 @@
-
-import 'dart:math';
-
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/routines/routine_sucessfuly_create.dart';
 import 'package:url_launcher/url_launcher.dart'; // url 열기용
@@ -37,6 +34,8 @@ class _RoutinePageState extends State<RoutinePage> {
     "evening": [],
   }; // 낮/밤 루틴 저장
   String selectedRoutine = "morning"; // 기본은 낮으로
+  String? routineId; //루틴id 저장
+
 
   // 소요 시간 계산 (낮밤 분리)
   int calculateTotalTime(String routineType) {
@@ -49,36 +48,43 @@ class _RoutinePageState extends State<RoutinePage> {
     return totalTime;
   }
 
-  
 
 // 루틴 가져오기 *******************************************
+// 루틴 생성 시 routineId 저장
 Future<Map<String, dynamic>> fetchRoutine({
-    required int timeMinutes,
-    required int moneyWon,
-  }) async {
-    print("Fetching routine with time: $timeMinutes, money: $moneyWon");
+  required int timeMinutes,
+  required int moneyWon,
+}) async {
+  final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
+    "time_minutes": timeMinutes.toString(),
+    "money_won": moneyWon.toString(),
+  });
 
-    final uri = Uri.parse("http://3.34.5.57/routine/").replace(queryParameters: {
-      "time_minutes": timeMinutes.toString(),
-      "money_won": moneyWon.toString(),
-    });
+  final response = await http.post(
+    uri,
+    headers: {"Content-Type": "application/json"},
+  );
 
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-    );
+  if (response.statusCode == 200) {
+    print("보낸 시간 : ${timeMinutes}");
+    print("보낸 돈 : ${moneyWon}");
+    final decodedResponse = utf8.decode(response.bodyBytes);
+    final Map<String, dynamic> data = json.decode(decodedResponse);
+    
+    print("Fetched Routine Data: $data");
+    // 루틴 ID 저장
+    routineId = data['_id'];
+    print("Routine ID: $routineId");
 
-    if (response.statusCode == 200) {
-      final decodedResponse = utf8.decode(response.bodyBytes);
-      final Map<String, dynamic> data = json.decode(decodedResponse);
-      return {
-        "morning_routine": data['morning_routine'] ?? [], // 아침루틴
-        "evening_routine": data['evening_routine'] ?? [], //밤 루틴
-      };
-    } else {
-      throw Exception("Failed to fetch routine: ${response.body}");
-    }
+    return {
+      "morning_routine": data['morning_routine'] ?? [],
+      "evening_routine": data['evening_routine'] ?? [],
+    };
+  } else {
+    throw Exception("Failed to fetch routine: ${response.body}");
   }
+}
+
 
 
   // 추천 화장품 가져오기 *******************************************
@@ -193,7 +199,26 @@ void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType)
   }
 }
 
+//루틴 갱신하기
 
+Future<void> updateRoutine(String routineId) async {
+  final uri = Uri.parse("http://3.34.5.57/users/${widget.userData.id}");
+  final requestBody = jsonEncode({
+    "routine_id": routineId, //루틴 id 보내기
+  });
+
+  final response = await http.put(
+    uri,
+    headers: {"Content-Type": "application/json"},
+    body: requestBody,
+  );
+
+  if (response.statusCode == 200) {
+    print("루틴 저장 성공");
+  } else {
+    throw Exception("Failed to update routine: ${response.body}");
+  }
+}
 // ************************************************ UI *******************************************
    @override
   void initState() {
@@ -413,6 +438,14 @@ void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType)
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    if (routineId != null) {
+                      updateRoutine(routineId!);
+                      print("루틴 적용 성공");
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("루틴 ID가 없습니다.")),
+                          );
+                          }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
