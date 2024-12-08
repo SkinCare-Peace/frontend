@@ -14,6 +14,19 @@ class AddSkinCareMain extends StatefulWidget {
 
 class _AddSkinCareMainState extends State<AddSkinCareMain> {
   List<Map<String, dynamic>> addedProducts = []; // 추가된 제품들용 리스트
+  late TextEditingController _searchController; // 검색어 관리용 컨트롤러
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(); // 컨트롤러 초기화
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose(); // 메모리 누수를 방지하기 위해 컨트롤러 해제
+    super.dispose();
+  }
 
   void _showCategoryPopup(BuildContext context) {
     showModalBottomSheet(
@@ -120,6 +133,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
                 child: TextField(
+                  controller: _searchController, // 컨트롤러 연결
                   style: const TextStyle(fontSize: 15),
                   decoration: InputDecoration(
                     prefixIcon: const Icon(
@@ -159,6 +173,8 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
                             }));
                           });
                         }
+                        // 검색 후 검색창 비우기
+                        _searchController.clear();
                       });
                     }
                   },

@@ -78,7 +78,7 @@ class _DashPageState extends State<DashPage> {
                     ),
                     const SizedBox(height: 10),
                     ContentTextLeft(
-                      text: "${utf8.decode(widget.userData.name.runes.toList())}님의 피부는 어쩌고 저쩌고\n오늘도 화이팅!",
+                      text: "${utf8.decode(widget.userData.name.runes.toList())}님! 오늘도 화이팅해요!",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
@@ -86,7 +86,7 @@ class _DashPageState extends State<DashPage> {
                 ),
                 //Image.asset(BBISTI(widget.userData.bsti)),
                 Image.asset(
-                  BBISTI.bstiBBI("OSPT"),
+                  BBISTI.bstiBBI("DSPT"),
                   width: MediaQuery.of(context).size.width*0.3,
                   fit: BoxFit.fitWidth,
                 ),

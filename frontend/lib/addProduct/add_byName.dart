@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http;
 
-
 class SearchByName extends StatefulWidget {
   final UserData userData;
   final String searchQuery;
@@ -16,91 +15,92 @@ class SearchByName extends StatefulWidget {
 }
 
 class _SearchByNameState extends State<SearchByName> {
+  late TextEditingController _searchController;
   List<Map<String, dynamic>> _searchResults = [];
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController(text: widget.searchQuery);
     _fetchSearchResults(widget.searchQuery); // 초기 검색어 전달
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
-Future<void> _fetchSearchResults(String query) async {
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    // 실제 백엔드 요청 URL
-    final uri = Uri.parse("http://3.34.5.57/cosmetics?q=$query&limit=10");
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-  // 이 부분에 UTF-8 디코딩 추가
-  final List<dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
-  print(utf8.decode(response.bodyBytes));
-  _searchResults = decodedData.map((item) {
-    return {
-      "_id" : item['_id'],  // 화장품 id
-      'name': item['name'], // 한글 텍스트
-      'image': item['image_url'] ?? 'https://via.placeholder.com/150',
-      'volume': item['volume'] ?? '알 수 없음', // 용량
-      'selling_price' : item['selling_price'] ?? '가격 모름'
-    };
-  }).toList();
-}
-    else {
-      print('Failed to fetch data. Status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error fetching search results: $e');
-  } finally {
+  Future<void> _fetchSearchResults(String query) async {
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
+
+    try {
+      // 실제 백엔드 요청 URL
+      final uri = Uri.parse("http://3.34.5.57/cosmetics?q=$query&limit=10");
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
+        setState(() {
+          _searchResults = decodedData.map((item) {
+            return {
+              "_id": item['_id'], // 화장품 id
+              'name': item['name'], // 한글 텍스트
+              'image': item['image_url'] ?? 'https://via.placeholder.com/150',
+              'volume': item['volume'] ?? '알 수 없음', // 용량
+              'selling_price': item['selling_price'] ?? '가격 모름',
+            };
+          }).toList();
+        });
+      } else {
+        print('Failed to fetch data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching search results: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
-}
-void _addProductToUser(String userId, String productId) async {
-  final uri = Uri.parse("http://3.34.5.57/users/$userId/cosmetics/$productId");
-  print("API 요청 URL: $uri"); // 요청 URL 디버깅
 
-  try {
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-    );
+  void _addProductToUser(String userId, String productId) async {
+    final uri = Uri.parse("http://3.34.5.57/users/$userId/cosmetics/$productId");
+    print("API 요청 URL: $uri");
 
-    print("Response status: ${response.statusCode}");
-    print("Response body: ${response.body}");
-
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("제품이 성공적으로 추가되었습니다!")),
+    try {
+      final response = await http.post(
+        uri,
+        headers: {"Content-Type": "application/json"},
       );
-    } else if (response.statusCode == 404) {
+
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("제품이 성공적으로 추가되었습니다!")),
+        );
+      } else if (response.statusCode == 404) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("이미 추가된 제품입니다!")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("다시 시도해보세요 :(")),
+        );
+      }
+    } catch (e) {
+      print("다른 오류: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        //SnackBar(content: Text("오류발생: ${json.decode(response.body)['detail']}")),
-        SnackBar(content: Text("이미 추가된 제품입니다!")), //이거 지금 이미 추가된거 추가하면 오류떠서 걍 이렇게 함
-      );
-    } else {
-      print("제품 추가 실패. 상태 코드: ${response.statusCode}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("제품 추가에 실패했습니다 :(")),
+        const SnackBar(content: Text("이미 추가된 제품입니다! :)")),
       );
     }
-  } catch (e) {
-    print("다른 오류: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("네트워크 오류가 발생했습니다 :(")),
-    );
   }
-}
 
-
- 
-
-// ***************************** 팝업 ***************************** // 
   void _showProductPopup(BuildContext context, Map<String, dynamic> product) {
     showModalBottomSheet(
       context: context,
@@ -110,43 +110,33 @@ void _addProductToUser(String userId, String productId) async {
       backgroundColor: const Color(0xFFF8F9FA),
       builder: (BuildContext context) {
         return Padding(
-          padding: const EdgeInsets.only(left:45, right: 45, top: 20, bottom: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 바
               Container(
-              width: 70,
-              height: 5,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.grey[400],
-                borderRadius: BorderRadius.circular(10),
+                width: 70,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
               Text(
                 product['name'],
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 '용량 : ${product['volume']}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
               const SizedBox(height: 10),
               Text(
                 '판매 가격 : ${product['selling_price']}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
               const SizedBox(height: 10),
               ClipRRect(
@@ -160,10 +150,9 @@ void _addProductToUser(String userId, String productId) async {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-               onPressed: () async {
-                  Navigator.pop(context); // 팝업 닫고 
-                  _addProductToUser(widget.userData.id, product['_id']); //제품 추가 요청
-                  
+                onPressed: () {
+                  Navigator.pop(context); // 팝업 닫기
+                  _addProductToUser(widget.userData.id, product['_id']); // 제품 추가 요청
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
@@ -188,8 +177,6 @@ void _addProductToUser(String userId, String productId) async {
     );
   }
 
-
-// ***************************** 검색창 메인  ***************************** // 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,14 +196,12 @@ void _addProductToUser(String userId, String productId) async {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 40.0, left: 10),
                       child: TextField(
-                        controller: TextEditingController(text: widget.searchQuery),
+                        controller: _searchController,
                         style: const TextStyle(fontSize: 16),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.search, color: Colors.grey),
                           hintText: "제품명을 검색하세요",
-                          hintStyle: const TextStyle(
-                            color: Colors.grey,
-                          ),
+                          hintStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: const Color(0xFFF6F6F6),
                           border: OutlineInputBorder(
@@ -239,7 +224,6 @@ void _addProductToUser(String userId, String productId) async {
                 ],
               ),
             ),
-            //// ***************************** 검색 결과 표시 로직 ***************************** // 
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
