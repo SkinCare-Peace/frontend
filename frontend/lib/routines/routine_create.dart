@@ -43,12 +43,12 @@ class _RoutinePageState extends State<RoutinePage> {
     int totalTime = 0;
     for (var step in routines[routineType] ?? []) {
       if (step['time'] != null) {
-        String timeString = step['time']!.replaceAll('분', '');
-        totalTime += int.parse(timeString);
+        totalTime += step['time'] as int;
       }
     }
     return totalTime;
   }
+
   
 
 // 루틴 가져오기 *******************************************
@@ -339,10 +339,8 @@ void fetchAndUpdateCosmetics(int index, String cosmeticType, String routineType)
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      step['time'] ?? '시간 정보 없음', // null일 경우 기본 텍스트 표시됨
-                                      style: const TextStyle(fontSize: 14), 
-                                      ),
+                                    Text('${step['time']}분'),
+                                      
                                   ],
                                 ),
                                 if (isExpanded) ...[

@@ -24,7 +24,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
 
   @override
   void dispose() {
-    _searchController.dispose(); // 메모리 누수를 방지하기 위해 컨트롤러 해제
+    _searchController.dispose(); //컨트롤러 해제
     super.dispose();
   }
 
@@ -110,9 +110,9 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // 키보드가 올라와도 화면 크기 조정
+      resizeToAvoidBottomInset: true, 
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      body: SingleChildScrollView( // 전체 화면을 스크롤 가능하게 설정
+      body: SingleChildScrollView( // 전체 화면 스크롤
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
