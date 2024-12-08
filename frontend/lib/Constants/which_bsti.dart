@@ -21,6 +21,7 @@ class DecideBSTI {
 // W:탄력x	T: 탄력o
 
 
-    return ("$DO$RS$PN$WT");
+    //return ("$DO$RS$PN$WT");
+    return RS;
   }
 }
