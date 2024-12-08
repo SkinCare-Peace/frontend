@@ -178,7 +178,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
       backgroundColor: Colors.white,
       builder: (BuildContext context) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +198,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
               Text(
                 '${utf8.decode(widget.userData.name.runes.toList())}님!다음 항목은 건너뛰시나요?',
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -210,15 +210,9 @@ class _RoutinePageState extends State<RoutineStartPage> {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.circle_outlined,
-                          size: 20,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(width: 10),
+                        
                         Text(
-                          step,
-                          style: const TextStyle(
+                          step,style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
                           ),
@@ -229,22 +223,78 @@ class _RoutinePageState extends State<RoutineStartPage> {
                 }).toList(),
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Column(
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      Navigator.pop(context); // 팝업 닫기
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.grey),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton( // 건너뛸래요 누르면
+                  
+onPressed: () {
+  bool hasCompletedAny = completedSteps.any((step) => step); // 완료된 항목 확인
+  if (hasCompletedAny) {
+    // 완료된 항목이 하나라도 있으면 CompletePage로 이동함
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CompletePage()),
+    );
+  } else {
+    // 완료된 항목 없으면 SnackBar 메시지 표시
+     Navigator.pop(context); // 팝업 닫기
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          '하나라도 항목을 완료해 주세요!',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        duration: Duration(seconds: 2), 
+        backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+      ),
+    );
+  }
+},
+
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 201, 201, 201),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        '건너뛸래요!',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
-                    child: const Text(
-                      '닫기',
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 87, 204, 222),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 87, 204, 222)),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        '바를래요!',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ],
