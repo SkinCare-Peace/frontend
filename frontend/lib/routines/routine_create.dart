@@ -292,7 +292,7 @@ Future<void> updateRoutine(String routineId) async {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: selectedRoutine == "evening"
-                        ? const Color.fromARGB(255, 50, 82, 157)
+                        ? const Color.fromARGB(255, 37, 53, 90)
                         : const Color.fromARGB(255, 230, 230, 230),
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(

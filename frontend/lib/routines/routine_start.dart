@@ -192,7 +192,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
               const SizedBox(height: 20),
               Text(
                 '${utf8.decode(widget.userData.name.runes.toList())}님!다음 항목은 건너뛰시나요?',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -275,7 +275,7 @@ Widget build(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 10, left: 20, top: 80, bottom: 10),
+                padding: const EdgeInsets.only(right: 25, left: 25, top: 80, bottom: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -297,18 +297,27 @@ Widget build(BuildContext context) {
                       ),
                     ),
                     const SizedBox(height: 15),
+                    const Text(
+                      '각 항목을 TAP 해서 타이머를 실행해 보세요!\ni를 누르면 사용 방법이 나와요!',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Expanded(child:
                         ElevatedButton(
                           onPressed: () {}, 
                           style: ElevatedButton.styleFrom(
                             backgroundColor: selectedRoutine == "morning"
                                 ? const Color.fromARGB(255, 255, 245, 183) 
-                                : const Color.fromARGB(255, 45, 75, 143), 
-                            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                                : const Color.fromARGB(255, 37, 53, 90), 
+                            padding: const EdgeInsets.symmetric(vertical: 13),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                           child: Text(
@@ -318,7 +327,7 @@ Widget build(BuildContext context) {
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
-                          ),
+                          ),),
                         ),
                       ],
                     ),
