@@ -77,8 +77,8 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
               ),
               child: Column(
                 children: [
-                  const Text(
-                    '유지민님의 피부 점수는 ?? 점',
+                  Text(
+                    '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w900,//글씨체 바꿔야할듯

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/Constants/user_data.dart';
@@ -80,7 +82,7 @@ class _CalanderState extends State<Calander> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TitleText(text: "${widget.userData.name}님의 루틴 실천 기록"),
+              TitleText(text: "${utf8.decode(widget.userData.name.runes.toList())}님의 루틴 실천 기록"),
               const SizedBox(width: 5),
               Image.asset("assets/BBIhappy.png", width: 50, height: 50),
             ],

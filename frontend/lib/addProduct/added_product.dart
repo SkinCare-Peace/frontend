@@ -13,13 +13,13 @@ class AddedProduct extends StatefulWidget {
 }
 
 class _AddedProductState extends State<AddedProduct> {
-  List<Map<String, dynamic>> _productList = []; // 서버에서 가져올 제품 목록
+  List<Map<String, dynamic>> _productList = []; // 서버에서 가져올 화장품목록 저장룡
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserProducts(); // 초기화 시 서버에서 제품 목록 가져오기
+    _fetchUserProducts(); // 초기화시 -> 서버에서 제품 목록 가져오기
   }
  Future<void> _fetchUserProducts() async {
   setState(() {
@@ -32,11 +32,11 @@ class _AddedProductState extends State<AddedProduct> {
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      // 응답 데이터 디코드
-      final List<dynamic> productIds = json.decode(utf8.decode(response.bodyBytes));
-      print("API 응답 데이터 (제품 ID 목록): $productIds");
 
-      // 제품 ID로 각각 요청을 보내 상세 정보 가져오기
+      final List<dynamic> productIds = json.decode(utf8.decode(response.bodyBytes));
+      print("API 응답 데이터: $productIds");
+
+      // 제품 ID로 각각 요청을 보내서 상세 정보 가져오기 (생각해보니까 이거 필요함?)
       final List<Map<String, dynamic>> fetchedProducts = [];
       for (String productId in productIds) {
         final productDetails = await _fetchProductDetailsById(productId);
@@ -60,7 +60,7 @@ class _AddedProductState extends State<AddedProduct> {
   }
 }
 
-// 개별 제품 ID로 상세 정보 가져오기
+// 제품 ID로 상세정보 가져오기(지워도 될수도?)
 Future<Map<String, dynamic>?> _fetchProductDetailsById(String productId) async {
   try {
     final uri = Uri.parse("http://3.34.5.57/cosmetics/$productId");
@@ -94,14 +94,20 @@ Future<Map<String, dynamic>?> _fetchProductDetailsById(String productId) async {
     final response = await http.delete(uri);
 
     if (response.statusCode == 200) {
-      print("제품 삭제 성공: $productId");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("제품을 삭제했어요 :)")), 
+      );
+      print("제품 삭제함 : $productId");
       setState(() {
         _productList.removeAt(index);
       });
     } else {
-      print("제품 삭제 실패. Status code: ${response.statusCode}");
+      print("제품 삭제 실패 Status code: ${response.statusCode}");
     }
   } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("다시 삭제를 시도해보세요 :(")), 
+      );
     print("제품 삭제 중 오류 발생: $e");
   }
 }

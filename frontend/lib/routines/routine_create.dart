@@ -49,6 +49,7 @@ class _RoutinePageState extends State<RoutinePage> {
     }
     return totalTime;
   }
+  
 
 // 루틴 가져오기 *******************************************
 Future<Map<String, dynamic>> fetchRoutine({
