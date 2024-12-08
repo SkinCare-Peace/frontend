@@ -37,7 +37,7 @@ class _Survey4State extends State<Survey4> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '블랙헤드가 있나요?',
+                '블랙헤드가 고민인가요?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 23,
