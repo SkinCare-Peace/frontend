@@ -66,14 +66,14 @@ Future<Map<String, dynamic>> fetchRoutine({
   );
 
   if (response.statusCode == 200) {
+    print("보낸 시간 : ${timeMinutes}");
+    print("보낸 돈 : ${moneyWon}");
     final decodedResponse = utf8.decode(response.bodyBytes);
     final Map<String, dynamic> data = json.decode(decodedResponse);
-
-    // 응답 데이터 출력
+    
     print("Fetched Routine Data: $data");
-
     // 루틴 ID 저장
-    routineId = data['_id']; // 루틴 ID가 없으면 null이 저장됨
+    routineId = data['_id'];
     print("Routine ID: $routineId");
 
     return {
