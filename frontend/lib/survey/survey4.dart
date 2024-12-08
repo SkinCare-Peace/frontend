@@ -45,7 +45,7 @@ class _Survey4State extends State<Survey4> {
                 ),
               ),
               const ContentText(
-                  text: "(오돌토돌하거나 검정 점 같은 부분을\n압출하면 노란색 피지가 나오나요?)"),
+                  text: "(오돌토돌하거나 검정 점 같은 부분을\n압출하면 나오는 노란색 피지)"),
               const SizedBox(height: 20),
               Image.asset(
                 "assets/images/pizi.jpg",
