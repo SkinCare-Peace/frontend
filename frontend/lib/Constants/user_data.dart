@@ -8,6 +8,7 @@ class UserData {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String hashedPassword;
+  final String bsti;
 
   UserData({
     required this.email,
@@ -19,39 +20,40 @@ class UserData {
     required this.createdAt,
     required this.updatedAt,
     required this.hashedPassword,
+    required this.bsti,
   });
 
-factory UserData.fromJson(Map<String, dynamic> json) {
-  return UserData(
-    email: json['email'] ?? '',
-    name: json['name'] ?? '',
-    id: json['_id'] ?? '',
-    skinType: json['skin_type'] ?? '',
-    skinConcerns: json['skin_concerns'] is Iterable
-        ? List<String>.from(json['skin_concerns'])
-        : [],
-    avoidIngredients: json['avoid_ingredients'] is Map
-        ? Map<String, Map<String, int>>.from(
-            json['avoid_ingredients'].map((key, value) {
-              return MapEntry(
-                key,
-                value is Map
-                    ? Map<String, int>.from(value)
-                    : {}, // 비어 있는 Map 기본값
-              );
-            }),
-          )
-        : {},
-    createdAt: json['created_at'] != null
-        ? DateTime.parse(json['created_at'])
-        : DateTime.now(),
-    updatedAt: json['updated_at'] != null
-        ? DateTime.parse(json['updated_at'])
-        : DateTime.now(),
-    hashedPassword: json['hashed_password'] ?? '',
-  );
-}
-
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      email: json['email'] ?? '',
+      name: json['name'] ?? '',
+      id: json['_id'] ?? '',
+      skinType: json['skin_type'] ?? '',
+      skinConcerns: json['skin_concerns'] is Iterable
+          ? List<String>.from(json['skin_concerns'])
+          : [],
+      avoidIngredients: json['avoid_ingredients'] is Map
+          ? Map<String, Map<String, int>>.from(
+              json['avoid_ingredients'].map((key, value) {
+                return MapEntry(
+                  key,
+                  value is Map
+                      ? Map<String, int>.from(value)
+                      : {}, // 비어 있는 Map 기본값
+                );
+              }),
+            )
+          : {},
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
+      hashedPassword: json['hashed_password'] ?? '',
+      bsti: json['bsti'] ?? '',
+    );
+  }
 }
 
 bool isUserDataEmpty(UserData userData) {

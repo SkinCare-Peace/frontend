@@ -1,24 +1,28 @@
+// survey4.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/Constants/which_bsti.dart';
+import 'package:frontend/face_detection/face_result.dart';
+import 'package:frontend/layout/text.dart';
 import 'package:frontend/survey/survey_info.dart';
-import 'package:frontend/survey/survey3.dart';
+// 필요하다면 SurveyComplete 같은 다음 페이지 import
 
-class Survey2 extends StatefulWidget {
+class Survey4 extends StatefulWidget {
   final UserData userData;
   final SurveyInfo surveyInfo;
 
-  const Survey2({
+  const Survey4({
     super.key,
     required this.userData,
     required this.surveyInfo,
   });
 
   @override
-  _Survey2State createState() => _Survey2State();
+  _Survey4State createState() => _Survey4State();
 }
 
-class _Survey2State extends State<Survey2> {
-  String? _selectedOption; // 'Y' 또는 'N'
+class _Survey4State extends State<Survey4> {
+  String? _selectedOption; // '네' 또는 '아니오'
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +37,20 @@ class _Survey2State extends State<Survey2> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                '기초 스킨 케어 후 따갑거나\n붉어졌던 적이 있나요?',
+                '블랙헤드가 있나요?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              const ContentText(
+                  text: "(오돌토돌하거나 검정 점 같은 부분을\n압출하면 노란색 피지가 나오나요?)"),
+              const SizedBox(height: 20),
+              Image.asset(
+                "assets/images/pizi.jpg",
+                width: 200,
+                fit: BoxFit.fitWidth,
               ),
               const SizedBox(height: 40),
               ...options.map((option) {
@@ -53,14 +65,14 @@ class _Survey2State extends State<Survey2> {
               ElevatedButton(
                 onPressed: () {
                   if (_selectedOption != null) {
-                    widget.surveyInfo.sensitive1 = (_selectedOption == '네');
+                    // "네"면 pizi = true, "아니오"면 pizi = false
+                    widget.surveyInfo.pizi = (_selectedOption == '네');
+                    final String userBSTI = DecideBSTI.whichBSTI(widget.surveyInfo);
+                    // 위 userBSTI string을 사용자 정보로 push하는 api 추가
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Survey3(
-                          userData: widget.userData,
-                          surveyInfo: widget.surveyInfo,
-                        ),
+                        builder: (context) => BSTI(widget.userData),
                       ),
                     );
                   } else {
@@ -80,7 +92,7 @@ class _Survey2State extends State<Survey2> {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                   child: Text(
-                    '다음 질문으로',
+                    '완료하기',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,

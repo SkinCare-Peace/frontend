@@ -77,7 +77,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                   child: Text(
-                    '제출하기',
+                    '다음 질문으로',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,

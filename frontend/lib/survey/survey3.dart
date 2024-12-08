@@ -1,96 +1,126 @@
+// survey3.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/routines/routine_create.dart';
+import 'package:frontend/layout/text.dart';
+import 'package:frontend/survey/survey_info.dart';
+import 'package:frontend/survey/survey4.dart';
 
-class QuestionPage3 extends StatefulWidget {
-  final String timeMinutes; // 설문2에서 전달된 시간 데이터
-    final UserData userData;
+class Survey3 extends StatefulWidget {
+  final UserData userData;
+  final SurveyInfo surveyInfo;
 
-  const QuestionPage3(this.userData, {super.key, required this.timeMinutes});
+  const Survey3({
+    super.key,
+    required this.userData,
+    required this.surveyInfo,
+  });
 
   @override
-  _QuestionPage3State createState() => _QuestionPage3State();
+  _Survey3State createState() => _Survey3State();
 }
 
-class _QuestionPage3State extends State<QuestionPage3> {
-  // 선택된 항목
-  String? _selectedOption;
+class _Survey3State extends State<Survey3> {
+  String? _selectedOption; // '그렇다' 또는 '없다'
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final List<String> options = ['50,000', '70,000','100,000','150,000','200,000'];
+    final List<String> options = ['그렇다', '없다'];
 
     return Scaffold(
       body: Center(
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
           width: 350,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                '피부에 얼마를 투자하실\n수 있나요?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  '아토피나 알러지가 있나요?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              ...options.map((option) {
-                return Column(
-                  children: [
-                    _buildCustomRadioOption(option), 
-                    const SizedBox(height: 18), 
-                  ],
-                );
-              }),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  if (_selectedOption != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RoutinePage(
-                          widget.userData,
-                          timeMinutes: int.parse(widget.timeMinutes.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
-                          moneyWon: int.parse(_selectedOption!.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
+                const ContentText(text: "(알고 있는 성분이 있으면 적어주세요)"),
+                const SizedBox(height: 40),
+                ...options.map((option) {
+                  return Column(
+                    children: [
+                      _buildCustomRadioOption(option),
+                      const SizedBox(height: 18),
+                    ],
+                  );
+                }),
+                if (_selectedOption == '그렇다') ...[
+                  const SizedBox(height: 20),
+                  const Text(
+                    '알고 있는 성분을 적어주세요',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: '예: 특정 향료 등',
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_selectedOption != null) {
+                      if (_selectedOption == '그렇다') {
+                        widget.surveyInfo.allergy = _controller.text;
+                        widget.surveyInfo.sensitive2 = true;
+                      } else {
+                        widget.surveyInfo.allergy = '';
+                        widget.surveyInfo.sensitive2 = false;
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Survey4(
+                            userData: widget.userData,
+                            surveyInfo: widget.surveyInfo,
+                          ),
                         ),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('하나의 옵션을 선택해주세요!'),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('하나의 옵션을 선택해주세요!'),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+                    child: Text(
+                      '다음 질문으로',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-                  child: Text(
-                    '제출하기',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
+      backgroundColor: Colors.white,
     );
   }
 
@@ -100,20 +130,20 @@ class _QuestionPage3State extends State<QuestionPage3> {
         label,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 25, 
+          fontSize: 20,
         ),
       ),
       trailing: Transform.scale(
-        scale: 1.5, // 라디오 버튼 크기 조정
+        scale: 1.5,
         child: Radio<String>(
           value: label,
           groupValue: _selectedOption,
           onChanged: (String? value) {
             setState(() {
-              _selectedOption = value; // 선택된 값 변경
+              _selectedOption = value;
             });
           },
-          activeColor: const Color.fromARGB(255, 87, 204, 222), 
+          activeColor: const Color.fromARGB(255, 87, 204, 222),
         ),
       ),
     );
