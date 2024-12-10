@@ -67,7 +67,7 @@ class _Survey4State extends State<Survey4> {
                   if (_selectedOption != null) {
                     // "네"면 pizi = true, "아니오"면 pizi = false
                     widget.surveyInfo.pizi = (_selectedOption == '네');
-                    final String userBSTI = DecideBSTI.whichBSTI(widget.surveyInfo);
+                    final String userBSTI = DecideBSTI.whichBSTI(widget.surveyInfo, widget.userData);
                     // 위 userBSTI string을 사용자 정보로 push하는 api 추가
                     Navigator.push(
                       context,
