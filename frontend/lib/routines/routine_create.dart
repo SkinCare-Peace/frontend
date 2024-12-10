@@ -193,7 +193,7 @@ Future<void> fetchAndUpdateRoutine() async {
 
   // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
   // 특정 단계의 추천 화장품 업데이트
-  Future <void> fetchAndUpdateCosmetics(
+  Future<void> fetchAndUpdateCosmetics(
       int index, String cosmeticType, String routineType) async {
     try {
       final int stepCount = routineSteps.length; // 루틴 단계 개수
@@ -301,10 +301,11 @@ Future<void> fetchAndUpdateRoutine() async {
           const Padding(
             padding: EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
-              '각 항목을 TAP 해서 추천제품을 확인해보세요!\ni를 누르면 제품 정보를 볼 수 있어요!',
+              '각 항목을 TAP 해서 추천제품을 확인해보세요!\ni를 누르면 제품 정보를 볼 수 있어요!\n루틴의 빈도에 맞춰 매일 알려드릴게요!',
               style: TextStyle(
-                color: Colors.black54,
+                color: Color.fromARGB(137, 52, 52, 52),
                 fontWeight: FontWeight.w600,
+                fontSize: 13
               ),
             ),
           ),
@@ -459,12 +460,13 @@ Future<void> fetchAndUpdateRoutine() async {
                                   const Text('빈도:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
-                                  Text("${step['frequency']}회"),
+                                  Text("${step['frequency']}일마다 1번"),
                                   const SizedBox(height: 10),
                                   const Text('추천 성분:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 10),
+                
                                   if (step['matching_ingredients'] != null)
                                     Text(
                                       step['matching_ingredients'].toString(),
@@ -727,3 +729,4 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
     },
   );
 }
+
