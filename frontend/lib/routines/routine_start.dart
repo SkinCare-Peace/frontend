@@ -60,7 +60,6 @@ class _RoutinePageState extends State<RoutineStartPage> {
       final response = await http.get(uri, headers: {
         "Content-Type": "application/json",
       });
-      print("응답 본문: ${utf8.decode(response.bodyBytes)}");
 
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
@@ -353,32 +352,38 @@ class _RoutinePageState extends State<RoutineStartPage> {
   }
 
 //루틴 실천했다고 기록 요청하기
-  Future<bool> sendRoutineRecord() async {
-    final currentDate = DateTime.now().toIso8601String(); // 현재 날짜/시간 ISO 포맷
-    final uri =
-        Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}')
-            .replace(queryParameters: {
-      'date': currentDate,
-    });
+// 루틴 실천했다고 기록 요청하기
+Future<bool> sendRoutineRecord() async {
+  final currentDate = DateTime.now().toIso8601String().split('T')[0]; // 현재 날짜/시간 ISO 포맷 -> 현재 날짜만 추출
+  final uri =
+      Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}')
+          .replace(queryParameters: {
+    'date': currentDate,
+  });
 
-    try {
-      final response = await http.post(
-        uri,
-        headers: {"Content-Type": "application/json"},
-      );
+  print('루틴 기록 요청 시작: URL - $uri'); // 요청 URL 출력
 
-      if (response.statusCode == 200) {
-        print('루틴 기록 추가 성공: 날짜 - $currentDate');
-        return true; // 요청 성공
-      } else {
-        print('루틴 기록 추가 실패: ${response.body}');
-        return false; // 요청 실패
-      }
-    } catch (e) {
-      print('루틴 기록 추가 요청 중 오류 발생: $e');
+  try {
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    print('요청 완료. 상태 코드: ${response.statusCode}'); // 응답 상태 코드 출력
+
+    if (response.statusCode == 200) {
+      print('루틴 기록 추가 성공: 날짜 - $currentDate');
+      return true; // 요청 성공
+    } else {
+      print('루틴 기록 추가 실패: ${response.body}');
       return false; // 요청 실패
     }
+  } catch (e) {
+    print('루틴 기록 추가 요청 중 오류 발생: $e');
+    return false; // 요청 실패
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
