@@ -5,7 +5,8 @@ import 'package:frontend/Constants/user_data.dart';
 
 class LoadingPage2 extends StatefulWidget {
   final UserData userData; 
-  const LoadingPage2(this.userData, {super.key}); 
+  
+const LoadingPage2(this.userData, {super.key});
 
   @override
   _LoadingPage2 createState() => _LoadingPage2();
@@ -55,14 +56,14 @@ class _LoadingPage2 extends State<LoadingPage2> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${utf8.decode(widget.userData.name.runes.toList())} 님의\n루틴을 생성 중입니다',
+              '${utf8.decode(widget.userData.name.runes.toList())}님의\n루틴을 생성 중입니다',
               style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 30), // 텍스트와 컨테이너 간 거리
+            const SizedBox(height: 20), // 텍스트와 컨테이너 간 거리
             Container(
               padding: const EdgeInsets.only(bottom: 50, top: 20), // 컨테이너 안 패딩
               decoration: const BoxDecoration(
@@ -77,10 +78,11 @@ class _LoadingPage2 extends State<LoadingPage2> {
               child: Column(
                 children: [
                   Text(
-                    '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
+                    '${utf8.decode(widget.userData.name.runes.toList())}님에게 잘맞는 제품을 찾고있어요!',
                     style: const TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w900, // 텍스트 스타일
+                      fontWeight: FontWeight.w800, // 텍스트 스타일
+                      color: Colors.black54
                     ),
                   ),
                   const SizedBox(height: 60),
