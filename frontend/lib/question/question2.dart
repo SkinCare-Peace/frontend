@@ -16,7 +16,7 @@ class _QuestionPage2State extends State<QuestionPage2> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> options = ['1분', '5분', '10분', '20분', '30분 이상'];
+    final List<String> options = ['5분', '10분', '20분', '30분 이상'];
 
     return Scaffold(
       body: Center(

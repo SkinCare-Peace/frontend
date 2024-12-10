@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/face_detection/face_detector_page.dart';
+import 'package:frontend/face_detection/guidline.dart';
 
 class LoadingPage0 extends StatefulWidget {
 
@@ -128,7 +128,7 @@ Widget build(BuildContext context) {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => FaceDetectorPage(widget.userData))), // 카메라로 이동
+                      builder: (context) => PicGuideline(widget.userData))), // 가이드라인 이동
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                 shape: RoundedRectangleBorder(

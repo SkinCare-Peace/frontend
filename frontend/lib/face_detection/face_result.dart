@@ -21,7 +21,6 @@ class _BSTIState extends State<BSTI> {
   final String user_bsti = "DSPT";
 
 
-
   // 예제 데이터를 정규화해서 UI 업데이트
   void updateSkinDataFromResponse(Map<String, double> responseValues) {
     setState(() {
@@ -32,7 +31,6 @@ class _BSTIState extends State<BSTI> {
   @override
   void initState() {
     super.initState();
-
     // 테스트용 더미 데이터
     Map<String, double> dummyResponse = {
       "elasticity": 0.55,
@@ -41,7 +39,6 @@ class _BSTIState extends State<BSTI> {
       "pigmentation": 27.0,
       "pore": 464.0,
     };
-
     updateSkinDataFromResponse(dummyResponse); // 정규화하고 UI 업데이트
   }
 
