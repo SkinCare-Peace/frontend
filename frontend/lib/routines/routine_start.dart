@@ -60,7 +60,6 @@ class _RoutinePageState extends State<RoutineStartPage> {
       final response = await http.get(uri, headers: {
         "Content-Type": "application/json",
       });
-      print("응답 본문: ${utf8.decode(response.bodyBytes)}");
 
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
@@ -176,147 +175,163 @@ class _RoutinePageState extends State<RoutineStartPage> {
   }
 
 // 안한 항목 팝업(알림주기 부분)
-  void showIncompleteStepsDialog(
-      BuildContext context, List<String> incompleteSteps) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      backgroundColor: Colors.white,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //핸들러부분
-              Center(
-                child: Container(
-                  width: 70,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+  // 안한 항목 팝업(알림주기 부분)
+void showIncompleteStepsDialog(
+    BuildContext context, List<String> incompleteSteps) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    backgroundColor: Colors.white,
+    builder: (BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 핸들러 부분
+            Center(
+              child: Container(
+                width: 70,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              const SizedBox(height: 20),
-              Text(
-                '${utf8.decode(widget.userData.name.runes.toList())}님!다음 항목은 건너뛰시나요?',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '${utf8.decode(widget.userData.name.runes.toList())}님! 다음 항목은 건너뛰시나요?',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: incompleteSteps.map((step) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Row(
-                      children: [
-                        Text(
-                          step,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                          ),
+            ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: incompleteSteps.map((step) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    children: [
+                      Text(
+                        step,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      // 건너뛸래요 누르면
-
-                      onPressed: () {
-                        bool hasCompletedAny =
-                            completedSteps.any((step) => step); // 완료된 항목 확인
-                        if (hasCompletedAny) {
-                          // 완료된 항목이 하나라도 있으면 CompletePage로 이동함
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    // 건너뛸래요 누르면
+                    onPressed: () async {
+                      bool hasCompletedAny =
+                          completedSteps.any((step) => step); // 완료된 항목 확인
+                      if (hasCompletedAny) {
+                        // 완료된 항목이 하나라도 있으면 루틴 기록 요청
+                        final success = await sendRoutineRecord();
+                        if (success) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    CompletePage(userData: widget.userData)),
+                              builder: (context) =>
+                                  CompletePage(userData: widget.userData),
+                            ),
                           );
                         } else {
-                          // 완료된 항목 없으면 SnackBar 메시지 표시
-                          Navigator.pop(context); // 팝업 닫기
+                          // 요청 실패 시 SnackBar로 사용자에게 알림
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                '하나라도 항목을 완료해 주세요!',
+                                '기록 저장에 실패했습니다:( 다시 시도해주세요!',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
-                              duration: Duration(seconds: 2),
                               backgroundColor: Color.fromARGB(255, 0, 0, 0),
                             ),
                           );
                         }
-                      },
+                      } else {
+                        // 완료된 항목이 없을 때 팝업 닫기 및 알림
+                        Navigator.pop(context); // 팝업 닫기
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              '하나라도 항목을 완료해 주세요!',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            duration: Duration(seconds: 2),
+                            backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(255, 201, 201, 201),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text(
+                      '건너뛸래요!',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(255, 87, 204, 222),
+                      side: const BorderSide(
+                          color: Color.fromARGB(255, 87, 204, 222)),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text(
+                      '바를래요!',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 201, 201, 201),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        '건너뛸래요!',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 87, 204, 222),
-                        side: const BorderSide(
-                            color: Color.fromARGB(255, 87, 204, 222)),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        '바를래요!',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   // 루틴 완료 버튼 동작
   Future<void> handleComplete(BuildContext context) async {
@@ -353,32 +368,38 @@ class _RoutinePageState extends State<RoutineStartPage> {
   }
 
 //루틴 실천했다고 기록 요청하기
-  Future<bool> sendRoutineRecord() async {
-    final currentDate = DateTime.now().toIso8601String(); // 현재 날짜/시간 ISO 포맷
-    final uri =
-        Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}')
-            .replace(queryParameters: {
-      'date': currentDate,
-    });
+// 루틴 실천했다고 기록 요청하기
+Future<bool> sendRoutineRecord() async {
+  final currentDate = DateTime.now().toIso8601String().split('T')[0]; // 현재 날짜/시간 ISO 포맷 -> 현재 날짜만 추출
+  final uri =
+      Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}')
+          .replace(queryParameters: {
+    'date': currentDate,
+  });
 
-    try {
-      final response = await http.post(
-        uri,
-        headers: {"Content-Type": "application/json"},
-      );
+  print('루틴 기록 요청 시작: URL - $uri'); // 요청 URL 출력
 
-      if (response.statusCode == 200) {
-        print('루틴 기록 추가 성공: 날짜 - $currentDate');
-        return true; // 요청 성공
-      } else {
-        print('루틴 기록 추가 실패: ${response.body}');
-        return false; // 요청 실패
-      }
-    } catch (e) {
-      print('루틴 기록 추가 요청 중 오류 발생: $e');
+  try {
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    print('요청 완료. 상태 코드: ${response.statusCode}'); // 응답 상태 코드 출력
+
+    if (response.statusCode == 200) {
+      print('루틴 기록 추가 성공: 날짜 - $currentDate');
+      return true; // 요청 성공
+    } else {
+      print('루틴 기록 추가 실패: ${response.body}');
       return false; // 요청 실패
     }
+  } catch (e) {
+    print('루틴 기록 추가 요청 중 오류 발생: $e');
+    return false; // 요청 실패
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
