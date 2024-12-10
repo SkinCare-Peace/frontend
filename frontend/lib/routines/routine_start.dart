@@ -151,7 +151,8 @@ class _RoutinePageState extends State<RoutineStartPage> {
     if (completedSteps.every((step) => step)) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CompletePage()),
+        MaterialPageRoute(
+          builder: (context) => CompletePage(userData: widget.userData)), //유저 데이터 넘기기
       );
     }
   }
@@ -238,7 +239,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CompletePage()),
+                                builder: (context) => CompletePage(userData: widget.userData)),
                           );
                         } else {
                           // 완료된 항목 없으면 SnackBar 메시지 표시
@@ -318,7 +319,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CompletePage()), // complete.dart로 이동
+            builder: (context) => CompletePage(userData: widget.userData)), // complete.dart로 이동
       );
     } else {
       // 미완료 항목이 있는 경우 팝업 띄우기
