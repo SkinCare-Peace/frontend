@@ -13,6 +13,7 @@ class SignupInput extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class SignupInput extends StatelessWidget {
                         'assets/BBImask.png',
                         height: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).viewInsets.bottom) *
-                            0.25,
+                            0.15,
                       ),
                       const Text(
                         "Sign up",
@@ -67,6 +68,11 @@ class SignupInput extends StatelessWidget {
                         keyboardType: TextInputType.text,
                         obscureText: true, // 비밀번호 안보이도록 하는 것
                       ),
+                                            TextField(
+                        controller: _ageController,
+                        decoration: const InputDecoration(labelText: '나이 (숫자만 입력)'),
+                        keyboardType: TextInputType.number,
+                      ),
                       SizedBox(
                         height: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).viewInsets.bottom) *
@@ -77,10 +83,11 @@ class SignupInput extends StatelessWidget {
                           final userData = await userRegister(
                               _nameController.text,
                               _emailController.text,
-                              _passwordController.text);
+                              _passwordController.text,
+                              int.parse(_ageController.text));
                           if (userData != null && !isUserDataEmpty(userData)) {
                             print("회원가입 성공! $userData");
-                             Navigator.push(
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => LoadingPage0(userData),
@@ -88,7 +95,7 @@ class SignupInput extends StatelessWidget {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.mainColor),
+                            backgroundColor: AppColors.mainColor,),
                         child: const Icon(
                           Icons.arrow_forward,
                           color: Colors.white,

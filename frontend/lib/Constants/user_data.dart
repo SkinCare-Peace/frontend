@@ -9,6 +9,7 @@ class UserData {
   final DateTime updatedAt;
   final String hashedPassword;
   final String bsti;
+  final bool sensitive;
 
   UserData({
     required this.email,
@@ -21,47 +22,50 @@ class UserData {
     required this.updatedAt,
     required this.hashedPassword,
     required this.bsti,
+    required this.sensitive,
   });
 
-  factory UserData.fromJson(Map<String, dynamic> json) {
-    return UserData(
-      email: json['email'] ?? '',
-      name: json['name'] ?? '',
-      id: json['_id'] ?? '',
-      skinType: json['skin_type'] ?? '',
-      skinConcerns: json['skin_concerns'] is Iterable
-          ? List<String>.from(json['skin_concerns'])
-          : [],
-      avoidIngredients: json['avoid_ingredients'] is Map
-          ? Map<String, Map<String, int>>.from(
-              json['avoid_ingredients'].map((key, value) {
-                return MapEntry(
-                  key,
-                  value is Map
-                      ? Map<String, int>.from(value)
-                      : {}, // 비어 있는 Map 기본값
-                );
-              }),
-            )
-          : {},
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
-          : DateTime.now(),
-      hashedPassword: json['hashed_password'] ?? '',
-      bsti: json['bsti'] ?? '',
-    );
-  }
+factory UserData.fromJson(Map<String, dynamic> json) {
+  return UserData(
+    email: json['email'] ?? '',
+    name: json['name'] ?? '',
+    id: json['_id'] ?? '',
+    skinType: json['skin_type'] ?? '',
+    skinConcerns: json['skin_concerns'] is Iterable
+        ? List<String>.from(json['skin_concerns'])
+        : [],
+    sensitive: (json['has_sensitive_skin'] is bool)
+        ? json['has_sensitive_skin'] as bool
+        : false, // null 또는 빈 문자열은 false로 처리
+    avoidIngredients: json['avoid_ingredients'] is Map
+        ? Map<String, Map<String, int>>.from(
+            json['avoid_ingredients'].map((key, value) {
+              return MapEntry(
+                key,
+                value is Map ? Map<String, int>.from(value) : {},
+              );
+            }),
+          )
+        : {},
+    createdAt: json['created_at'] != null
+        ? DateTime.parse(json['created_at'])
+        : DateTime.now(),
+    updatedAt: json['updated_at'] != null
+        ? DateTime.parse(json['updated_at'])
+        : DateTime.now(),
+    hashedPassword: json['hashed_password'] ?? '',
+    bsti: json['bsti'] ?? '',
+  );
+}
+
 }
 
 bool isUserDataEmpty(UserData userData) {
   return userData.email.isEmpty &&
       userData.name.isEmpty &&
       userData.id.isEmpty &&
-      userData.skinType.isEmpty &&
-      userData.skinConcerns.isEmpty &&
-      userData.avoidIngredients.isEmpty &&
-      userData.hashedPassword.isEmpty;
+      userData.avoidIngredients.isEmpty && 
+      userData.hashedPassword.isEmpty &&
+      userData.bsti.isEmpty;
 }
+
