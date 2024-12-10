@@ -54,16 +54,18 @@ class _RoutinePageState extends State<RoutineStartPage> {
   Future<List<Map<String, dynamic>>> fetchRoutineSteps() async {
     final uri =
         Uri.parse('http://3.34.5.57/routine/user/${widget.userData.id}');
-    print('요청 URL: $uri');
+    print('요청 URL (마지막 id 유저id임): $uri');
 
     try {
       final response = await http.get(uri, headers: {
         "Content-Type": "application/json",
       });
+      print("응답 본문: ${utf8.decode(response.bodyBytes)}");
 
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
+   
 
         // 선택한 루틴(morning/evening) 데이터 반환
         return List<Map<String, dynamic>>.from(
