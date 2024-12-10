@@ -98,7 +98,7 @@ class _RoutinePageState extends State<RoutinePage> {
     });
 
     final requestBody = jsonEncode({
-      "user_concerns": ["여드름","모공"],
+      "user_concerns": ["여드름", "모공"],
       "allergic_ingredients": ["parabens"],
     });
 
@@ -125,13 +125,13 @@ class _RoutinePageState extends State<RoutinePage> {
   // 루틴 불러오기 *******************************************
   void fetchAndUpdateRoutine() async {
     setState(() {
-      //이전 루틴 초기화 
+      //이전 루틴 초기화
       routineSteps = []; //루틴 새로 생성하면 초기화
       isExpandedList = [];
-       routines = {
-      "morning": [],
-      "evening": [],
-    };
+      routines = {
+        "morning": [],
+        "evening": [],
+      };
       // 기존 화장품 추천 데이터 초기화
       recommendedCosmetics = {
         "morning": {},
@@ -140,12 +140,13 @@ class _RoutinePageState extends State<RoutinePage> {
       routineId = null; // 이전 루틴 ID 초기화
     });
 
-    try { //새로운 루틴 불러오기
+    try {
+      //새로운 루틴 불러오기
       final routineData = await fetchRoutine(
         timeMinutes: widget.timeMinutes,
         moneyWon: widget.moneyWon,
       );
-      print("가져온 루틴의 데이터: $routineData"); 
+      print("가져온 루틴의 데이터: $routineData");
 
       setState(() {
         routines["morning"] =
@@ -153,14 +154,15 @@ class _RoutinePageState extends State<RoutinePage> {
         routines["evening"] =
             List<Map<String, dynamic>>.from(routineData["evening_routine"]);
 
-
-            // 디버깅: 루틴에 포함된 성분 정보 확인
-      for (var step in routines["morning"]!) {
-        print("Morning Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
-      }
-      for (var step in routines["evening"]!) {
-        print("Evening Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
-      }
+        // 디버깅: 루틴에 포함된 성분 정보 확인
+        for (var step in routines["morning"]!) {
+          print(
+              "Morning Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
+        }
+        for (var step in routines["evening"]!) {
+          print(
+              "Evening Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
+        }
         updateRoutineSteps(); // 루틴 업데이트
       });
     } catch (e) {
@@ -172,7 +174,6 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   // 현재 선택된 루틴에 따라 routineSteps 업데이트함 + 화장품도 다시 요청 *******************************************
-
   void updateRoutineSteps() {
     setState(() {
       routineSteps = routines[selectedRoutine] ?? [];
@@ -267,6 +268,17 @@ class _RoutinePageState extends State<RoutinePage> {
               textAlign: TextAlign.center,
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
+            child: Text(
+              '각 항목을 TAP 해서 추천제품을 확인해보세요!\ni를 누르면 제품 정보를 볼 수 있어요!',
+              style: TextStyle(
+                color: Colors.black54,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+
           Padding(
             padding: const EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
@@ -347,7 +359,11 @@ class _RoutinePageState extends State<RoutinePage> {
           // 루틴 리스트
           Expanded(
             child: routineSteps.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Color.fromARGB(255, 87, 204, 222)),
+                  ))
                 : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 26.0),
                     itemCount: routineSteps.length,

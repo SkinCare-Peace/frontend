@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/face_detection/face_detector_page.dart';
 import 'package:frontend/face_detection/guidline.dart';
 
 class LoadingPage0 extends StatefulWidget {

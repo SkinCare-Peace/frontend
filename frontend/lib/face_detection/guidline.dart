@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/addProduct/add_main.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/face_detection/face_detector_page.dart';
 
