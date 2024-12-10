@@ -47,7 +47,11 @@ class CompletePage extends StatelessWidget {
               // 홈으로 돌아가기 버튼
               ElevatedButton(
                 onPressed: () {
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashPage(userData), // DashPage로 이동
+                    ),);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
