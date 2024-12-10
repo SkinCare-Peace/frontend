@@ -98,7 +98,7 @@ class _RoutinePageState extends State<RoutinePage> {
     });
 
     final requestBody = jsonEncode({
-      "user_concerns": ["건성", "지성"], 
+      "user_concerns": ["여드름","모공"],
       "allergic_ingredients": ["parabens"],
     });
 
@@ -125,28 +125,43 @@ class _RoutinePageState extends State<RoutinePage> {
   // 루틴 불러오기 *******************************************
   void fetchAndUpdateRoutine() async {
     setState(() {
+      //이전 루틴 초기화 
       routineSteps = []; //루틴 새로 생성하면 초기화
       isExpandedList = [];
-
+       routines = {
+      "morning": [],
+      "evening": [],
+    };
       // 기존 화장품 추천 데이터 초기화
       recommendedCosmetics = {
         "morning": {},
         "evening": {},
       };
+      routineId = null; // 이전 루틴 ID 초기화
     });
 
-    try {
+    try { //새로운 루틴 불러오기
       final routineData = await fetchRoutine(
         timeMinutes: widget.timeMinutes,
         moneyWon: widget.moneyWon,
       );
+      print("가져온 루틴의 데이터: $routineData"); 
 
       setState(() {
         routines["morning"] =
             List<Map<String, dynamic>>.from(routineData["morning_routine"]);
         routines["evening"] =
             List<Map<String, dynamic>>.from(routineData["evening_routine"]);
-        updateRoutineSteps(); // 초기 루틴 업데이트
+
+
+            // 디버깅: 루틴에 포함된 성분 정보 확인
+      for (var step in routines["morning"]!) {
+        print("Morning Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
+      }
+      for (var step in routines["evening"]!) {
+        print("Evening Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
+      }
+        updateRoutineSteps(); // 루틴 업데이트
       });
     } catch (e) {
       print("Error fetching routine: $e");
@@ -342,7 +357,6 @@ class _RoutinePageState extends State<RoutinePage> {
                       var cosmetics =
                           recommendedCosmetics[selectedRoutine]?[index] ?? [];
                       // 현재 선택된 낮밤 루틴에 맞춰서 접근
-
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: GestureDetector(
@@ -400,6 +414,24 @@ class _RoutinePageState extends State<RoutinePage> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text("${step['frequency']}회"),
+                                  const SizedBox(height: 10),
+                                  const Text('추천 성분:',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 10),
+                                  if (step['matching_ingredients'] != null)
+                                    Text(
+                                      step['matching_ingredients'].toString(),
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    )
+                                  else
+                                    const Text(
+                                      '추천 성분 정보 없음',
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.grey),
+                                    ),
                                   const SizedBox(height: 10),
                                   const Text('추천 화장품:',
                                       style: TextStyle(
@@ -513,7 +545,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton(
-                  onPressed: fetchAndUpdateRoutine, // 새로운 루틴 요청
+                  onPressed: fetchAndUpdateRoutine, // 새로운 루틴 요청(이전꺼 초기화 로직 포함)
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 58),
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
