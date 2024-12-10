@@ -78,7 +78,7 @@ class _LoadingPage2 extends State<LoadingPage2> {
               child: Column(
                 children: [
                   Text(
-                    '${utf8.decode(widget.userData.name.runes.toList())}님에게 잘맞는 제품을 찾고있어요!',
+                    '${utf8.decode(widget.userData.name.runes.toList())}님에게 딱 맞는 제품을 찾고있어요!\n',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w800, // 텍스트 스타일

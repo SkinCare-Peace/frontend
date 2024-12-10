@@ -125,51 +125,55 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   // 루틴 불러오기 *******************************************
-  Future<void> fetchAndUpdateRoutine() async {
+Future<void> fetchAndUpdateRoutine() async {
+  setState(() {
+    isLoading = true; // 로딩 상태 시작
+  });
+
+  try {
+    // 루틴 데이터를 가져옴
+    final routineData = await fetchRoutine(
+      timeMinutes: widget.timeMinutes,
+      moneyWon: widget.moneyWon,
+    );
+
     setState(() {
-      isLoading = true; // 로딩 상태 시작
+      routines["morning"] =
+          List<Map<String, dynamic>>.from(routineData["morning_routine"]);
+      routines["evening"] =
+          List<Map<String, dynamic>>.from(routineData["evening_routine"]);
+      updateRoutineSteps();
     });
 
-    try {
-      // 루틴 데이터를 가져옴
-      final routineData = await fetchRoutine(
-        timeMinutes: widget.timeMinutes,
-        moneyWon: widget.moneyWon,
-      );
+    // 추천 화장품 데이터를 모두 로드
+    await fetchAllCosmetics();
 
-      setState(() {
-        routines["morning"] =
-            List<Map<String, dynamic>>.from(routineData["morning_routine"]);
-        routines["evening"] =
-            List<Map<String, dynamic>>.from(routineData["evening_routine"]);
-        updateRoutineSteps();
-      });
-
-      // 추천 화장품 데이터가 모두 로드되었는지 확인
-      await fetchAllCosmetics();
-
-      setState(() {
-        isLoading = false; // 로딩 상태 종료
-      });
-    } catch (e) {
-      print("Error fetching routine: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("루틴 생성 중 오류 발생: $e")),
-      );
-      setState(() {
-        isLoading = false; // 오류 발생 시 로딩 상태 종료
-      });
-    }
+    setState(() {
+      isLoading = false; // 로딩 상태 종료
+    });
+  } catch (e) {
+    print("Error fetching routine: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("루틴 생성 중 오류 발생: $e")),
+    );
+    setState(() {
+      isLoading = false; // 오류 발생 시 로딩 상태 종료
+    });
   }
+}
+
+
 
   // 모든 추천 화장품 데이터 로드
   Future<void> fetchAllCosmetics() async {
-    for (String routineType in ["morning", "evening"]) {
-      for (int i = 0; i < routines[routineType]!.length; i++) {
-        fetchAndUpdateCosmetics(i, routines[routineType]![i]['name'], routineType);
-      }
+  for (String routineType in ["morning", "evening"]) {
+    for (int i = 0; i < routines[routineType]!.length; i++) {
+      // 각 단계의 화장품 데이터를 비동기로 가져오기
+      await fetchAndUpdateCosmetics(i, routines[routineType]![i]['name'], routineType);
     }
   }
+}
+
 
 
   // 현재 선택된 루틴에 따라 routineSteps 업데이트함 + 화장품도 다시 요청 *******************************************
@@ -189,7 +193,7 @@ class _RoutinePageState extends State<RoutinePage> {
 
   // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
   // 특정 단계의 추천 화장품 업데이트
-  void fetchAndUpdateCosmetics(
+  Future <void> fetchAndUpdateCosmetics(
       int index, String cosmeticType, String routineType) async {
     try {
       final int stepCount = routineSteps.length; // 루틴 단계 개수
