@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/loading/loading_page1.dart';
 import 'package:frontend/question/question1.dart';
 
 class ReCreate extends StatelessWidget {
@@ -41,7 +42,7 @@ class ReCreateHome extends StatelessWidget {
                   'assets/BBIhappy.png',
                   height: 200,
                 ),
-                const SizedBox(height:100),
+                const SizedBox(height: 100),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
@@ -64,15 +65,12 @@ class ReCreateHome extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-           
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              QuestionPage1(userData))
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoadingPage1(userData)));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 87, 204, 222),
