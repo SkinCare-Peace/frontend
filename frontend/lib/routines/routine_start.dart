@@ -81,6 +81,21 @@ class _RoutinePageState extends State<RoutineStartPage> {
     }
   }
 
+// 빈도에 따라 표시하는 루틴 필터링하기 
+  List<Map<String, dynamic>> filterStepsByFrequency(List<Map<String, dynamic>> steps) {
+    final today = DateTime.now(); //현재 날짜,시간 가져오기
+    final currentDay = today.day; //오늘 날짜만 
+
+    //다음 조건에 맞는 루틴항목 전달
+    return steps.where((step) {
+      final frequency = step['frequency'] as int? ?? 1; // 빈도가 없으면 기본값 1
+      // frequency == 1: 이면 항상 표시
+      // frequency > 1: 이면 오늘 날짜 % frequency == 0일 때만 표시
+      return frequency == 1 || currentDay % frequency == 0;
+    }).toList();
+  }
+
+
   // 루틴 데이터 로드
   void loadRoutineSteps() async {
     setState(() {
@@ -92,7 +107,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
     if (!mounted) return; // 위젯이 활성 상태인지 확인
 
     setState(() {
-      routineSteps = steps; // API 응답 데이터를 루틴에 추가
+      routineSteps = filterStepsByFrequency(steps); // 주기로 필터링된 루틴 데이터적용
       isExpandedList = List<bool>.filled(routineSteps.length, false);
       containerColors = List<Color>.filled(
           routineSteps.length, const Color.fromARGB(184, 239, 238, 238));
@@ -330,7 +345,7 @@ void showIncompleteStepsDialog(
       );
     },
   );
-}
+} 
 
 
   // 루틴 완료 버튼 동작
@@ -598,7 +613,7 @@ Future<bool> sendRoutineRecord() async {
                                   const Text('빈도:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
-                                  Text("${step['frequency']}회"),
+                                  Text("${step['frequency']}일에 1번"),
                                   const SizedBox(height: 10),
                                   const Text(
                                     '사용 방법:',
