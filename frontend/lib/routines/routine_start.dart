@@ -50,7 +50,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
     print("현재 루틴: $selectedRoutine");
   }
 
-  // API 호출 함수
+  // 저장된 루틴 가져오기
   Future<List<Map<String, dynamic>>> fetchRoutineSteps() async {
     final uri =
         Uri.parse('http://3.34.5.57/routine/user/${widget.userData.id}');
@@ -147,11 +147,17 @@ class _RoutinePageState extends State<RoutineStartPage> {
   }
 
   // 모든 항목을 완료했는지 확인
-  void checkAllCompleted() {
+  Future<void> checkAllCompleted() async {
     if (completedSteps.every((step) => step)) {
+      //루틴기록하기 요청
+      await sendRoutineRecord();
+
+      //compelete 이동
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CompletePage()),
+        MaterialPageRoute(
+            builder: (context) =>
+                CompletePage(userData: widget.userData)), //유저 데이터 넘기기
       );
     }
   }
@@ -238,7 +244,8 @@ class _RoutinePageState extends State<RoutineStartPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CompletePage()),
+                                builder: (context) =>
+                                    CompletePage(userData: widget.userData)),
                           );
                         } else {
                           // 완료된 항목 없으면 SnackBar 메시지 표시
@@ -310,21 +317,68 @@ class _RoutinePageState extends State<RoutineStartPage> {
   }
 
   // 루틴 완료 버튼 동작
-  void handleComplete(BuildContext context) {
-    List<String> incompleteSteps = getIncompleteSteps(); // 미완료 항목 가져오기
+  Future<void> handleComplete(BuildContext context) async {
+  List<String> incompleteSteps = getIncompleteSteps(); // 미완료 항목 가져오기
 
-    if (incompleteSteps.isEmpty) {
-      // 모든 항목이 완료된 경우
+  if (incompleteSteps.isEmpty) {
+    // 모든 항목이 완료된 경우
+    final success = await sendRoutineRecord(); // 루틴 기록요청  -> 성공일때만 
+    
+    if (success) {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CompletePage()), // complete.dart로 이동
+          builder: (context) => CompletePage(userData: widget.userData), // complete.dart로 이동
+        ),
       );
     } else {
-      // 미완료 항목이 있는 경우 팝업 띄우기
-      showIncompleteStepsDialog(context, incompleteSteps);
+      // 루틴기록하기 요청 실패하면
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            '기록 저장에 실패했습니다:( 다시 시도해주세요!',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Color.fromARGB(255, 0, 0, 0),
+        ),
+      );
     }
+  } else {
+    // 미완료 항목이 있는 경우 팝업 띄우기
+    showIncompleteStepsDialog(context, incompleteSteps);
   }
+}
+
+
+//루틴 실천했다고 기록 요청하기
+Future<bool> sendRoutineRecord() async {
+  final currentDate = DateTime.now().toIso8601String(); // 현재 날짜/시간 ISO 포맷
+  final uri = Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}')
+      .replace(queryParameters: {
+    'date': currentDate,
+  });
+
+  try {
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    if (response.statusCode == 200) {
+      print('루틴 기록 추가 성공: 날짜 - $currentDate'); 
+      return true; // 요청 성공
+    } else {
+      print('루틴 기록 추가 실패: ${response.body}');
+      return false; // 요청 실패
+    }
+  } catch (e) {
+    print('루틴 기록 추가 요청 중 오류 발생: $e');
+    return false; // 요청 실패
+  }
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
