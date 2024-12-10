@@ -75,3 +75,4 @@ Map<String, Rect> extractFaceRegionsWithLandmarks(Face face) {
     ),
   };
 }
+

@@ -147,7 +147,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
     );
   }
 
-  // 서버로 데이터 전송
+  // 서버로 데이터 전송 
   Future<void> _sendDataToServer(
       String areaName, Rect boundingBox, File imageFile) async {
     final url = Uri.parse('http://3.34.5.57/predict/$areaName');

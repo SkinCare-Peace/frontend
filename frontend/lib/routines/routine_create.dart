@@ -84,7 +84,7 @@ class _RoutinePageState extends State<RoutinePage> {
     }
   }
 
-  // 추천 화장품 가져오기 *******************************************
+  // 추천 화장품 가져오기 ******************************************* (유저 스킨타입, 고민, 알러지 성분 보내기)
   Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
     required String skinType,
     required String cosmeticType,
@@ -92,13 +92,13 @@ class _RoutinePageState extends State<RoutinePage> {
   }) async {
     final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation")
         .replace(queryParameters: {
-      "user_skin_type": skinType,
-      "cosmetic_types": cosmeticType,
-      "budget": budget.toString(),
+      "user_skin_type": skinType, //지성, 건성
+      "cosmetic_types": cosmeticType, //화장품 종류
+      "budget": budget.toString(), //예산 (나눈값)
     });
 
     final requestBody = jsonEncode({
-      "user_concerns": ["건성", "지성"],
+      "user_concerns": ["건성", "지성"], 
       "allergic_ingredients": ["parabens"],
     });
 
