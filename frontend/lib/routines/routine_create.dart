@@ -1,4 +1,5 @@
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/routines/routine_sucessfuly_create.dart';
 import 'package:url_launcher/url_launcher.dart'; // url 열기용
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class RoutinePage extends StatefulWidget {
 }
 
 class _RoutinePageState extends State<RoutinePage> {
+   bool isLoading = true;
   List<Map<String, dynamic>> routineSteps = [];
   late List<bool> isExpandedList;
   Map<String, Map<int, List<Map<String, dynamic>>>> recommendedCosmetics = {
@@ -73,7 +75,7 @@ class _RoutinePageState extends State<RoutinePage> {
       print("Fetched Routine Data: $data");
       // 루틴 ID 저장
       routineId = data['_id']; // 서버에서 반환된 루틴 ID 저장
-      print("Routine ID: $routineId");
+      print("새로 가져온 Routine ID: $routineId");
 
       return {
         "morning_routine": data['morning_routine'] ?? [],
@@ -123,55 +125,56 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   // 루틴 불러오기 *******************************************
-  void fetchAndUpdateRoutine() async {
+Future<void> fetchAndUpdateRoutine() async {
+  setState(() {
+    isLoading = true; // 로딩 상태 시작
+  });
+
+  try {
+    // 루틴 데이터를 가져옴
+    final routineData = await fetchRoutine(
+      timeMinutes: widget.timeMinutes,
+      moneyWon: widget.moneyWon,
+    );
+
     setState(() {
-      //이전 루틴 초기화
-      routineSteps = []; //루틴 새로 생성하면 초기화
-      isExpandedList = [];
-      routines = {
-        "morning": [],
-        "evening": [],
-      };
-      // 기존 화장품 추천 데이터 초기화
-      recommendedCosmetics = {
-        "morning": {},
-        "evening": {},
-      };
-      routineId = null; // 이전 루틴 ID 초기화
+      routines["morning"] =
+          List<Map<String, dynamic>>.from(routineData["morning_routine"]);
+      routines["evening"] =
+          List<Map<String, dynamic>>.from(routineData["evening_routine"]);
+      updateRoutineSteps();
     });
 
-    try {
-      //새로운 루틴 불러오기
-      final routineData = await fetchRoutine(
-        timeMinutes: widget.timeMinutes,
-        moneyWon: widget.moneyWon,
-      );
-      print("가져온 루틴의 데이터: $routineData");
+    // 추천 화장품 데이터를 모두 로드
+    await fetchAllCosmetics();
 
-      setState(() {
-        routines["morning"] =
-            List<Map<String, dynamic>>.from(routineData["morning_routine"]);
-        routines["evening"] =
-            List<Map<String, dynamic>>.from(routineData["evening_routine"]);
+    setState(() {
+      isLoading = false; // 로딩 상태 종료
+    });
+  } catch (e) {
+    print("Error fetching routine: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("루틴 생성 중 오류 발생: $e")),
+    );
+    setState(() {
+      isLoading = false; // 오류 발생 시 로딩 상태 종료
+    });
+  }
+}
 
-        // 디버깅: 루틴에 포함된 성분 정보 확인
-        for (var step in routines["morning"]!) {
-          print(
-              "Morning Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
-        }
-        for (var step in routines["evening"]!) {
-          print(
-              "Evening Step: ${step['name']}, Ingredients: ${step['matching_ingredients']}");
-        }
-        updateRoutineSteps(); // 루틴 업데이트
-      });
-    } catch (e) {
-      print("Error fetching routine: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("새로운 루틴 요청 중 오류 발생: $e")),
-      );
+
+
+  // 모든 추천 화장품 데이터 로드
+  Future<void> fetchAllCosmetics() async {
+  for (String routineType in ["morning", "evening"]) {
+    for (int i = 0; i < routines[routineType]!.length; i++) {
+      // 각 단계의 화장품 데이터를 비동기로 가져오기
+      await fetchAndUpdateCosmetics(i, routines[routineType]![i]['name'], routineType);
     }
   }
+}
+
+
 
   // 현재 선택된 루틴에 따라 routineSteps 업데이트함 + 화장품도 다시 요청 *******************************************
   void updateRoutineSteps() {
@@ -189,23 +192,22 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
-  void fetchAndUpdateCosmetics(
+  // 특정 단계의 추천 화장품 업데이트
+  Future <void> fetchAndUpdateCosmetics(
       int index, String cosmeticType, String routineType) async {
     try {
-      final int stepCount = routineSteps.length; // 루틴 개수 (비용 나눠야함)
-      if (stepCount == 0) {
-        throw Exception("루틴 단계가 없습니다.");
-      }
+      final int stepCount = routineSteps.length; // 루틴 단계 개수
+      if (stepCount == 0) throw Exception("루틴 단계가 없습니다.");
 
       final int budgetPerStep =
-          (widget.moneyWon / stepCount).floor(); // 단계별로 예산 계산
+          (widget.moneyWon / stepCount).floor(); // 단계별 예산 계산
       final skinType =
-          routineType == "morning" ? "건성" : "지성"; // 루틴에 따른 스킨 타입 설정 (임시 값)
+          routineType == "morning" ? "건성" : "지성"; // 루틴에 따른 스킨 타입 설정
 
       final cosmetics = await fetchRecommendedCosmetics(
         skinType: skinType,
         cosmeticType: cosmeticType,
-        budget: budgetPerStep, // 각 루틴별로 나눠진 비용 전달
+        budget: budgetPerStep,
       );
 
       setState(() {
@@ -219,13 +221,38 @@ class _RoutinePageState extends State<RoutinePage> {
           "Error fetching cosmetics for step $index in $routineType routine: $e");
     }
   }
+// 루틴 생성 중 로딩 페이지로 이동
+  void goToLoadingPageAndFetchRoutine() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoadingPage2(widget.userData),
+      ),
+    );
 
-//루틴 갱신하기
+    await fetchAndUpdateRoutine(); // 데이터 로드
+
+    if (!isLoading) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RoutinePage(
+            widget.userData,
+            timeMinutes: widget.timeMinutes,
+            moneyWon: widget.moneyWon,
+          ),
+        ),
+      );
+    }
+  }
+
+//루틴 갱신하기(저장하기)
   Future<void> updateRoutine(String routineId) async {
     final uri = Uri.parse("http://3.34.5.57/users/${widget.userData.id}");
     final requestBody = jsonEncode({
       "routine_id": routineId, //루틴 id 보내기
     });
+    print("루틴id 서버에 전송중 = 루틴 id: $routineId"); // 루틴 ID 출력
 
     final response = await http.put(
       uri,
@@ -244,11 +271,14 @@ class _RoutinePageState extends State<RoutinePage> {
   @override
   void initState() {
     super.initState();
-    fetchAndUpdateRoutine();
+    fetchAndUpdateRoutine(); //루틴 초기화
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+    return LoadingPage2(widget.userData); // 로딩 중일 때 표시할 페이지
+  }
     int totalTime = calculateTotalTime(selectedRoutine);
 
     return Scaffold(
@@ -529,7 +559,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 ElevatedButton(
                   onPressed: () {
                     if (routineId != null) {
-                      updateRoutine(routineId!); // 루틴 갱신
+                      updateRoutine(routineId!); // 루틴 갱신 요청
                       Navigator.push(
                         context,
                         MaterialPageRoute(
