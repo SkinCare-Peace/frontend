@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/loading/loading_page5.dart';
+import 'package:frontend/loading/loading_recreate.dart';
 import 'package:http/http.dart' as http;
 import 'complete.dart'; // 완료 페이지
 
@@ -64,7 +65,6 @@ class _RoutinePageState extends State<RoutineStartPage> {
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
-   
 
         // 선택한 루틴(morning/evening) 데이터 반환
         return List<Map<String, dynamic>>.from(
@@ -81,31 +81,28 @@ class _RoutinePageState extends State<RoutineStartPage> {
     }
   }
 
-// 빈도에 따라 표시하는 루틴 필터링하기 
-  List<Map<String, dynamic>> filterStepsByFrequency(List<Map<String, dynamic>> steps) {
+// 빈도에 따라 표시하는 루틴 필터링하기
+  List<Map<String, dynamic>> filterStepsByFrequency(
+      List<Map<String, dynamic>> steps) {
     final today = DateTime.now(); //현재 날짜,시간 가져오기
-    final currentDay = today.day; //오늘 날짜만 
+    final currentDay = today.day; //오늘 날짜만
 
     //다음 조건에 맞는 루틴항목 전달
     return steps.where((step) {
       final frequency = step['frequency'] as int? ?? 1; // 빈도가 없으면 기본값 1
       // frequency == 1: 이면 항상 표시
-      // frequency > 1: 이면 오늘 날짜 % frequency == 0일 때만 표시
+      // frequency > 1: 미ㄴ오늘 날짜 % frequency == 0일 때만 표시
       return frequency == 1 || currentDay % frequency == 0;
     }).toList();
   }
-
 
   // 루틴 데이터 로드
   void loadRoutineSteps() async {
     setState(() {
       isLoading = true; // 로딩 시작
     });
-
     final steps = await fetchRoutineSteps();
-
     if (!mounted) return; // 위젯이 활성 상태인지 확인
-
     setState(() {
       routineSteps = filterStepsByFrequency(steps); // 주기로 필터링된 루틴 데이터적용
       isExpandedList = List<bool>.filled(routineSteps.length, false);
@@ -128,11 +125,9 @@ class _RoutinePageState extends State<RoutineStartPage> {
   // 타이머 시작
   void startTimer(int index) {
     if (completedSteps[index]) return;
-
     if (timer != null) {
       timer!.cancel();
     }
-
     setState(() {
       activeTimerIndex = index;
       remainingTime =
@@ -167,7 +162,6 @@ class _RoutinePageState extends State<RoutineStartPage> {
     if (completedSteps.every((step) => step)) {
       //루틴기록하기 요청
       await sendRoutineRecord();
-
       //compelete 이동
       Navigator.push(
         context,
@@ -191,162 +185,168 @@ class _RoutinePageState extends State<RoutineStartPage> {
 
 // 안한 항목 팝업(알림주기 부분)
   // 안한 항목 팝업(알림주기 부분)
-void showIncompleteStepsDialog(
-    BuildContext context, List<String> incompleteSteps) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    backgroundColor: Colors.white,
-    builder: (BuildContext context) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 핸들러 부분
-            Center(
-              child: Container(
-                width: 70,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(10),
+  void showIncompleteStepsDialog(
+      BuildContext context, List<String> incompleteSteps) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 핸들러 부분
+              Center(
+                child: Container(
+                  width: 70,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '${utf8.decode(widget.userData.name.runes.toList())}님! 다음 항목은 건너뛰시나요?',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 20),
+              Text(
+                '${utf8.decode(widget.userData.name.runes.toList())}님! 다음 항목은 건너뛰시나요?',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: incompleteSteps.map((step) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        step,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: incompleteSteps.map((step) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check, // 체크 아이콘
+                          color: Colors.grey, 
+                          size: 20, 
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    // 건너뛸래요 누르면
-                    onPressed: () async {
-                      bool hasCompletedAny =
-                          completedSteps.any((step) => step); // 완료된 항목 확인
-                      if (hasCompletedAny) {
-                        // 완료된 항목이 하나라도 있으면 루틴 기록 요청
-                        final success = await sendRoutineRecord();
-                        if (success) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CompletePage(userData: widget.userData),
-                            ),
-                          );
+                        const SizedBox(width: 8),
+                        Text(
+                          step,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      // 건너뛸래요 누르면
+                      onPressed: () async {
+                        bool hasCompletedAny =
+                            completedSteps.any((step) => step); // 완료된 항목 확인
+                        if (hasCompletedAny) {
+                          // 완료된 항목이 하나라도 있으면 루틴 기록 요청
+                          final success = await sendRoutineRecord();
+                          if (success) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CompletePage(userData: widget.userData),
+                              ),
+                            );
+                          } else {
+                            // 요청 실패 시 SnackBar로 사용자에게 알림
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  '기록 저장에 실패했습니다:( 다시 시도해주세요!',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            );
+                          }
                         } else {
-                          // 요청 실패 시 SnackBar로 사용자에게 알림
+                          // 완료된 항목이 없을 때 팝업 닫기 및 알림
+                          Navigator.pop(context); // 팝업 닫기
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                '기록 저장에 실패했습니다:( 다시 시도해주세요!',
+                                '하나라도 항목을 완료해 주세요!',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
+                              duration: Duration(seconds: 2),
                               backgroundColor: Color.fromARGB(255, 0, 0, 0),
                             ),
                           );
                         }
-                      } else {
-                        // 완료된 항목이 없을 때 팝업 닫기 및 알림
-                        Navigator.pop(context); // 팝업 닫기
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              '하나라도 항목을 완료해 주세요!',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            duration: Duration(seconds: 2),
-                            backgroundColor: Color.fromARGB(255, 0, 0, 0),
-                          ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color.fromARGB(255, 201, 201, 201),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 201, 201, 201),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        '건너뛸래요!',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
-                    child: const Text(
-                      '건너뛸래요!',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
-                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor:
-                          const Color.fromARGB(255, 87, 204, 222),
-                      side: const BorderSide(
-                          color: Color.fromARGB(255, 87, 204, 222)),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 87, 204, 222),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 87, 204, 222)),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        '바를래요!',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
-                    child: const Text(
-                      '바를래요!',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
-                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    },
-  );
-} 
-
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   // 루틴 완료 버튼 동작
   Future<void> handleComplete(BuildContext context) async {
@@ -382,40 +382,52 @@ void showIncompleteStepsDialog(
     }
   }
 
-//루틴 실천했다고 기록 요청하기
-// 루틴 실천했다고 기록 요청하기
-Future<bool> sendRoutineRecord() async {
-  final currentDate = DateTime.now().toIso8601String().split('T')[0]; // 현재 날짜/시간 ISO 포맷 -> 현재 날짜만 추출
-  final uri =
-      Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}')
-          .replace(queryParameters: {
-    'date': currentDate,
-  });
+// 루틴 실천했다고 기록 요청하는 부분**********************************************************
+  Future<bool> sendRoutineRecord() async {
+    final currentDate = DateTime.now()
+        .toIso8601String()
+        .split('T')[0]; // 현재 날짜 (yyyy-MM-dd)형식으로 전송
+    final uri = Uri.parse('http://3.34.5.57/routine/record');
 
-  print('루틴 기록 요청 시작: URL - $uri'); // 요청 URL 출력
+    // 완료된 루틴 이름이랑 상태 수집
+    final routinePractice = {
+      for (int i = 0; i < routineSteps.length; i++)
+        routineSteps[i]['name']: completedSteps[i]
+    };
 
-  try {
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-    );
+    // 요청바디
+    final body = json.encode({
+      "user_id": widget.userData.id,
+      "date": currentDate,
+      "usage_time": selectedRoutine, //낮인지 밤인지
+      "routine_practice": routinePractice
+    });
 
-    print('요청 완료. 상태 코드: ${response.statusCode}'); // 응답 상태 코드 출력
+    print('루틴 기록 요청 시작, 요청 데이터: $body'); // 요청 데이터 출력
 
-    if (response.statusCode == 200) {
-      print('루틴 기록 추가 성공: 날짜 - $currentDate');
-      return true; // 요청 성공
-    } else {
-      print('루틴 기록 추가 실패: ${response.body}');
+    try {
+      final response = await http.post(
+        uri,
+        headers: {"Content-Type": "application/json"},
+        body: body,
+      );
+
+      print('요청 완료함. 상태 코드: ${response.statusCode}'); // 응답 상태 코드 출력
+
+      if (response.statusCode == 200) {
+        print('루틴 기록 추가 성공');
+        return true; // 요청 성공
+      } else {
+        print('루틴 기록 추가 실패: ${response.body}');
+        return false; // 요청 실패
+      }
+    } catch (e) {
+      print('루틴 기록 추가 요청 중 오류 발생: $e');
       return false; // 요청 실패
     }
-  } catch (e) {
-    print('루틴 기록 추가 요청 중 오류 발생: $e');
-    return false; // 요청 실패
   }
-}
 
-
+// ***************************************** UI
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -431,14 +443,35 @@ Future<bool> sendRoutineRecord() async {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${utf8.decode(widget.userData.name.runes.toList())}님의 루틴',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                        ),
-                        textAlign: TextAlign.center,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${utf8.decode(widget.userData.name.runes.toList())}님의 루틴',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.autorenew_rounded,
+                              color: Colors.grey,
+                              size: 24,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ReCreate(widget.userData),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -519,13 +552,11 @@ Future<bool> sendRoutineRecord() async {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // 첫 번째 행: 항목 이름, i 아이콘, 완료 버튼
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // 이미지, 이름, i 아이콘
                                     Row(
                                       children: [
                                         Image.asset(
@@ -564,7 +595,6 @@ Future<bool> sendRoutineRecord() async {
                                         ),
                                       ],
                                     ),
-                                    // 완료 버튼
                                     GestureDetector(
                                       onTap: () {
                                         // 완료 여부 토글 및 타이머 취소
@@ -594,7 +624,6 @@ Future<bool> sendRoutineRecord() async {
                                     ),
                                   ],
                                 ),
-                                // 두 번째 행: 타이머 표시 (해당 항목 활성화 시)
                                 if (activeTimerIndex == index)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 10.0),
@@ -607,7 +636,6 @@ Future<bool> sendRoutineRecord() async {
                                       ),
                                     ),
                                   ),
-                                // 세 번째 행: 상세 정보 (i 아이콘 클릭 시 표시)
                                 if (isExpandedList[index]) ...[
                                   const SizedBox(height: 10),
                                   const Text('빈도:',

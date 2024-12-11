@@ -28,7 +28,7 @@ class CameraViewState extends State<CameraView> {
 
     _controller = CameraController(
       frontCamera,
-      ResolutionPreset.high, 
+      ResolutionPreset.high,
       enableAudio: false, // 오디오 비활성화
     );
 
@@ -51,6 +51,16 @@ class CameraViewState extends State<CameraView> {
     }
   }
 
+
+  /// 카메라 해지 메서드
+  void disposeCamera() {
+    if (_controller != null) {
+      _controller?.dispose();
+      _controller = null; // 컨트롤러 해제
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     if (_controller == null || !_controller!.value.isInitialized) {
@@ -66,7 +76,7 @@ class CameraViewState extends State<CameraView> {
 
   @override
   void dispose() {
-    _controller?.dispose();
+    disposeCamera(); // 카메라 리소스 해지
     super.dispose();
   }
 }
