@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/face_detection/acne_data.dart';
 import 'package:frontend/loading/loading_page5.dart';
 import 'package:frontend/loading/loading_recreate.dart';
+import 'package:frontend/record/score_data.dart';
 import 'package:http/http.dart' as http;
 import 'complete.dart'; // 완료 페이지
 
@@ -68,7 +70,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
 
         // 선택한 루틴(morning/evening) 데이터 반환
         return List<Map<String, dynamic>>.from(
-            data[selectedRoutine + '_routine']);
+            data['${selectedRoutine}_routine']);
       } else if (response.statusCode == 404) {
         print('루틴 데이터를 찾을 수 없습니다. user_id: ${widget.userData.id}');
         return []; // 빈 리스트 반환
@@ -162,6 +164,13 @@ class _RoutinePageState extends State<RoutineStartPage> {
     if (completedSteps.every((step) => step)) {
       //루틴기록하기 요청
       await sendRoutineRecord();
+
+      // 대시보드 통계 점수 post/get
+      final acne = acneDataStore.getMinScore();
+      dashScore.saveData('acne', acne!);
+      dashScore.postData(widget.userData.id);
+      
+
       //compelete 이동
       Navigator.push(
         context,
@@ -227,10 +236,10 @@ class _RoutinePageState extends State<RoutineStartPage> {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.check, // 체크 아이콘
-                          color: Colors.grey, 
-                          size: 20, 
+                          color: Colors.grey,
+                          size: 20,
                         ),
                         const SizedBox(width: 8),
                         Text(
