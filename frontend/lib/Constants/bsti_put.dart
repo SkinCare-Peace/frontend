@@ -2,12 +2,10 @@ import 'dart:convert'; // JSON 변환에 사용
 import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http; // HTTP 요청에 사용
 
-Future<void> updateSensitiveSkinStatus(
-    bool hasSensitiveSkin, UserData userData) async {
-  final url =
-      Uri.parse('http://3.34.5.57/users/${userData.id}'); // 백엔드 주소를 넣어주세요
+Future<void> updateBSTIStatus(String userBSTI, UserData userData) async {
+  final url = Uri.parse('http://3.34.5.57/users/${userData.id}'); // 백엔드 주소를 넣어주세요
   final headers = {'Content-Type': 'application/json'};
-  final body = jsonEncode({'has_sensitive_skin': hasSensitiveSkin});
+  final body = jsonEncode({'bsti': userBSTI});
 
   try {
     final response = await http.put(
@@ -19,7 +17,9 @@ Future<void> updateSensitiveSkinStatus(
     switch (response.statusCode) {
       case 200:
         print('성공적으로 업데이트되었습니다.');
-        userData.sensitive = hasSensitiveSkin;
+                // 로컬 상태 업데이트
+        userData.bsti = userBSTI;
+        print('Local userData.bsti updated to: $userBSTI');
         break;
       case 404:
         print('백엔드 엔드포인트를 찾을 수 없습니다.');

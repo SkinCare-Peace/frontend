@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/face_detection/regression_data.dart';
 import 'package:frontend/loading/loading_face_result.dart';
 import 'package:frontend/survey/survey1.dart';
 import 'package:frontend/survey/survey_info.dart';
@@ -168,6 +169,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
       if (response.statusCode == 200) {
         print('####### $areaName 데이터 전송 성공');
         print('####### 응답 body: $responseBody');
+        await processServerResponse(areaName, responseBody); // 응답 처리 호출
         _onResponseSuccess(); // 응답 성공 시 호출
       } else {
         print('####### $areaName 데이터 전송 실패: ${response.statusCode}');
