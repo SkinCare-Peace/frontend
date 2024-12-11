@@ -102,6 +102,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
 
                 // 서버로 데이터 전송
                 await _sendDataToServer(areaName, boundingBox, imageFile);
+                await _sendDataToServer(areaName, boundingBox, imageFile);
               }
             }
           } else {

@@ -14,8 +14,11 @@ class DecideBSTI {
         regressionDataStore.aggregateData(categryData);
     final scalingData = normalizeResponse(selectedData);
 
+    const double surveyWeight = 0.7;
+    const double poreWeight = 0.3;
+    const int pivotDO = 40;
 // D:건성	O:지성
-    if ((scalingData["pore"]! + surveyInfo.oil) >= 40) {
+    if ((scalingData["pore"]! * poreWeight + surveyInfo.oil * surveyWeight) >= pivotDO) {
       DO = "O";
     } else {
       DO = "D";

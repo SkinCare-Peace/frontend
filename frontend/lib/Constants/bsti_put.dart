@@ -22,7 +22,7 @@ Future<void> updateBSTIStatus(String userBSTI, UserData userData) async {
         print('Local userData.bsti updated to: $userBSTI');
         break;
       case 404:
-        print('백엔드 엔드포인트를 찾을 수 없습니다.');
+        print('bsti 백엔드 엔드포인트를 찾을 수 없습니다.');
         break;
       case 402:
         print('유효성 검사 오류입니다. 입력 값을 확인하세요.');
