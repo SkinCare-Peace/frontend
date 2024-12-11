@@ -22,27 +22,24 @@ class RegressionDataStore {
     }
   }
 
-
   // 특정 영역 데이터 반환
   Map<String, double>? getData(String areaName) {
     return _regressionData[areaName];
   }
-
 
   // 모든 데이터 반환
   Map<String, Map<String, double>> getAllData() {
     return _regressionData;
   }
 
-
   // 항목별 데이터 반환
   Map<String, Map<String, double>> getCategoryBasedData() {
     return _categoryBasedData;
   }
 
-
   // 평균 및 특정 조건 적용하여 데이터 반환
-  Map<String, double> processAndAggregateData(Map<String, double> scalingFactors) {
+  Map<String, double> processAndAggregateData(
+      Map<String, double> scalingFactors) {
     final result = <String, double>{};
     // moisture, elasticity, wrinkle 평균 계산
     for (var category in ["moisture", "elasticity", "wrinkle"]) {
@@ -56,9 +53,11 @@ class RegressionDataStore {
     }
     // pigmentation 그대로 사용
     if (_categoryBasedData.containsKey("pigmentation")) {
-      final pigmentationValue = _categoryBasedData["pigmentation"]?.values.first;
+      final pigmentationValue =
+          _categoryBasedData["pigmentation"]?.values.first;
       if (pigmentationValue != null) {
-        result["pigmentation"] = pigmentationValue * (scalingFactors["pigmentation"] ?? 1.0);
+        result["pigmentation"] =
+            pigmentationValue * (scalingFactors["pigmentation"] ?? 1.0);
       }
     }
     // pore에서 최대값 선택
@@ -72,9 +71,9 @@ class RegressionDataStore {
     return result;
   }
 
-
   // 데이터 가공 및 변환 함수 추가
-  Map<String, double> aggregateData(Map<String, Map<String, double>> inputData) {
+  Map<String, double> aggregateData(
+      Map<String, Map<String, double>> inputData) {
     final result = <String, double>{};
     // moisture, elasticity, wrinkle 평균 계산
     for (var category in ["moisture", "elasticity", "wrinkle"]) {
@@ -119,24 +118,3 @@ Future<void> processServerResponse(String areaName, String responseBody) async {
   }
 }
 
-
-// 여드름 서버 응답 처리 및 regression 데이터 저장
-Future<void> processServerResponse_acne(String responseBody) async {
-  try {
-    // JSON 파싱
-    final responseJson = jsonDecode(responseBody);
-
-    // processed_image와 score 확인
-    if (responseJson.containsKey('processed_image') && responseJson.containsKey('score')) {
-      final processedImage = responseJson['processed_image'];
-      final score = responseJson['score'];
-
-      print('Processed Image: $processedImage');
-      print('acne Score: $score');
-    } else {
-      print('####### 여드름 응답에 필수 데이터가 없습니다.');
-    }
-  } catch (e) {
-    print('####### 여드름 응답 처리 중 오류 발생: $e');
-  }
-}

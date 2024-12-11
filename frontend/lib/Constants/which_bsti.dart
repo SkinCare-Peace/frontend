@@ -1,6 +1,7 @@
 import 'package:frontend/Constants/scalling.dart';
 import 'package:frontend/Constants/sensitive_put.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/record/score_data.dart';
 import 'package:frontend/survey/survey_info.dart';
 import 'package:frontend/face_detection/regression_data.dart';
 
@@ -11,14 +12,26 @@ class DecideBSTI {
     final categryData =
         regressionDataStore.getCategoryBasedData(); // 특정 카테고리별 점수
     Map<String, double> selectedData =
-        regressionDataStore.aggregateData(categryData);
+        regressionDataStore.aggregateData(categryData); // regression 값 하나씩만 선택
     final scalingData = normalizeResponse(selectedData);
 
     const double surveyWeight = 0.7;
     const double poreWeight = 0.3;
     const int pivotDO = 40;
+
+    // dryness 값 조정.
+    scalingData['dryness'] =
+        (scalingData["pore"]! * poreWeight + surveyInfo.oil * surveyWeight)
+            .toInt();
+    // dash Score 저장.
+    dashScore.saveData('dryness', scalingData['dryness']!);
+    dashScore.saveData('pigmentation', scalingData['pigmentation']?? 0);
+    dashScore.saveData('wrinkle', scalingData['wrinkle']!);
+    dashScore.saveData('pore', scalingData['pore']!);
+
 // D:건성	O:지성
-    if ((scalingData["pore"]! * poreWeight + surveyInfo.oil * surveyWeight) >= pivotDO) {
+    if ((scalingData["pore"]! * poreWeight + surveyInfo.oil * surveyWeight) >=
+        pivotDO) {
       DO = "O";
     } else {
       DO = "D";
