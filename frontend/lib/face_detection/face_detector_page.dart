@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/face_detection/acne_data.dart';
 import 'package:frontend/face_detection/regression_data.dart';
 import 'package:frontend/loading/loading_face_result.dart';
 import 'package:frontend/survey/survey1.dart';
