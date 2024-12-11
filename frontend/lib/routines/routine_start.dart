@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/loading/loading_page5.dart';
+import 'package:frontend/loading/loading_recreate.dart';
 import 'package:http/http.dart' as http;
 import 'complete.dart'; // 완료 페이지
 
@@ -90,7 +91,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
     return steps.where((step) {
       final frequency = step['frequency'] as int? ?? 1; // 빈도가 없으면 기본값 1
       // frequency == 1: 이면 항상 표시
-      // frequency > 1: 이면 오늘 날짜 % frequency == 0일 때만 표시
+      // frequency > 1: 미ㄴ오늘 날짜 % frequency == 0일 때만 표시
       return frequency == 1 || currentDay % frequency == 0;
     }).toList();
   }
@@ -415,247 +416,262 @@ Future<bool> sendRoutineRecord() async {
   }
 }
 
-
+// ***************************************** UI 
   @override
-  Widget build(BuildContext context) {
-    return isLoading
-        ? loadingPage5(widget.userData) // 로딩 중일 때 LoadingPage5 표시
-        : Scaffold(
-            backgroundColor: const Color(0xFFF7F7F7),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 25, left: 25, top: 80, bottom: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${utf8.decode(widget.userData.name.runes.toList())}님의 루틴',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '1일 2회 (총 소요시간 ${calculateTotalTime()}분)',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text(
-                        '각 항목을 TAP 해서 타이머를 실행해 보세요!\ni를 누르면 사용 방법이 나와요!',
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: selectedRoutine == "morning"
-                                    ? const Color.fromARGB(255, 255, 245, 183)
-                                    : const Color.fromARGB(255, 37, 53, 90),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 13),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              child: Text(
-                                selectedRoutine == "morning"
-                                    ? "오전 루틴"
-                                    : "오후 루틴",
-                                style: TextStyle(
-                                  color: selectedRoutine == "morning"
-                                      ? Colors.black
-                                      : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
+Widget build(BuildContext context) {
+  return isLoading
+      ? loadingPage5(widget.userData) // 로딩 중일 때 LoadingPage5 표시
+      : Scaffold(
+          backgroundColor: const Color(0xFFF7F7F7),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    right: 25, left: 25, top: 80, bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${utf8.decode(widget.userData.name.runes.toList())}님의 루틴',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 26.0),
-                    itemCount: routineSteps.length,
-                    itemBuilder: (context, index) {
-                      var step = routineSteps[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            // 항목 클릭 시 타이머 실행
-                            if (!completedSteps[index]) {
-                              startTimer(index);
-                            }
+                          textAlign: TextAlign.center,
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.autorenew_rounded,
+                            color: Colors.grey,
+                            size: 24,
+                          ),
+                          onPressed: () {
+                            
+                            Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReCreate(widget.userData),
+          ),
+        );
                           },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 16.0),
-                            decoration: BoxDecoration(
-                              color: completedSteps[index]
-                                  ? const Color.fromARGB(255, 220, 250, 216)
-                                  : const Color.fromARGB(255, 240, 240, 240),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // 첫 번째 행: 항목 이름, i 아이콘, 완료 버튼
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    // 이미지, 이름, i 아이콘
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/emoji/apple.png',
-                                          width: 24,
-                                          height: 24,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          step['name'],
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          '  ${step['time']}분',
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black54),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.info_outline,
-                                            color: Colors.grey,
-                                            size: 20,
-                                          ),
-                                          onPressed: () {
-                                            // i 버튼 클릭 시 상세 정보 토글
-                                            setState(() {
-                                              isExpandedList[index] =
-                                                  !isExpandedList[index];
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    // 완료 버튼
-                                    GestureDetector(
-                                      onTap: () {
-                                        // 완료 여부 토글 및 타이머 취소
-                                        setState(() {
-                                          completedSteps[index] =
-                                              !completedSteps[index];
-                                          if (completedSteps[index] &&
-                                              activeTimerIndex == index) {
-                                            timer?.cancel();
-                                            activeTimerIndex = null;
-                                            remainingTime = 0;
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          color: completedSteps[index]
-                                              ? const Color.fromARGB(
-                                                  255, 87, 204, 222)
-                                              : const Color.fromARGB(
-                                                  255, 200, 200, 200),
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                // 두 번째 행: 타이머 표시 (해당 항목 활성화 시)
-                                if (activeTimerIndex == index)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10.0),
-                                    child: Text(
-                                      '남은 시간: ${remainingTime ~/ 60}분 ${remainingTime % 60}초',
-                                      style: const TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 111, 111, 111),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                // 세 번째 행: 상세 정보 (i 아이콘 클릭 시 표시)
-                                if (isExpandedList[index]) ...[
-                                  const SizedBox(height: 10),
-                                  const Text('빈도:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text("${step['frequency']}일에 1번"),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    '사용 방법:',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text('${step['instructions']}'),
-                                ],
-                              ],
-                            ),
-                          ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(40.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      handleComplete(context); // 버튼 클릭 시 완료/미완료 확인 및 동작 수행
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 58),
-                      backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '1일 2회 (총 소요시간 ${calculateTotalTime()}분)',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: const Text(
-                      '루틴을 마쳤어요!',
+                    const SizedBox(height: 15),
+                    const Text(
+                      '각 항목을 TAP 해서 타이머를 실행해 보세요!\ni를 누르면 사용 방법이 나와요!',
                       style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
+                        color: Colors.black54,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: selectedRoutine == "morning"
+                                  ? const Color.fromARGB(255, 255, 245, 183)
+                                  : const Color.fromARGB(255, 37, 53, 90),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 13),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            child: Text(
+                              selectedRoutine == "morning"
+                                  ? "오전 루틴"
+                                  : "오후 루틴",
+                              style: TextStyle(
+                                color: selectedRoutine == "morning"
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 26.0),
+                  itemCount: routineSteps.length,
+                  itemBuilder: (context, index) {
+                    var step = routineSteps[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          // 항목 클릭 시 타이머 실행
+                          if (!completedSteps[index]) {
+                            startTimer(index);
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 16.0),
+                          decoration: BoxDecoration(
+                            color: completedSteps[index]
+                                ? const Color.fromARGB(255, 220, 250, 216)
+                                : const Color.fromARGB(255, 240, 240, 240),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/emoji/apple.png',
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        step['name'],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        '  ${step['time']}분',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black54),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.info_outline,
+                                          color: Colors.grey,
+                                          size: 20,
+                                        ),
+                                        onPressed: () {
+                                          // i 버튼 클릭 시 상세 정보 토글
+                                          setState(() {
+                                            isExpandedList[index] =
+                                                !isExpandedList[index];
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // 완료 여부 토글 및 타이머 취소
+                                      setState(() {
+                                        completedSteps[index] =
+                                            !completedSteps[index];
+                                        if (completedSteps[index] &&
+                                            activeTimerIndex == index) {
+                                          timer?.cancel();
+                                          activeTimerIndex = null;
+                                          remainingTime = 0;
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: completedSteps[index]
+                                            ? const Color.fromARGB(
+                                                255, 87, 204, 222)
+                                            : const Color.fromARGB(
+                                                255, 200, 200, 200),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (activeTimerIndex == index)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    '남은 시간: ${remainingTime ~/ 60}분 ${remainingTime % 60}초',
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 111, 111, 111),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              if (isExpandedList[index]) ...[
+                                const SizedBox(height: 10),
+                                const Text('빈도:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                Text("${step['frequency']}일에 1번"),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  '사용 방법:',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: 10),
+                                Text('${step['instructions']}'),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    handleComplete(context); // 버튼 클릭 시 완료/미완료 확인 및 동작 수행
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 58),
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(17),
+                    ),
+                  ),
+                  child: const Text(
+                    '루틴을 마쳤어요!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ],
-            ),
-          );
-  }
+              ),
+            ],
+          ),
+        );
+}
 }
