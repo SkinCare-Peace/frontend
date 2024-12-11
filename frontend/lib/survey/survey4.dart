@@ -72,6 +72,7 @@ class _Survey4State extends State<Survey4> {
                     updateBSTIStatus(
                         userBSTI, widget.userData); // bsti를 사용자 정보로 put
                     // 위 userBSTI string을 사용자 정보로 push하는 api 추가
+                    widget.userData.bsti = userBSTI;
                     Navigator.push(
                       context,
                       MaterialPageRoute(

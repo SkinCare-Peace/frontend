@@ -22,7 +22,7 @@ Future<void> updateSensitiveSkinStatus(
         userData.sensitive = hasSensitiveSkin;
         break;
       case 404:
-        print('백엔드 엔드포인트를 찾을 수 없습니다.');
+        print('sensitive 백엔드 엔드포인트를 찾을 수 없습니다.');
         break;
       case 402:
         print('유효성 검사 오류입니다. 입력 값을 확인하세요.');

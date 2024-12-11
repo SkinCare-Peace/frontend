@@ -1,3 +1,4 @@
+// 옛날 BSTI 화면
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/scalling.dart';
