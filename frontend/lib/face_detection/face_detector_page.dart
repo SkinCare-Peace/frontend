@@ -162,8 +162,8 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
       final responseBody = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-        print('####### $areaName 데이터 전송 성공');
-        print('####### 응답 body: $responseBody');
+        print('******* $areaName 데이터 전송 성공');
+        print('응******답 body: $responseBody');
         _onResponseSuccess(); // 응답 성공 시 호출
       } else {
         print('####### $areaName 데이터 전송 실패: ${response.statusCode}');

@@ -38,6 +38,16 @@ class _QuestionPage3State extends State<QuestionPage3> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              const SizedBox(height: 10),
+              const Text(
+                '기초화장품들의 가격대를 맞춰서 추천해 드릴게요!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
+              ),
               const SizedBox(height: 40),
               ...options.map((option) {
                 return Column(
