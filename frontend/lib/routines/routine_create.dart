@@ -23,7 +23,7 @@ class RoutinePage extends StatefulWidget {
 }
 
 class _RoutinePageState extends State<RoutinePage> {
-   bool isLoading = true;
+  bool isLoading = true;
   List<Map<String, dynamic>> routineSteps = [];
   late List<bool> isExpandedList;
   Map<String, Map<int, List<Map<String, dynamic>>>> recommendedCosmetics = {
@@ -114,6 +114,7 @@ class _RoutinePageState extends State<RoutinePage> {
       try {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
+        print("화장품 추천 응답 : ${decodedResponse}");
         return List<Map<String, dynamic>>.from(data);
       } catch (e) {
         throw FormatException("Invalid JSON format: ${response.body}");
@@ -125,56 +126,53 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   // 루틴 불러오기 *******************************************
-Future<void> fetchAndUpdateRoutine() async {
-  setState(() {
-    isLoading = true; // 로딩 상태 시작
-  });
-
-  try {
-    // 루틴 데이터를 가져옴
-    final routineData = await fetchRoutine(
-      timeMinutes: widget.timeMinutes,
-      moneyWon: widget.moneyWon,
-    );
-
+  Future<void> fetchAndUpdateRoutine() async {
     setState(() {
-      routines["morning"] =
-          List<Map<String, dynamic>>.from(routineData["morning_routine"]);
-      routines["evening"] =
-          List<Map<String, dynamic>>.from(routineData["evening_routine"]);
-      updateRoutineSteps();
+      isLoading = true; // 로딩 상태 시작
     });
 
-    // 추천 화장품 데이터를 모두 로드
-    await fetchAllCosmetics();
+    try {
+      // 루틴 데이터를 가져옴
+      final routineData = await fetchRoutine(
+        timeMinutes: widget.timeMinutes,
+        moneyWon: widget.moneyWon,
+      );
 
-    setState(() {
-      isLoading = false; // 로딩 상태 종료
-    });
-  } catch (e) {
-    print("Error fetching routine: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("루틴 생성 중 오류 발생: $e")),
-    );
-    setState(() {
-      isLoading = false; // 오류 발생 시 로딩 상태 종료
-    });
+      setState(() {
+        routines["morning"] =
+            List<Map<String, dynamic>>.from(routineData["morning_routine"]);
+        routines["evening"] =
+            List<Map<String, dynamic>>.from(routineData["evening_routine"]);
+        updateRoutineSteps();
+      });
+
+      // 추천 화장품 데이터를 모두 로드
+      await fetchAllCosmetics();
+
+      setState(() {
+        isLoading = false; // 로딩 상태 종료
+      });
+    } catch (e) {
+      print("Error fetching routine: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("루틴 생성 중 오류 발생: $e")),
+      );
+      setState(() {
+        isLoading = false; // 오류 발생 시 로딩 상태 종료
+      });
+    }
   }
-}
-
-
 
   // 모든 추천 화장품 데이터 로드
   Future<void> fetchAllCosmetics() async {
-  for (String routineType in ["morning", "evening"]) {
-    for (int i = 0; i < routines[routineType]!.length; i++) {
-      // 각 단계의 화장품 데이터를 비동기로 가져오기
-      await fetchAndUpdateCosmetics(i, routines[routineType]![i]['name'], routineType);
+    for (String routineType in ["morning", "evening"]) {
+      for (int i = 0; i < routines[routineType]!.length; i++) {
+        // 각 단계의 화장품 데이터를 비동기로 가져오기
+        await fetchAndUpdateCosmetics(
+            i, routines[routineType]![i]['name'], routineType);
+      }
     }
   }
-}
-
-
 
   // 현재 선택된 루틴에 따라 routineSteps 업데이트함 + 화장품도 다시 요청 *******************************************
   void updateRoutineSteps() {
@@ -192,7 +190,7 @@ Future<void> fetchAndUpdateRoutine() async {
   }
 
   // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
-  // 특정 단계의 추천 화장품 업데이트
+  // 특정 단계의 추천 화장품 업데이트 ***********************************************************
   Future<void> fetchAndUpdateCosmetics(
       int index, String cosmeticType, String routineType) async {
     try {
@@ -200,7 +198,7 @@ Future<void> fetchAndUpdateRoutine() async {
       if (stepCount == 0) throw Exception("루틴 단계가 없습니다.");
 
       final int budgetPerStep =
-          (widget.moneyWon / stepCount).floor(); // 단계별 예산 계산
+          (widget.moneyWon / stepCount).floor(); // 단계별 예산 계산 ()
       final skinType =
           routineType == "morning" ? "건성" : "지성"; // 루틴에 따른 스킨 타입 설정
 
@@ -221,6 +219,7 @@ Future<void> fetchAndUpdateRoutine() async {
           "Error fetching cosmetics for step $index in $routineType routine: $e");
     }
   }
+
 // 루틴 생성 중 로딩 페이지로 이동
   void goToLoadingPageAndFetchRoutine() async {
     Navigator.push(
@@ -277,8 +276,8 @@ Future<void> fetchAndUpdateRoutine() async {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-    return LoadingPage2(widget.userData); // 로딩 중일 때 표시할 페이지
-  }
+      return LoadingPage2(widget.userData); // 로딩 중일 때 표시할 페이지
+    }
     int totalTime = calculateTotalTime(selectedRoutine);
 
     return Scaffold(
@@ -303,10 +302,9 @@ Future<void> fetchAndUpdateRoutine() async {
             child: Text(
               '각 항목을 TAP 해서 추천제품을 확인해보세요!\ni를 누르면 제품 정보를 볼 수 있어요!\n루틴의 빈도에 맞춰 매일 알려드릴게요!',
               style: TextStyle(
-                color: Color.fromARGB(137, 52, 52, 52),
-                fontWeight: FontWeight.w600,
-                fontSize: 13
-              ),
+                  color: Color.fromARGB(137, 52, 52, 52),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13),
             ),
           ),
 
@@ -461,25 +459,6 @@ Future<void> fetchAndUpdateRoutine() async {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text("${step['frequency']}일마다 1번"),
-                                  const SizedBox(height: 10),
-                                  const Text('추천 성분:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 10),
-                
-                                  if (step['matching_ingredients'] != null)
-                                    Text(
-                                      step['matching_ingredients'].toString(),
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                    )
-                                  else
-                                    const Text(
-                                      '추천 성분 정보 없음',
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.grey),
-                                    ),
                                   const SizedBox(height: 10),
                                   const Text('추천 화장품:',
                                       style: TextStyle(
@@ -639,76 +618,138 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
             ),
           ),
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                "${cosmetic['reason'] ?? '추천 이유 정보 없음'}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 12),
-              ),
-              const SizedBox(height: 15),
-              if (cosmetic['image_url'] != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    cosmetic['image_url'],
-                    height: 300,
-                    width: 300,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.broken_image, size: 300);
-                    },
+        content: SizedBox(
+          height: 400, // 고정된 높이 지정
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  "${cosmetic['reason'] ?? '추천 이유 정보 없음'}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 12),
+                ),
+                const SizedBox(height: 15),
+                if (cosmetic['image_url'] != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      cosmetic['image_url'],
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 200);
+                      },
+                    ),
+                  ),
+                const SizedBox(height: 15),
+                Text(
+                  "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      color: Colors.black54),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-              const SizedBox(height: 20),
-              Text(
-                "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                    color: Colors.black54),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  final url = cosmetic['link'];
-                  if (url != null && await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(
-                      Uri.parse(url),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("유효하지 않은 링크입니다")),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 87, 204, 222),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                const SizedBox(height: 15),
+                if (cosmetic['matching_ingredients'] != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: cosmetic['matching_ingredients']
+                        .entries
+                        .map<Widget>((entry) {
+                      final concern = entry.key;
+                      final ingredients = entry.value;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "$concern에 좋은 성분이 들어있어요:",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: ingredients.entries
+                                  .map<Widget>((ingredientEntry) {
+                                return ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 187, 228, 235), // 버튼 색상
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                  ),
+                                  child: Text(
+                                    "${ingredientEntry.key}",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  )
+                else
+                  const Text(
+                    "추천 성분 정보 없음",
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    final url = cosmetic['link'];
+                    if (url != null && await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(
+                        Uri.parse(url),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("유효하지 않은 링크입니다")),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  ),
+                  child: const Text(
+                    "구매 링크",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                 ),
-                child: const Text(
-                  "구매 링크",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         actions: [
@@ -721,6 +762,7 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
+                color: Colors.black
               ),
             ),
           ),
@@ -729,4 +771,3 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
     },
   );
 }
-
