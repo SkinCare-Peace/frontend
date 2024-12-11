@@ -46,11 +46,11 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   void _onResponseSuccess() {
     setState(() {
       _successfulResponses++;
-      
+
       if (_successfulResponses == _totalRequests) {
-        _cameraViewKey.currentState?.disposeCamera();  //카메라 해지
+        _cameraViewKey.currentState?.disposeCamera(); //카메라 해지
         print("카메라 해지 성공함");
-        
+
         _navigateToBSTI(); // 9개응답 성공시 BSTI 화면으로 이동
       }
     });
@@ -96,14 +96,23 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
             for (var i = 0; i < faces.length; i++) {
               final regions = extractFaceRegionsWithLandmarks(faces[i]);
 
+              // l_cheek과 r_cheek만 필터링
+              final cheekRegions = {
+                if (regions.containsKey("l_cheek"))
+                  "l_cheek": regions["l_cheek"]!,
+                if (regions.containsKey("r_cheek"))
+                  "r_cheek": regions["r_cheek"]!,
+              };
+
               for (var areaName in regions.keys) {
                 final boundingBox = regions[areaName]!;
                 print('Sending $areaName with bbox: ${boundingBox.toString()}');
 
                 // 서버로 데이터 전송
                 await _sendDataToServer(areaName, boundingBox, imageFile);
-                await _sendDataToServer(areaName, boundingBox, imageFile);
               }
+              // 여드름 데이터 전송 (l_cheek과 r_cheek만)
+              await sendAcneDataOnlyCheeks(cheekRegions, imageFile);
             }
           } else {
             print('No faces detected.');
@@ -153,7 +162,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
     );
   }
 
-  // 서버로 데이터 전송 
+  // 서버로 데이터 전송
   Future<void> _sendDataToServer(
       String areaName, Rect boundingBox, File imageFile) async {
     final url = Uri.parse('http://3.34.5.57/predict/$areaName');
@@ -177,6 +186,49 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
       }
     } catch (e) {
       print('####### $areaName 요청 실패: $e');
+    }
+  }
+
+  // 서버로 데이터 전송 for acne
+  Future<void> sendAcneDataOnlyCheeks(
+      Map<String, Rect> faceRegions, File imageFile) async {
+    final url = Uri.parse('http://3.34.5.57/acne_detection/');
+
+    // l_cheek과 r_cheek만 전송
+    final cheekRegions = ["l_cheek", "r_cheek"];
+
+    for (var regionName in cheekRegions) {
+      if (faceRegions.containsKey(regionName)) {
+        final boundingBox =
+            faceRegions[regionName]!; // l_cheek 또는 r_cheek의 bbox
+        final bboxString = boundingBoxToString(boundingBox);
+
+        try {
+          final request = http.MultipartRequest('POST', url)
+            ..fields['bbox'] = bboxString
+            ..files
+                .add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+          final response = await request.send();
+          final responseBody = await response.stream.bytesToString();
+
+          if (response.statusCode == 200) {
+            print('####### $regionName 데이터 전송 성공');
+            print('####### 응답 body: $responseBody');
+            await processServerResponse_acne(responseBody); // 응답 처리 호출
+          } else if (response.statusCode == 404) {
+            print('####### $regionName 데이터 전송 실패: Not Found (404)');
+          } else if (response.statusCode == 400) {
+            print('####### $regionName 데이터 전송 실패: Validation Error (400)');
+          } else {
+            print('####### $regionName 데이터 전송 실패: ${response.statusCode}');
+          }
+        } catch (e) {
+          print('####### $regionName 요청 실패: $e');
+        }
+      } else {
+        print('####### $regionName 데이터가 없습니다.');
+      }
     }
   }
 
