@@ -15,12 +15,11 @@ class DecideBSTI {
     final scalingData = normalizeResponse(selectedData);
 
 // D:건성	O:지성
-      if ((scalingData["pore"]! + surveyInfo.oil) >= 40) {
-        DO = "O";
-      } else {
-        DO = "D";
-      }
-    
+    if ((scalingData["pore"]! + surveyInfo.oil) >= 40) {
+      DO = "O";
+    } else {
+      DO = "D";
+    }
 
 // R:민감x	S:민감성
     if (surveyInfo.sensitive1 || surveyInfo.sensitive2) {
@@ -32,17 +31,30 @@ class DecideBSTI {
     }
 
 // P:색소침착o	N:색소침착x
-      if ((scalingData["pore"]! + surveyInfo.oil) >= 25) {
-        PN = "P";
-      } else {
-        PN = "N";
-      }
-    
+    if ((scalingData["pore"]! + surveyInfo.oil) >= 25) {
+      PN = "P";
+    } else {
+      PN = "N";
+    }
 
 // W:탄력x	T: 탄력o
-  
+    int T = 0;
+    if (userData.age < 35) {
+      T++;
+    }
+    if (scalingData['elasticity']! > 50) {
+      T++;
+    }
+    if (scalingData['wrinkle']! < 50) {
+      T++;
+    }
 
-
+    if (T >= 2) {
+      WT = "T";
+    } else {
+      WT = "W";
+    }
+    T = 0;
     return ("$DO$RS$PN$WT");
   }
 }
