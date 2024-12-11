@@ -1,6 +1,8 @@
 // Regression 데이터를 저장하고 반환하기 위한 클래스
 import 'dart:convert';
 
+import 'package:frontend/record/score_data.dart';
+
 class AcneDataStore {
   final Map<String, int> _acneData = {};
   // 데이터 저장
@@ -9,14 +11,13 @@ class AcneDataStore {
     print('####### $areaName acne 데이터 저장 성공: $score');
   }
 
-    // 가장 작은 값을 반환하는 메서드
+  // 가장 작은 값을 반환하는 메서드
   int? getMinScore() {
     if (_acneData.isEmpty) {
       return null; // 데이터가 없으면 null 반환
     }
     return _acneData.values.reduce((min, score) => score < min ? score : min);
   }
-
 }
 
 final acneDataStore = AcneDataStore();
@@ -36,6 +37,7 @@ Future<void> processServerResponse_acne(
       print('Processed Image: $processedImage');
       print('$regionName acne Score: $score');
       acneDataStore.saveData(regionName, score);
+      dashScore.saveData(regionName, score);
     } else {
       print('####### 여드름 응답에 필수 데이터가 없습니다.');
     }
