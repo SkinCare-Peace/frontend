@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/colors.dart';
+import 'package:frontend/notification/notifications.dart';
+import 'package:frontend/notification/websocket_manager.dart';
 import 'package:frontend/record/dash.dart';
 import 'package:frontend/loading/loading_page0.dart';
 import 'package:frontend/logIn/login_post.dart';
@@ -9,6 +13,8 @@ class LoginInput extends StatelessWidget {
   LoginInput({super.key});
 
   final TextEditingController _emailController = TextEditingController();
+  final NotificationService _notificationService = NotificationService();
+  WebSocketManager? _webSocketManager;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +77,18 @@ class LoginInput extends StatelessWidget {
                               await fetchUserData(_emailController.text);
                           if (userData != null && !isUserDataEmpty(userData)) {
                             print("로그인 성공! $userData");
+                            // WebSocket 연결
+                            _webSocketManager =
+                                WebSocketManager(userId: userData.id);
+                            _webSocketManager!.connect((message) {
+                              // 메시지 처리: WebSocket 메시지를 알림으로 표시
+                              final data = json.decode(message);
+                              final String title = data['title'] ?? "알림";
+                              final String body = data['body'] ?? "내용 없음";
+                              final String image = data['image'] ?? "";
+                              _notificationService.showNotification(
+                                  title, body, image);
+                            });
                             if (userData.skinType.isEmpty) {
                               Navigator.push(
                                   context,
@@ -83,8 +101,7 @@ class LoginInput extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          DashPage(userData),
+                                      builder: (context) => DashPage(userData),
                                     ));
                               }
                             }
