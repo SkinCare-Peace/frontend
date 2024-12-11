@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/Constants/user_data.dart';
@@ -22,35 +23,75 @@ class _DashPageState extends State<DashPage> {
   DateTime selectedDate = DateTime(2024, 8, 20);
 
   final int criterion = 50;
-// 더미 데이터 : 나중에 class 분리 예정.
-  final Map<DateTime, Map<String, int>> skinData = {
-    DateTime(2024, 8, 20): {
-      "수분": 21,
-      "모공": 27,
-      "여드름": 74,
-      "주름": 57,
-      "색소침착": 32,
-    },
-    DateTime(2024, 8, 21): {
-      "수분": 25,
-      "모공": 30,
-      "여드름": 70,
-      "주름": 55,
-      "색소침착": 28,
-    },
-    DateTime(2024, 8, 22): {
-      "수분": 18,
-      "모공": 25,
-      "여드름": 20,
-      "주름": 60,
-      "색소침착": 40,
-    },
-  };
+  Map<DateTime, Map<String, int>> skinData = {};
 
+  // 날짜 이동
   void updateDate(int days) {
     setState(() {
       selectedDate = selectedDate.add(Duration(days: days));
     });
+  }
+
+  // GET 요청을 통해 데이터 가져오기
+Future<void> fetchSkinData(String userId) async {
+  final uri = Uri.parse('https://your-api-endpoint.com/skin-statistics?user_id=$userId');
+
+  try {
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      // statistics 부분 변환
+      final Map<DateTime, Map<String, int>> convertedStatistics = {};
+      (responseData['statistics'] as Map<String, dynamic>).forEach((key, value) {
+        final DateTime parsedDate = DateTime.parse(key); // String -> DateTime 변환
+        convertedStatistics[parsedDate] = Map<String, int>.from(value);
+      });
+
+      setState(() {
+        skinData = convertedStatistics;
+      });
+
+      print('데이터 로드 성공: $convertedStatistics');
+    } else if (response.statusCode == 404) {
+      print('에러: Not Found (404)');
+      _showErrorDialog('데이터를 찾을 수 없습니다.');
+    } else if (response.statusCode == 422) {
+      print('에러: Validation Error (422)');
+      _showErrorDialog('요청이 유효하지 않습니다.');
+    } else {
+      print('알 수 없는 에러: ${response.statusCode}');
+      _showErrorDialog('알 수 없는 문제가 발생했습니다.');
+    }
+  } catch (e) {
+    print('GET 요청 중 에러 발생: $e');
+    _showErrorDialog('네트워크 오류가 발생했습니다.');
+  }
+}
+
+
+  // 에러 다이얼로그
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('오류'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSkinData(widget.userData.id);
   }
 
   @override
@@ -58,12 +99,12 @@ class _DashPageState extends State<DashPage> {
     final currentData = skinData[selectedDate] ?? {};
 
     return Scaffold(
-      backgroundColor: Colors.white, //배경색 흰색
+      backgroundColor: Colors.white,
       body: Padding(
-        padding:
-            const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
+        padding: const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
         child: Column(
           children: [
+            // 사용자 정보 및 프로필
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -83,40 +124,40 @@ class _DashPageState extends State<DashPage> {
                     ),
                   ],
                 ),
-                //Image.asset(BBISTI(widget.userData.bsti)),
                 Image.asset(
                   BBISTI.bstiBBI(widget.userData.bsti),
-                  width: MediaQuery.of(context).size.width*0.3,
+                  width: MediaQuery.of(context).size.width * 0.3,
                   fit: BoxFit.fitWidth,
                 ),
               ],
             ),
             const SizedBox(height: 20),
-
+            // 루틴 시작 및 기록 버튼
             MainButton(
-                text: "루틴 시작하기",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RoutineStartPage(widget.userData),
-                    ),
-                  );
-                }),
+              text: "루틴 시작하기",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RoutineStartPage(widget.userData),
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 10),
             MainButton(
               text: "오늘 피부 기록하기",
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoadingPage0(widget.userData),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoadingPage0(widget.userData),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 20),
-
-            // 통합 결과, 결과 통계, 보유 제품 관리 버튼들 ->  하나의 컨테이너로 묶음
+            // 통계 및 제품 관리 버튼
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
@@ -129,26 +170,26 @@ class _DashPageState extends State<DashPage> {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Insight(widget.userData),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Insight(widget.userData),
+                        ),
+                      );
                     },
                     child: const ContentText(
                       text: "결과 통계",
                       fontSize: 14,
                     ),
                   ),
-                  const Text("|", style: TextStyle(fontSize: 25),),
+                  const Text("|", style: TextStyle(fontSize: 25)),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddedProduct(
-                              widget.userData,
-                            ),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddedProduct(widget.userData),
+                        ),
+                      );
                     },
                     child: const ContentText(
                       text: "보유 제품 관리",
@@ -159,8 +200,7 @@ class _DashPageState extends State<DashPage> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // 날짜 변경 버튼과 표시
+            // 날짜 변경 및 데이터 표시
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -169,19 +209,14 @@ class _DashPageState extends State<DashPage> {
                   onPressed: () => updateDate(-1),
                 ),
                 Container(
-                  // 날짜 표시용 컨테이너
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                   decoration: BoxDecoration(
                     color: AppColors.greyBox,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
                 IconButton(
@@ -193,69 +228,17 @@ class _DashPageState extends State<DashPage> {
             const SizedBox(height: 20),
             // 데이터 출력
             if (currentData.isNotEmpty)
-              Container(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 10, top: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                    color: AppColors.greyBox,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: SizedBox(
-                      height: 250, // 스크롤 영역 제한
-                      child: Scrollbar(
-                        // 스크롤바
-                        thumbVisibility: true, // 항상 스크롤바 보이게
-                        thickness: 4, // 스크롤바 두께
-                        radius: const Radius.circular(10), // 스크롤바 모서리 둥글게
-                        child: Padding(
-                          // 스크롤바와 내용 사이에 거리 추가
-                          padding:
-                              const EdgeInsets.only(right: 20), // 오른쪽 간격 추가
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start, // 왼쪽 정렬
-                              children: currentData.entries.map((entry) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          ContentText(
-                                            text: entry.key,
-                                            fontSize: 13,
-                                          ),
-                                          const SizedBox(width: 7),
-                                          ContentText(
-                                            text: "${entry.value}점",
-                                            fontSize: 20,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 7),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(30),
-                                        child: LinearProgressIndicator(
-                                          value: entry.value / 100,
-                                          color: entry.value >= criterion
-                                              ? AppColors.positiveScore
-                                              : AppColors.negativeScore,
-                                          backgroundColor: Colors.white,
-                                          minHeight: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      )))
+              ...currentData.entries.map((entry) => ListTile(
+                    title: Text(entry.key),
+                    subtitle: LinearProgressIndicator(
+                      value: entry.value / 100,
+                      color: entry.value >= criterion
+                          ? AppColors.positiveScore
+                          : AppColors.negativeScore,
+                      backgroundColor: Colors.white,
+                    ),
+                    trailing: Text("${entry.value}점"),
+                  ))
             else
               const ContentText(
                 text: "데이터가 없습니다.",
