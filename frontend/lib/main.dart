@@ -1,13 +1,21 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/logIn/log_in.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 
 List<CameraDescription> cameras = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
   runApp(const MyApp());
+  _permissionWithNotification();
+}
+
+void _permissionWithNotification() async {
+  if (await Permission.notification.isDenied &&
+      !await Permission.notification.isPermanentlyDenied) {
+    await [Permission.notification].request();
+  }
 }
 
 class MyApp extends StatelessWidget {
