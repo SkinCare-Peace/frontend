@@ -102,6 +102,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
 
                 // 서버로 데이터 전송
                 await _sendDataToServer(areaName, boundingBox, imageFile);
+                await acnePrediction(boundingBox, imageFile);
               }
             }
           } else {
@@ -254,6 +255,8 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
       ),
     );
   }
+  
+  acnePrediction(Rect boundingBox, File imageFile) {}
 }
 
 // 타원 바깥 부분 클리핑을 위한 CustomClipper
