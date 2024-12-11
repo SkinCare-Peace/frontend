@@ -215,7 +215,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
           if (response.statusCode == 200) {
             print('####### $regionName 데이터 전송 성공');
             print('####### 응답 body: $responseBody');
-            await processServerResponse_acne(responseBody); // 응답 처리 호출
+            await processServerResponse_acne(regionName, responseBody); // 응답 처리 호출
           } else if (response.statusCode == 404) {
             print('####### $regionName 데이터 전송 실패: Not Found (404)');
           } else if (response.statusCode == 400) {
