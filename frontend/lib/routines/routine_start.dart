@@ -183,7 +183,6 @@ class _RoutinePageState extends State<RoutineStartPage> {
     return incompleteSteps;
   }
 
-
 // 안한 항목 팝업(알림주기 부분)
   // 안한 항목 팝업(알림주기 부분)
   void showIncompleteStepsDialog(
@@ -228,6 +227,12 @@ class _RoutinePageState extends State<RoutineStartPage> {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Row(
                       children: [
+                        Icon(
+                          Icons.check, // 체크 아이콘
+                          color: Colors.grey, 
+                          size: 20, 
+                        ),
+                        const SizedBox(width: 8),
                         Text(
                           step,
                           style: const TextStyle(
@@ -377,50 +382,50 @@ class _RoutinePageState extends State<RoutineStartPage> {
     }
   }
 
-
 // 루틴 실천했다고 기록 요청하는 부분**********************************************************
-Future<bool> sendRoutineRecord() async {
-  final currentDate = DateTime.now().toIso8601String().split('T')[0]; // 현재 날짜 (yyyy-MM-dd)형식으로 전송
-  final uri = Uri.parse('http://3.34.5.57/routine/record'); 
+  Future<bool> sendRoutineRecord() async {
+    final currentDate = DateTime.now()
+        .toIso8601String()
+        .split('T')[0]; // 현재 날짜 (yyyy-MM-dd)형식으로 전송
+    final uri = Uri.parse('http://3.34.5.57/routine/record');
 
-  // 완료된 루틴 이름이랑 상태 수집
-  final routinePractice = {
-    for (int i = 0; i < routineSteps.length; i++)
-      routineSteps[i]['name']: completedSteps[i]
-  };
+    // 완료된 루틴 이름이랑 상태 수집
+    final routinePractice = {
+      for (int i = 0; i < routineSteps.length; i++)
+        routineSteps[i]['name']: completedSteps[i]
+    };
 
-  // 요청바디
-  final body = json.encode({
-    "user_id": widget.userData.id,
-    "date": currentDate,
-    "usage_time": selectedRoutine, //낮인지 밤인지
-    "routine_practice": routinePractice
-  });
+    // 요청바디
+    final body = json.encode({
+      "user_id": widget.userData.id,
+      "date": currentDate,
+      "usage_time": selectedRoutine, //낮인지 밤인지
+      "routine_practice": routinePractice
+    });
 
-  print('루틴 기록 요청 시작, 요청 데이터: $body'); // 요청 데이터 출력
+    print('루틴 기록 요청 시작, 요청 데이터: $body'); // 요청 데이터 출력
 
-  try {
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-      body: body,
-    );
+    try {
+      final response = await http.post(
+        uri,
+        headers: {"Content-Type": "application/json"},
+        body: body,
+      );
 
-    print('요청 완료함. 상태 코드: ${response.statusCode}'); // 응답 상태 코드 출력
+      print('요청 완료함. 상태 코드: ${response.statusCode}'); // 응답 상태 코드 출력
 
-    if (response.statusCode == 200) {
-      print('루틴 기록 추가 성공');
-      return true; // 요청 성공
-    } else {
-      print('루틴 기록 추가 실패: ${response.body}');
+      if (response.statusCode == 200) {
+        print('루틴 기록 추가 성공');
+        return true; // 요청 성공
+      } else {
+        print('루틴 기록 추가 실패: ${response.body}');
+        return false; // 요청 실패
+      }
+    } catch (e) {
+      print('루틴 기록 추가 요청 중 오류 발생: $e');
       return false; // 요청 실패
     }
-  } catch (e) {
-    print('루틴 기록 추가 요청 중 오류 발생: $e');
-    return false; // 요청 실패
   }
-}
-
 
 // ***************************************** UI
   @override
