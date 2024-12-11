@@ -45,7 +45,11 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   void _onResponseSuccess() {
     setState(() {
       _successfulResponses++;
+      
       if (_successfulResponses == _totalRequests) {
+        _cameraViewKey.currentState?.disposeCamera();  //카메라 해지
+        print("카메라 해지 성공함");
+        
         _navigateToBSTI(); // 9개응답 성공시 BSTI 화면으로 이동
       }
     });
