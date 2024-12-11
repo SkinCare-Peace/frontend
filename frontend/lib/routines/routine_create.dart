@@ -303,7 +303,7 @@ class _RoutinePageState extends State<RoutinePage> {
           const Padding(
             padding: EdgeInsets.only(right: 30.0, left: 30, bottom: 10),
             child: Text(
-              '각 항목을 TAP 해서 추천제품을 확인해보세요!\ni를 누르면 제품 정보를 볼 수 있어요!\n루틴의 빈도에 맞춰 매일 알려드릴게요!',
+              '각 항목을 TAP 해서 추천제품을 확인해보세요!\n루틴의 빈도에 맞춰 매일 알려드릴게요!',
               style: TextStyle(
                   color: Color.fromARGB(137, 52, 52, 52),
                   fontWeight: FontWeight.w600,
@@ -385,9 +385,11 @@ class _RoutinePageState extends State<RoutinePage> {
                   ),
                 ),
               ],
+  
             ),
           ),
           const SizedBox(height: 20),
+          
           // 루틴 리스트
           Expanded(
             child: routineSteps.isEmpty
@@ -599,7 +601,6 @@ class _RoutinePageState extends State<RoutinePage> {
     );
   }
 }
-
 // ************************************  화장품 정보 표시 다이얼로그 ************************************
 void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
   showDialog(

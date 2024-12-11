@@ -85,7 +85,7 @@ class _BSTIState extends State<BSTI> {
                 style: const TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.w900,
-                  color: Color.fromARGB(230, 0, 0, 0),
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
               const SizedBox(height: 10),

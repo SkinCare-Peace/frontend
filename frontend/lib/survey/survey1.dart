@@ -22,9 +22,9 @@ class _Survey1State extends State<Survey1> {
   String? _selectedOption;
 
   final List<Map<String, dynamic>> options = [
-    {'label': '느껴지지 않는다.', 'oil': 0},
+    {'label': '느껴지지 않는다.', 'oil': 50},
     {'label': '직후는 아니지만, 일정 시간이 지나면 느껴진다.', 'oil': 20},
-    {'label': '세수하고 물이 마르면서 느껴진다.', 'oil': 50},
+    {'label': '세수하고 물이 마르면서 느껴진다.', 'oil': 0},
   ];
 
   @override
