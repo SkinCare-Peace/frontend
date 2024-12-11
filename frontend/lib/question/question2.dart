@@ -4,8 +4,10 @@ import 'package:frontend/question/question3.dart';
 
 class QuestionPage2 extends StatefulWidget {
   final UserData userData;
+  final List<String> userConcerns;
 
-  const QuestionPage2(this.userData, {super.key,});
+  const QuestionPage2(this.userData, {required this.userConcerns, super.key});
+
   @override
   _QuestionPage2State createState() => _QuestionPage2State();
 }
@@ -53,7 +55,9 @@ class _QuestionPage2State extends State<QuestionPage2> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => QuestionPage3(
-                         widget.userData , timeMinutes: _selectedOption!, // 선택된 시간을 전달
+                          widget.userData,
+                          userConcerns: widget.userConcerns,
+                          timeMinutes: _selectedOption!,
                         ),
                       ),
                     );

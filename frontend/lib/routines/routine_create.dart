@@ -9,14 +9,16 @@ import 'package:http/http.dart' as http;
 class RoutinePage extends StatefulWidget {
   final int timeMinutes; // 시간
   final int moneyWon; // 돈
+  final List<String> userConcerns; // 고민
   final UserData userData;
 
-  const RoutinePage(
-    this.userData, {
-    super.key,
+  const RoutinePage(this.userData, {
     required this.timeMinutes,
     required this.moneyWon,
+    required this.userConcerns, // 고민 데이터 전달
+    super.key,
   });
+
 
   @override
   _RoutinePageState createState() => _RoutinePageState();
@@ -90,7 +92,7 @@ class _RoutinePageState extends State<RoutinePage> {
   Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
     required String skinType,
     required String cosmeticType,
-    required int budget,
+    required int budget, 
   }) async {
     final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation")
         .replace(queryParameters: {
@@ -100,7 +102,7 @@ class _RoutinePageState extends State<RoutinePage> {
     });
 
     final requestBody = jsonEncode({
-      "user_concerns": ["여드름", "모공"],
+      "user_concerns": widget.userConcerns,
       "allergic_ingredients": ["parabens"],
     });
 
@@ -239,6 +241,7 @@ class _RoutinePageState extends State<RoutinePage> {
             widget.userData,
             timeMinutes: widget.timeMinutes,
             moneyWon: widget.moneyWon,
+            userConcerns: widget.userConcerns,
           ),
         ),
       );
@@ -619,7 +622,7 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
           ),
         ),
         content: SizedBox(
-          height: 400, // 고정된 높이 지정
+          height: 400, 
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -735,7 +738,7 @@ void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 87, 204, 222),
+                    backgroundColor: const Color.fromARGB(255, 106, 187, 198),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),

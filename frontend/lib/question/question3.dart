@@ -3,10 +3,16 @@ import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/routines/routine_create.dart';
 
 class QuestionPage3 extends StatefulWidget {
+  final List<String> userConcerns; //설문 1에서 받은 유저 고민
   final String timeMinutes; // 설문2에서 전달된 시간 데이터
-    final UserData userData;
+  final UserData userData;
+    
 
-  const QuestionPage3(this.userData, {super.key, required this.timeMinutes});
+  const QuestionPage3(this.userData, {
+    required this.userConcerns,
+    required this.timeMinutes,
+    super.key,
+  });
 
   @override
   _QuestionPage3State createState() => _QuestionPage3State();
@@ -58,6 +64,7 @@ class _QuestionPage3State extends State<QuestionPage3> {
                           widget.userData,
                           timeMinutes: int.parse(widget.timeMinutes.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
                           moneyWon: int.parse(_selectedOption!.replaceAll(RegExp(r'[^0-9]'), '')), // 숫자만 추출
+                          userConcerns: widget.userConcerns,  // 유저 고민 전달
                         ),
                       ),
                     );
