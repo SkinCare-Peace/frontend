@@ -165,12 +165,6 @@ class _RoutinePageState extends State<RoutineStartPage> {
       //루틴기록하기 요청
       await sendRoutineRecord();
 
-      // 대시보드 통계 점수 post/get
-      final acne = acneDataStore.getMinScore();
-      dashScore.saveData('acne', acne!);
-      dashScore.postData(widget.userData.id);
-      
-
       //compelete 이동
       Navigator.push(
         context,

@@ -20,7 +20,7 @@ class DashPage extends StatefulWidget {
 }
 
 class _DashPageState extends State<DashPage> {
-  DateTime selectedDate = DateTime(2024, 8, 20);
+  DateTime selectedDate = DateTime(2024, 12, 12);
 
   final int criterion = 50;
   Map<DateTime, Map<String, int>> skinData = {};
@@ -34,7 +34,7 @@ class _DashPageState extends State<DashPage> {
 
   // GET 요청을 통해 데이터 가져오기
 Future<void> fetchSkinData(String userId) async {
-  final uri = Uri.parse('https://your-api-endpoint.com/skin-statistics?user_id=$userId');
+  final uri = Uri.parse('http://3.34.5.57/statistics/${widget.userData.id}');
 
   try {
     final response = await http.get(uri);
