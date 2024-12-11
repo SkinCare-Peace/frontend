@@ -1,5 +1,6 @@
 // survey4.dart
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/bsti_put.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/Constants/which_bsti.dart';
 import 'package:frontend/face_detection/face_result.dart';
@@ -44,8 +45,7 @@ class _Survey4State extends State<Survey4> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const ContentText(
-                  text: "(오돌토돌하거나 검정 점 같은 부분을\n압출하면 나오는 노란색 피지)"),
+              const ContentText(text: "(오돌토돌하거나 검정 점 같은 부분을\n압출하면 나오는 노란색 피지)"),
               const SizedBox(height: 20),
               Image.asset(
                 "assets/images/pizi.jpg",
@@ -67,7 +67,10 @@ class _Survey4State extends State<Survey4> {
                   if (_selectedOption != null) {
                     // "네"면 pizi = true, "아니오"면 pizi = false
                     widget.surveyInfo.pizi = (_selectedOption == '네');
-                    final String userBSTI = DecideBSTI.whichBSTI(widget.surveyInfo, widget.userData);
+                    final String userBSTI = DecideBSTI.whichBSTI(
+                        widget.surveyInfo, widget.userData);
+                    updateBSTIStatus(
+                        userBSTI, widget.userData); // bsti를 사용자 정보로 put
                     // 위 userBSTI string을 사용자 정보로 push하는 api 추가
                     Navigator.push(
                       context,

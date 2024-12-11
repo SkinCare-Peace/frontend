@@ -2,14 +2,14 @@ class UserData {
   final String email;
   final String name;
   final String id;
-  final String skinType;
-  final List<String> skinConcerns;
-  final Map<String, Map<String, int>> avoidIngredients;
+  String skinType;
+  List<String> skinConcerns;
+  Map<String, Map<String, int>> avoidIngredients;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String hashedPassword;
-  final String bsti;
-  final bool sensitive;
+  String bsti;
+  bool sensitive;
   final int age;
 
   UserData({
@@ -60,7 +60,12 @@ class UserData {
       bsti: json['bsti'] ?? '',
     );
   }
+
+  String userBSTI() {
+    return bsti;
+  }
 }
+
 
 bool isUserDataEmpty(UserData userData) {
   return userData.email.isEmpty &&

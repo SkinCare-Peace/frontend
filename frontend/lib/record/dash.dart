@@ -72,7 +72,7 @@ class _DashPageState extends State<DashPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ContentTextLeft(
-                      text: "DSPT ${utf8.decode(widget.userData.name.runes.toList())}님의\n피부 데이터",
+                      text: "${widget.userData.bsti} ${utf8.decode(widget.userData.name.runes.toList())}님의\n피부 데이터",
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -86,7 +86,7 @@ class _DashPageState extends State<DashPage> {
                 ),
                 //Image.asset(BBISTI(widget.userData.bsti)),
                 Image.asset(
-                  BBISTI.bstiBBI("DSPT"),
+                  BBISTI.bstiBBI(widget.userData.bsti),
                   width: MediaQuery.of(context).size.width*0.3,
                   fit: BoxFit.fitWidth,
                 ),

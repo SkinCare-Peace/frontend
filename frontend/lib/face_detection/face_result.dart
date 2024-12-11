@@ -7,6 +7,7 @@ import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/layout/mainButton.dart';
 import 'package:frontend/layout/text.dart'; // UserData import
+
 class BSTI extends StatefulWidget {
   final UserData userData; // UserData 전달받음
   const BSTI(this.userData, {super.key});
@@ -18,8 +19,7 @@ class BSTI extends StatefulWidget {
 class _BSTIState extends State<BSTI> {
   final int criterion = 50; // 점수 기준
   Map<String, int> skinData = {}; // 정규화된 데이터를 저장할 곳
-  final String user_bsti = "DSPT";
-
+  late String user_bsti;
 
   // 예제 데이터를 정규화해서 UI 업데이트
   void updateSkinDataFromResponse(Map<String, double> responseValues) {
@@ -31,6 +31,9 @@ class _BSTIState extends State<BSTI> {
   @override
   void initState() {
     super.initState();
+    user_bsti = widget.userData.userBSTI();
+    print(user_bsti);
+
     // 테스트용 더미 데이터
     Map<String, double> dummyResponse = {
       "elasticity": 0.55,
