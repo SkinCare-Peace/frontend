@@ -1,3 +1,4 @@
+//루틴 생성화면
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/routines/routine_sucessfuly_create.dart';
@@ -117,26 +118,28 @@ class _RoutinePageState extends State<RoutinePage> {
       print("Fetched User Data: $data");
 
       // owned_cosmetics 필드가 없거나 null일 경우 빈 Map 반환
-    if (!data.containsKey('owned_cosmetics') || data['owned_cosmetics'] == null) {
-      return <String, List<String>>{};
-    }
+      if (!data.containsKey('owned_cosmetics') ||
+          data['owned_cosmetics'] == null) {
+        return <String, List<String>>{};
+      }
 
-    // owned_cosmetics가 Map 형태인지 확인 후 처리
-    if (data['owned_cosmetics'] is Map<String, dynamic>) {
-      return (data['owned_cosmetics'] as Map<String, dynamic>).map((key, value) {
-        // 각 value가 null일 경우 빈 리스트로 처리
-        final List<String> cosmeticsList = 
-          (value == null) ? <String>[] : List<String>.from(value);
-        return MapEntry(key, cosmeticsList);
-      });
+      // owned_cosmetics가 Map 형태인지 확인 후 처리
+      if (data['owned_cosmetics'] is Map<String, dynamic>) {
+        return (data['owned_cosmetics'] as Map<String, dynamic>)
+            .map((key, value) {
+          // 각 value가 null일 경우 빈 리스트로 처리
+          final List<String> cosmeticsList =
+              (value == null) ? <String>[] : List<String>.from(value);
+          return MapEntry(key, cosmeticsList);
+        });
+      } else {
+        //빈 Map 반환
+        return <String, List<String>>{};
+      }
     } else {
-      // 형태가 기대한 형식이 아닐 경우 빈 Map 반환
-      return <String, List<String>>{};
+      throw Exception("Failed to fetch user data: ${response.body}");
     }
-  } else {
-    throw Exception("Failed to fetch user data: ${response.body}");
   }
-}
 
   // 보유 화장품의 상세 정보를 가져오는 함수
   Future<List<Map<String, dynamic>>> fetchDetailedCosmetics(
@@ -350,6 +353,40 @@ class _RoutinePageState extends State<RoutinePage> {
       print("루틴 저장 성공");
     } else {
       throw Exception("Failed to update routine: ${response.body}");
+    }
+  }
+
+//제품 추천 이유 API 호출 함수 ************************************************************
+  Future<String> fetchCosmeticRecommendationReason(
+      Map<String, dynamic> cosmetic) async {
+    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation/reason");
+
+    final requestBody = jsonEncode({
+      "name": cosmetic['name'],
+      "brand": cosmetic['brand'],
+      "skin_type_score": cosmetic['skin_type_score'] ?? 0,
+      "concern_score": cosmetic['concern_score'] ?? 0,
+      "rank_score": cosmetic['rank_score'] ?? 0,
+      "price_score": cosmetic['price_score'] ?? 0,
+      "matching_ingredients": cosmetic['matching_ingredients'] ?? {},
+      "user_skin_type": widget.userData.skinType,
+      "user_concerns": widget.userConcerns,
+    });
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: requestBody,
+    );
+
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final reasonString = decodedResponse;
+
+      return reasonString;
+    } else {
+      throw Exception(
+          "Failed to fetch recommendation reason: ${response.body}");
     }
   }
 
@@ -683,178 +720,189 @@ class _RoutinePageState extends State<RoutinePage> {
       ),
     );
   }
-}
 
 // ************************************  화장품 정보 표시 다이얼로그 ************************************
-void showCosmeticDetails(BuildContext context, Map<String, dynamic> cosmetic) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 30), // 다이얼로그 여백
-        titlePadding:
-            const EdgeInsets.only(top: 40, left: 30, right: 30), // 제목 여백
-        contentPadding: const EdgeInsets.symmetric(horizontal: 30), // 내용 여백
-        title: Center(
-          child: Text(
-            cosmetic['name'] ?? '제품 이름 없음',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+  Future<void> showCosmeticDetails(
+      BuildContext context, Map<String, dynamic> cosmetic) async {
+    String? reason; // 추천 이유저장 변수
+
+    try { //i 누르면 추천 이유 불러오기
+      reason = await fetchCosmeticRecommendationReason(cosmetic);
+    } catch (e) {
+      print("추천 이유를 불러오는데 오류가 발생 : $e");
+      reason = "추천 이유를 불러오는 데 실패했습니다 :(";
+    }
+
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 30), // 다이얼로그 여백
+          titlePadding:
+              const EdgeInsets.only(top: 40, left: 30, right: 30), // 제목 여백
+          contentPadding: const EdgeInsets.symmetric(horizontal: 30), // 내용 여백
+          title: Center(
+            child: Text(
+              cosmetic['name'] ?? '제품 이름 없음',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
           ),
-        ),
-        content: SizedBox(
-          height: 400,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
+          content: SizedBox(
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
                 Text(
-                  "${cosmetic['reason'] ?? '추천 이유 정보 없음'}",
+                  reason ?? '추천 이유 정보 없음',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 12),
                 ),
-                const SizedBox(height: 15),
-                if (cosmetic['image_url'] != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      cosmetic['image_url'],
-                      height: 200,
-                      width: 200,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.broken_image, size: 200);
-                      },
+                  const SizedBox(height: 15),
+                  if (cosmetic['image_url'] != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        cosmetic['image_url'],
+                        height: 200,
+                        width: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.broken_image, size: 200);
+                        },
+                      ),
+                    ),
+                  const SizedBox(height: 15),
+                  Text(
+                    "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: Colors.black54),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
-                const SizedBox(height: 15),
-                Text(
-                  "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                      color: Colors.black54),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                if (cosmetic['matching_ingredients'] != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: cosmetic['matching_ingredients']
-                        .entries
-                        .map<Widget>((entry) {
-                      final concern = entry.key;
-                      final ingredients = entry.value;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "$concern에 좋은 성분이 들어있어요:",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                  const SizedBox(height: 15),
+                  if (cosmetic['matching_ingredients'] != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: cosmetic['matching_ingredients']
+                          .entries
+                          .map<Widget>((entry) {
+                        final concern = entry.key;
+                        final ingredients = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "$concern에 좋은 성분이 들어있어요:",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 5),
-                            Wrap(
-                              spacing: 10,
-                              runSpacing: 10,
-                              children: ingredients.entries
-                                  .map<Widget>((ingredientEntry) {
-                                return ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 187, 228, 235), // 버튼 색상
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                              const SizedBox(height: 5),
+                              Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: ingredients.entries
+                                    .map<Widget>((ingredientEntry) {
+                                  return ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 187, 228, 235), // 버튼 색상
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 5),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                  ),
-                                  child: Text(
-                                    "${ingredientEntry.key}",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                    child: Text(
+                                      "${ingredientEntry.key}",
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  )
-                else
-                  const Text(
-                    "추천 성분 정보 없음",
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    final url = cosmetic['link'];
-                    if (url != null && await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(
-                        Uri.parse(url),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("유효하지 않은 링크입니다")),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 106, 187, 198),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  else
+                    const Text(
+                      "추천 성분 정보 없음",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final url = cosmetic['link'];
+                      if (url != null && await canLaunchUrl(Uri.parse(url))) {
+                        await launchUrl(
+                          Uri.parse(url),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("유효하지 않은 링크입니다")),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 174, 174, 174),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                    ),
+                    child: const Text(
+                      "구매 링크로 이동",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  child: const Text(
-                    "구매 링크",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              '닫기',
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  color: Colors.black),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '닫기',
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    color: Colors.black),
+              ),
             ),
-          ),
-        ],
-      );
-    },
-  );
+          ],
+        );
+      },
+    );
+  }
 }
