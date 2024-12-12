@@ -65,7 +65,7 @@ class _Survey4State extends State<Survey4> {
               }),
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_selectedOption != null) {
                     // "네"면 pizi = true, "아니오"면 pizi = false
                     widget.surveyInfo.pizi = (_selectedOption == '네');
@@ -77,7 +77,7 @@ class _Survey4State extends State<Survey4> {
                     widget.userData.bsti = userBSTI;
                     final acne = acneDataStore.getMinScore();
                     dashScore.saveData('acne', acne!);
-                    dashScore.postData(widget.userData.id);
+                    await dashScore.postData(widget.userData.id);
 
                     Navigator.push(
                       context,

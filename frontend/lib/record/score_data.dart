@@ -18,7 +18,8 @@ class DashScore {
       'dryness',
       'pigmentation',
       'wrinkle',
-      'pore'
+      'pore',
+      'elasticity'
     ];
     final Map<String, int> filteredScores = Map.fromEntries(
       _dashScoreData.entries.where((entry) => allowedKeys.contains(entry.key)),
@@ -61,5 +62,4 @@ class DashScore {
       return 'Request Error';
     }
   }
-
 }

@@ -190,7 +190,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
     }
   }
 
-  // 서버로 데이터 전송 for acne
+  // 서버로 데이터 전송 for 여드름
   Future<void> sendAcneDataOnlyCheeks(
       Map<String, Rect> faceRegions, File imageFile) async {
     final url = Uri.parse('http://3.34.5.57/acne_detection/');

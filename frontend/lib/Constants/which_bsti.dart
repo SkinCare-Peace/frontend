@@ -28,6 +28,8 @@ class DecideBSTI {
     dashScore.saveData('pigmentation', scalingData['pigmentation']?? 0);
     dashScore.saveData('wrinkle', scalingData['wrinkle']!);
     dashScore.saveData('pore', scalingData['pore']!);
+    dashScore.saveData('elasticity', scalingData['elasticity']!, 
+    );
 
 // D:건성	O:지성
     if ((scalingData["pore"]! * poreWeight + surveyInfo.oil * surveyWeight) >=
