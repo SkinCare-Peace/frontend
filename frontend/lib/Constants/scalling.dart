@@ -28,6 +28,5 @@ Map<String, int> normalizeResponse(Map<String, double?> responseValues) {
       normalizedData[key] = actualValue.toInt(); // 스케일링 필요 없는 경우
     }
   });
-  
   return normalizedData;
 }
