@@ -59,7 +59,8 @@ class _DashPageState extends State<DashPage> {
             "dryness": "건조도",
             "pigmentation": "색소침착",
             "wrinkle": "주름",
-            "pore": "모공"
+            "pore": "모공",
+            "elasticity": "탄력",
           };
 
           // 변환된 데이터를 저장
@@ -271,7 +272,8 @@ class _DashPageState extends State<DashPage> {
                                 color: entry.value >= criterion
                                     ? AppColors.positiveScore
                                     : AppColors.negativeScore,
-                                backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 240, 240, 240),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),

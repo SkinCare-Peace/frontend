@@ -51,7 +51,7 @@ class RegressionDataStore {
         }
       }
     }
-    // pigmentation 그대로 사용
+    //pigmentation 그대로 사용
     if (_categoryBasedData.containsKey("pigmentation")) {
       final pigmentationValue =
           _categoryBasedData["pigmentation"]?.values.first;
@@ -60,6 +60,8 @@ class RegressionDataStore {
             pigmentationValue * (scalingFactors["pigmentation"] ?? 1.0);
       }
     }
+
+  print(_categoryBasedData["!~~!~!~!~!~~!~pigmentation"]);
     // pore에서 최대값 선택
     if (_categoryBasedData.containsKey("pore")) {
       final values = _categoryBasedData["pore"]!.values;
@@ -91,6 +93,15 @@ class RegressionDataStore {
         result["pore"] = values.reduce((a, b) => a > b ? a : b);
       }
     }
+
+        if (_categoryBasedData.containsKey("pigmentation")) {
+      final pigmentationValue =
+          _categoryBasedData["pigmentation"]?.values.first;
+      if (pigmentationValue != null) {
+        result["pigmentation"] =
+            pigmentationValue * (result["pigmentation"] ?? 1.0);
+      }
+    }
     return result;
   }
 }
@@ -117,4 +128,3 @@ Future<void> processServerResponse(String areaName, String responseBody) async {
     print('####### $areaName 응답 처리 중 오류 발생: $e');
   }
 }
-

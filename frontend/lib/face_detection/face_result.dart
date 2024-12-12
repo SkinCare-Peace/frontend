@@ -1,6 +1,6 @@
-// 옛날 BSTI 화면
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:frontend/Constants/scalling.dart';
 import 'package:frontend/addProduct/add_main.dart';
 import 'package:frontend/Constants/colors.dart';
@@ -22,28 +22,76 @@ class _BSTIState extends State<BSTI> {
   Map<String, int> skinData = {}; // 정규화된 데이터를 저장할 곳
   late String user_bsti;
 
-  // 예제 데이터를 정규화해서 UI 업데이트
-  void updateSkinDataFromResponse(Map<String, double> responseValues) {
-    setState(() {
-      skinData = normalizeResponse(responseValues);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     user_bsti = widget.userData.userBSTI();
     print(user_bsti);
+    fetchSkinData(widget.userData.id); // 데이터 가져오기
+  }
 
-    // 테스트용 더미 데이터
-    Map<String, double> dummyResponse = {
-      "elasticity": 0.55,
-      "moisture": 60.0,
-      "wrinkle": 20.0,
-      "pigmentation": 27.0,
-      "pore": 464.0,
-    };
-    updateSkinDataFromResponse(dummyResponse); // 정규화하고 UI 업데이트
+  // GET 요청을 통해 데이터 가져오기
+  Future<void> fetchSkinData(String userId) async {
+    final uri = Uri.parse('http://3.34.5.57/statistics/${widget.userData.id}');
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        // 데이터 변환
+        final Map<String, String> keyTranslation = {
+          "acne": "여드름",
+          "dryness": "건조도",
+          "pigmentation": "색소침착",
+          "wrinkle": "주름",
+          "pore": "모공",
+          "elasticity": "탄력",
+        };
+
+        // 정규화된 데이터를 저장
+        final translatedData = (responseData['statistics'] as Map<String, dynamic>)
+            .values
+            .first
+            .map((k, v) => MapEntry(keyTranslation[k] ?? k, v));
+
+        setState(() {
+          skinData = Map<String, int>.from(translatedData);
+        });
+
+        print('데이터 로드 성공: $translatedData');
+      } else if (response.statusCode == 404) {
+        print('에러: Not Found (404)');
+        _showErrorDialog('데이터를 찾을 수 없습니다.');
+      } else if (response.statusCode == 422) {
+        print('에러: Validation Error (422)');
+        _showErrorDialog('요청이 유효하지 않습니다.');
+      } else {
+        print('알 수 없는 에러: ${response.statusCode}, ');
+        _showErrorDialog('알 수 없는 문제가 발생했습니다.');
+      }
+    } catch (e) {
+      print('GET 요청 중 에러 발생: $e');
+      _showErrorDialog('네트워크 오류가 발생했습니다.');
+    }
+  }
+
+  // 에러 다이얼로그
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('오류'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

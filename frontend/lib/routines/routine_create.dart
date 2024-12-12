@@ -619,7 +619,6 @@ Future<void> fetchAndUpdateCosmetics(
               children: [
                 ElevatedButton(
                   onPressed: () {
-                          // 대시보드 통계 점수 post/get
                     if (routineId != null) {
                       updateRoutine(routineId!); // 루틴 갱신 요청
                       Navigator.push(

@@ -34,7 +34,7 @@ Future<void> processServerResponse_acne(
       final processedImage = responseJson['processed_image'];
       final score = responseJson['score'];
 
-      print('Processed Image: $processedImage');
+      //print('Processed Image: $processedImage');
       print('$regionName acne Score: $score');
       acneDataStore.saveData(regionName, score);
       dashScore.saveData(regionName, score);

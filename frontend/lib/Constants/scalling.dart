@@ -19,7 +19,7 @@ Map<String, int> normalizeResponse(Map<String, double?> responseValues) {
       int normalizedValue = (actualValue / scalingFactors[key]! * 100).toInt();
       
       // 특정 항목은 점수가 낮을수록 좋음 (100에서 뺌)
-      if (key == "pigmentation" || key == "pore" || key == "elasticity") {
+      if (key == "pigmentation" || key == "pore") {
         normalizedData[key] = 100 - normalizedValue; // 역점수 계산
       } else {
         normalizedData[key] = normalizedValue; // 일반 점수 계산
