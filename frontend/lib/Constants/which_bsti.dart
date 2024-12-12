@@ -25,7 +25,7 @@ class DecideBSTI {
             .toInt();
     // dash Score 저장.
     dashScore.saveData('moisture', scalingData['moisture']! + 20);
-    dashScore.saveData('pigmentation', scalingData['pigmentation']?? 0);
+    dashScore.saveData('pigmentation', scalingData['pigmentation']! <0 ? scalingData['pigmentation']!: 100);
     dashScore.saveData('wrinkle', scalingData['wrinkle']!);
     dashScore.saveData('pore', scalingData['pore']!);
     dashScore.saveData('elasticity', scalingData['elasticity']!, 
