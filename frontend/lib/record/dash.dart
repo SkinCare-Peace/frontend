@@ -26,7 +26,7 @@ class _DashPageState extends State<DashPage> {
     DateTime.now().day,
   );
 
-  final int criterion = 50;
+  final int criterion = 60;
   Map<DateTime, Map<String, int>> skinData = {};
 
   // 날짜 이동

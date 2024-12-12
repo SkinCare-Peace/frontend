@@ -145,7 +145,7 @@ class _CalanderState extends State<Calander> {
             calendarStyle: CalendarStyle(
               todayDecoration: BoxDecoration(
                 color: Colors.transparent,
-                border: Border.all(color: AppColors.marker, width: 1),
+                border: Border.all(color: AppColors.progressBar, width: 2),
                 shape: BoxShape.circle,
               ),
               todayTextStyle: const TextStyle(

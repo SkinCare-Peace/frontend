@@ -42,7 +42,9 @@ class UserData {
       skinConcerns: json['skin_concerns'] is Iterable
           ? List<String>.from(json['skin_concerns'])
           : [],
-      sensitive: json['has_sensitive_skin'] ?? false,
+      sensitive: (json['has_sensitive_skin'] is bool)
+          ? json['has_sensitive_skin'] is bool
+          : false,
       avoidIngredients: json['avoid_ingredients'] is Iterable
           ? List<String>.from(json['avoid_ingredients'])
           : [],
@@ -78,7 +80,5 @@ bool isUserDataEmpty(UserData userData) {
   return userData.email.isEmpty &&
       userData.name.isEmpty &&
       userData.id.isEmpty &&
-      userData.avoidIngredients.isEmpty &&
-      userData.hashedPassword.isEmpty &&
-      userData.bsti.isEmpty;
+      userData.hashedPassword.isEmpty;
 }

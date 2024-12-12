@@ -71,7 +71,7 @@ class _InsightState extends State<Insight> {
     }
   }
 
-  final int pivot = 50;
+  final int pivot = 60;
   Color dot = const Color.fromARGB(255, 162, 162, 162);
 
   late DateTime latestDate; // 가장 최근 날짜
