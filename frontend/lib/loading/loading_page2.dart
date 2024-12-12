@@ -58,12 +58,12 @@ class _LoadingPage2 extends State<LoadingPage2> {
             Text(
               '${utf8.decode(widget.userData.name.runes.toList())}님의\n루틴을 생성 중입니다',
               style: const TextStyle(
-                fontSize: 25,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20), // 텍스트와 컨테이너 간 거리
+            const SizedBox(height: 10), // 텍스트와 컨테이너 간 거리
             Container(
               padding: const EdgeInsets.only(bottom: 50, top: 20), // 컨테이너 안 패딩
               decoration: const BoxDecoration(
