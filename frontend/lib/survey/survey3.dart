@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/bsti_put.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/Constants/which_bsti.dart';
+import 'package:frontend/face_detection/acne_data.dart';
+import 'package:frontend/face_detection/face_result.dart';
 import 'package:frontend/layout/text.dart';
+import 'package:frontend/record/score_data.dart';
 import 'package:frontend/survey/survey_info.dart';
 import 'package:frontend/survey/survey4.dart';
 import 'package:http/http.dart' as http;
@@ -82,7 +87,7 @@ class _Survey3State extends State<Survey3> {
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                     child: Text(
-                      '다음 질문으로',
+                      '제출하기기',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -139,13 +144,22 @@ class _Survey3State extends State<Survey3> {
 
       if (response.statusCode == 200) {
         // 성공적으로 전송한 경우
+         final String userBSTI = DecideBSTI.whichBSTI(
+                        widget.surveyInfo, widget.userData);
+                    updateBSTIStatus(
+                        userBSTI, widget.userData); // bsti를 사용자 정보로 put
+                    // 위 userBSTI string을 사용자 정보로 push하는 api 추가
+                    widget.userData.bsti = userBSTI;
+                    final acne = acneDataStore.getMinScore();
+                    dashScore.saveData('acne', acne!);
+                    dashScore.postData(widget.userData.id);
+
+
+
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Survey4(
-              userData: widget.userData,
-              surveyInfo: widget.surveyInfo,
-            ),
+            builder: (context) => BSTI(widget.userData),
           ),
         );
       } else if (response.statusCode == 404) {

@@ -18,7 +18,7 @@ class BSTI extends StatefulWidget {
 }
 
 class _BSTIState extends State<BSTI> {
-  final int criterion = 50; // 점수 기준
+  final int criterion = 60; // 점수 기준
   Map<String, int> skinData = {}; // 정규화된 데이터를 저장할 곳
   late String user_bsti;
 
@@ -43,7 +43,7 @@ class _BSTIState extends State<BSTI> {
         // 데이터 변환
         final Map<String, String> keyTranslation = {
           "acne": "여드름",
-          "moisture": "건조도",
+          "moisture": "수분",
           "pigmentation": "색소침착",
           "wrinkle": "주름",
           "pore": "모공",

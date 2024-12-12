@@ -89,7 +89,8 @@ class LoginInput extends StatelessWidget {
                               _notificationService.showNotification(
                                   title, body, image);
                             });
-                            if (userData.skinType.isEmpty) {
+                            if (userData.routineId.isEmpty) {
+                              print("~!~!~!~!~!${userData.routineId}");
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -97,7 +98,7 @@ class LoginInput extends StatelessWidget {
                                         LoadingPage0(userData),
                                   ));
                             } else {
-                              if (userData.skinType.isNotEmpty) {
+                              if (userData.routineId.isNotEmpty) {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

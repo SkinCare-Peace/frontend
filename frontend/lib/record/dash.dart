@@ -26,7 +26,7 @@ class _DashPageState extends State<DashPage> {
     DateTime.now().day,
   );
 
-  final int criterion = 50;
+  final int criterion = 60;
   Map<DateTime, Map<String, int>> skinData = {};
 
   // 날짜 이동
@@ -37,7 +37,7 @@ class _DashPageState extends State<DashPage> {
   }
 
   // GET 요청을 통해 데이터 가져오기
-  Future<void> fetchSkinData(String userId) async {
+  Future<void> fetchSkinData() async {
     final uri = Uri.parse('http://3.34.5.57/statistics/${widget.userData.id}');
 
     try {
@@ -112,7 +112,7 @@ class _DashPageState extends State<DashPage> {
   @override
   void initState() {
     super.initState();
-    fetchSkinData(widget.userData.id);
+    fetchSkinData();
   }
 
   @override
@@ -196,7 +196,7 @@ class _DashPageState extends State<DashPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Insight(widget.userData),
+                          builder: (context) => Insight(widget.userData, skinData),
                         ),
                       );
                     },
