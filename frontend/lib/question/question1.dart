@@ -30,7 +30,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20.0), // 화면 전체에 패딩 추가
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 40,bottom: 20), // 화면 전체에 패딩 추가
           child: Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -47,6 +47,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(height: 10),
                 const Text(
                   '없다면 건너 뛰셔도 돼요!',
                   textAlign: TextAlign.center,
@@ -64,7 +65,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                     ],
                   );
                 }),
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
                     //선택 항목 추출하고,

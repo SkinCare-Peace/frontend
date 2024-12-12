@@ -110,6 +110,14 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       resizeToAvoidBottomInset: true, 
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView( // 전체 화면 스크롤
@@ -119,7 +127,7 @@ class _AddSkinCareMainState extends State<AddSkinCareMain> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 150),
+              const SizedBox(height: 90),
               const Text(
                 "현재 보유한\n스킨케어 제품이 있나요?",
                 textAlign: TextAlign.center,

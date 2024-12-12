@@ -430,7 +430,7 @@ class _RoutinePageState extends State<RoutinePage> {
               style: TextStyle(
                   color: Color.fromARGB(137, 52, 52, 52),
                   fontWeight: FontWeight.w600,
-                  fontSize: 13),
+                  fontSize: 14),
             ),
           ),
 
@@ -580,12 +580,12 @@ class _RoutinePageState extends State<RoutinePage> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text(step['instructions'] ?? "사용 방법 없음"),
-                                  const SizedBox(height: 30),
+                                  const SizedBox(height: 20),
                                   const Text('빈도:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text("${step['frequency']}일마다 1번"),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 20),
                                   const Text('추천 화장품:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
@@ -751,7 +751,7 @@ class _RoutinePageState extends State<RoutinePage> {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 20,
               ),
             ),
           ),
@@ -765,7 +765,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 Text(
                   reason ?? '추천 이유 정보 없음',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 15),
                 ),
                   const SizedBox(height: 15),
                   if (cosmetic['image_url'] != null)
@@ -797,7 +797,7 @@ class _RoutinePageState extends State<RoutinePage> {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 20),
                   if (cosmetic['matching_ingredients'] != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
