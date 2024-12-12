@@ -3,7 +3,7 @@ Map<String, double> scalingFactors = {
   "moisture": 100.0,        // 0 ~ 100
   "wrinkle": 50.0,          // 0 ~ 50
   "pigmentation": 350.0,    // 0 ~ 350
-  "pore": 2600.0,           // 0 ~ 2600
+  "pore": 2600.0,           // 0 ~ 2600 
 };
 
 

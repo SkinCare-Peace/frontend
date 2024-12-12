@@ -786,7 +786,7 @@ class _RoutinePageState extends State<RoutinePage> {
                     "브랜드: ${cosmetic['brand'] ?? '정보 없음'}",
                     style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 10,
                         color: Colors.black54),
                   ),
                   const SizedBox(height: 6),
@@ -794,7 +794,7 @@ class _RoutinePageState extends State<RoutinePage> {
                     "가격: ${cosmetic['selling_price'] ?? '정보 없음'}원",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -816,6 +816,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
+                                  color: Colors.black54
                                 ),
                               ),
                               const SizedBox(height: 5),
@@ -828,7 +829,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color.fromARGB(
-                                          255, 187, 228, 235), // 버튼 색상
+                                          255, 255, 245, 183), 
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
@@ -840,7 +841,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                       style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: Color.fromARGB(255, 255, 255, 255),
                                       ),
                                     ),
                                   );
@@ -853,7 +854,7 @@ class _RoutinePageState extends State<RoutinePage> {
                     )
                   else
                     const Text(
-                      "추천 성분 정보 없음",
+                      "추천 성분 정보가 없어요!",
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   const SizedBox(height: 20),
