@@ -54,89 +54,57 @@ class _RoutinePageState extends State<RoutinePage> {
 
 // 루틴 가져오기 + 루틴 id 저장 *******************************************
   Future<Map<String, dynamic>> fetchRoutine({
-  required int timeMinutes,
-  required int moneyWon,
-}) async {
-  // 유저의 보유 화장품 정보 가져오기
-  final userCosmetics = await fetchUserOwnedCosmetics(widget.userData.id);
+    required int timeMinutes,
+    required int moneyWon,
+  }) async {
+    // 유저의 보유 화장품 정보 가져오기
 
-  // 필터링하여 비어 있지 않은 ids만 포함, ids는 제거하고 type만 포함
-  final List<String> ownedCosmeticsTypes = userCosmetics.entries
-      .where((entry) => entry.value.isNotEmpty) // ids가 비어있지 않은 항목만 선택
-      .map((entry) => entry.key) // type만 포함
-      .toList();
+    final userCosmetics = await fetchUserOwnedCosmetics(widget.userData.id);
+    // 필터링하여 비어 있지 않은 ids만 포함, ids는 제거하고 type만 포함
+    final List<String> ownedCosmeticsTypes = userCosmetics.entries
+        .where((entry) => entry.value.isNotEmpty) // ids가 비어있지 않은 항목만 선택
+        .map((entry) => entry.key) // type만 포함
+        .toList();
 
-  // 서버 요청 준비
-  final uri = Uri.parse("http://3.34.5.57/routine/");
-  final requestBody = jsonEncode({
-    "time_minutes": timeMinutes,
-    "money_won": moneyWon,
-    "owned_cosmetics": ownedCosmeticsTypes, // type만 전송
-  });
+    // 서버 요청 준비
+    final uri = Uri.parse("http://3.34.5.57/routine/");
+    final requestBody = jsonEncode({
+      "time_minutes": timeMinutes,
+      "money_won": moneyWon,
+      "owned_cosmetics": ownedCosmeticsTypes, // type만 전송
+    });
 
-  print("############ 보낸 키값: $requestBody");
+    print("############ 보낸 키값: $requestBody");
 
-  final response = await http.post(
-    uri,
-    headers: {"Content-Type": "application/json"},
-    body: requestBody,
-  );
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: requestBody,
+    );
 
-  if (response.statusCode == 200) {
-    print("보낸 시간 : $timeMinutes");
-    print("보낸 돈 : $moneyWon");
-    final decodedResponse = utf8.decode(response.bodyBytes);
-    final Map<String, dynamic> data = json.decode(decodedResponse);
+    if (response.statusCode == 200) {
+      print("보낸 시간 : $timeMinutes");
+      print("보낸 돈 : $moneyWon");
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> data = json.decode(decodedResponse);
 
-    print("Fetched Routine Data: $data");
-    routineId = data['_id']; // 루틴 ID 저장
-    print("새로 가져온 Routine ID: $routineId");
+      print("Fetched Routine Data: $data");
+      routineId = data['_id']; // 루틴 ID 저장
+      print("새로 가져온 Routine ID: $routineId");
 
-    return {
-      "morning_routine": data['morning_routine'] ?? [],
-      "evening_routine": data['evening_routine'] ?? [],
-    };
-  } else {
-    throw Exception("Failed to fetch routine: ${response.body}");
-  }
-}
-
-
-
-   // 사용자가 보유한 화장품 종류 가져오기 *******************************************
-Future<Map<String, List<String>>> fetchUserOwnedCosmetics(String userId) async {
-  final uri = Uri.parse("http://3.34.5.57/users/$userId");
-
-  final response = await http.get(
-    uri,
-    headers: {"Content-Type": "application/json"},
-  );
-
-  if (response.statusCode == 200) {
-    final decodedResponse = utf8.decode(response.bodyBytes);
-    final Map<String, dynamic> data = json.decode(decodedResponse);
-
-    print("Fetched User Data: $data");
-
-    if (data.containsKey('owned_cosmetics') &&
-        data['owned_cosmetics'] is Map<String, dynamic>) {
-      return (data['owned_cosmetics'] as Map<String, dynamic>).map((key, value) => 
-        MapEntry(key, List<String>.from(value)));
+      return {
+        "morning_routine": data['morning_routine'] ?? [],
+        "evening_routine": data['evening_routine'] ?? [],
+      };
     } else {
-      throw Exception("Invalid user cosmetics data");
+      throw Exception("Failed to fetch routine: ${response.body}");
     }
-  } else {
-    throw Exception("Failed to fetch user data: ${response.body}");
   }
-}
 
-
-
-  // 보유 화장품의 상세 정보를 가져오는 함수
-Future<List<Map<String, dynamic>>> fetchDetailedCosmetics(List<String> cosmeticIds) async {
-  List<Map<String, dynamic>> detailedCosmetics = [];
-  for (String cosmeticId in cosmeticIds) {
-    final uri = Uri.parse("http://3.34.5.57/cosmetics/$cosmeticId");
+  // 사용자가 보유한 화장품 종류 가져오기 *******************************************
+  Future<Map<String, List<String>>> fetchUserOwnedCosmetics(
+      String userId) async {
+    final uri = Uri.parse("http://3.34.5.57/users/$userId");
 
     final response = await http.get(
       uri,
@@ -146,53 +114,93 @@ Future<List<Map<String, dynamic>>> fetchDetailedCosmetics(List<String> cosmeticI
     if (response.statusCode == 200) {
       final decodedResponse = utf8.decode(response.bodyBytes);
       final Map<String, dynamic> data = json.decode(decodedResponse);
-      detailedCosmetics.add(data);
-    } else {
-      print("Failed to fetch details for cosmetic ID $cosmeticId: ${response.body}");
+
+      print("Fetched User Data: $data");
+
+      // owned_cosmetics 필드가 없거나 null일 경우 빈 Map 반환
+    if (!data.containsKey('owned_cosmetics') || data['owned_cosmetics'] == null) {
+      return <String, List<String>>{};
     }
+
+    // owned_cosmetics가 Map 형태인지 확인 후 처리
+    if (data['owned_cosmetics'] is Map<String, dynamic>) {
+      return (data['owned_cosmetics'] as Map<String, dynamic>).map((key, value) {
+        // 각 value가 null일 경우 빈 리스트로 처리
+        final List<String> cosmeticsList = 
+          (value == null) ? <String>[] : List<String>.from(value);
+        return MapEntry(key, cosmeticsList);
+      });
+    } else {
+      // 형태가 기대한 형식이 아닐 경우 빈 Map 반환
+      return <String, List<String>>{};
+    }
+  } else {
+    throw Exception("Failed to fetch user data: ${response.body}");
   }
-  return detailedCosmetics;
 }
+
+  // 보유 화장품의 상세 정보를 가져오는 함수
+  Future<List<Map<String, dynamic>>> fetchDetailedCosmetics(
+      List<String> cosmeticIds) async {
+    List<Map<String, dynamic>> detailedCosmetics = [];
+    for (String cosmeticId in cosmeticIds) {
+      final uri = Uri.parse("http://3.34.5.57/cosmetics/$cosmeticId");
+
+      final response = await http.get(
+        uri,
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        final decodedResponse = utf8.decode(response.bodyBytes);
+        final Map<String, dynamic> data = json.decode(decodedResponse);
+        detailedCosmetics.add(data);
+      } else {
+        print(
+            "Failed to fetch details for cosmetic ID $cosmeticId: ${response.body}");
+      }
+    }
+    return detailedCosmetics;
+  }
 
 // 추천 화장품 가져오기 ******************************************* (유저 스킨타입, 고민, 알러지 성분 보내기)
-Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
-  required String skinType,
-  required String cosmeticType,
-  required int budget,
-}) async {
-  final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation")
-      .replace(queryParameters: {
-    "user_skin_type": skinType,
-    "cosmetic_types": cosmeticType,
-    "budget": budget.toString(),
-  });
+  Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
+    required String skinType,
+    required String cosmeticType,
+    required int budget,
+  }) async {
+    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation")
+        .replace(queryParameters: {
+      "user_skin_type": skinType,
+      "cosmetic_types": cosmeticType,
+      "budget": budget.toString(),
+    });
 
-  final requestBody = jsonEncode({
-    "user_concerns": widget.userConcerns,
-    "allergic_ingredients":[], // 빈 리스트로 기본값 설정
-  });
+    final requestBody = jsonEncode({
+      "user_concerns": widget.userConcerns,
+      "allergic_ingredients": [], // 빈 리스트로 기본값 설정
+    });
 
-  print("Sending recommendation request to $uri");
-  print("Request body: $requestBody");
+    print("Sending recommendation request to $uri");
+    print("Request body: $requestBody");
 
-  final response = await http.post(
-    uri,
-    headers: {"Content-Type": "application/json"},
-    body: requestBody,
-  );
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: requestBody,
+    );
 
-  if (response.statusCode == 200) {
-    final decodedResponse = utf8.decode(response.bodyBytes);
-    final List<dynamic> data = json.decode(decodedResponse);
-    print("Received recommendation response: $data");
-    return List<Map<String, dynamic>>.from(data);
-  } else {
-    final errorResponse = utf8.decode(response.bodyBytes);
-    print("Error fetching recommended cosmetics: $errorResponse");
-    throw Exception("Failed to fetch recommended cosmetics: $errorResponse");
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final List<dynamic> data = json.decode(decodedResponse);
+      print("Received recommendation response: $data");
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      final errorResponse = utf8.decode(response.bodyBytes);
+      print("Error fetching recommended cosmetics: $errorResponse");
+      throw Exception("Failed to fetch recommended cosmetics: $errorResponse");
+    }
   }
-}
-
 
   // 루틴 불러오기 *******************************************
   Future<void> fetchAndUpdateRoutine() async {
@@ -256,49 +264,50 @@ Future<List<Map<String, dynamic>>> fetchRecommendedCosmetics({
 
   // 화장품 불러오기 (낮/밤 루틴 구분 추가 -> 따로 저장해서 서로 영향 안끼치게)
   // 특정 단계의 추천 화장품 업데이트 ***********************************************************
-Future<void> fetchAndUpdateCosmetics(
-    int index, String cosmeticType, String routineType) async {
-  try {
-    final step = routines[routineType]?[index];
-    if (step == null) throw Exception("루틴 단계가 없습니다.");
+  Future<void> fetchAndUpdateCosmetics(
+      int index, String cosmeticType, String routineType) async {
+    try {
+      final step = routines[routineType]?[index];
+      if (step == null) throw Exception("루틴 단계가 없습니다.");
 
-    final int cost = step['cost'] ?? 0; // cost 값 가져오기
-    print("########## Step $index: ${step['name']}, Cost: ${step['cost']} ##############"); 
-    if (cost == 0) {
-      // cost 값이 0인 경우 요청하지 않음
-      print("Step $index in $routineType routine has cost 0. Fetching owned cosmetics.");
-      final userCosmetics = await fetchUserOwnedCosmetics(widget.userData.id);
-      final ownedCosmetics = await fetchDetailedCosmetics(
-        userCosmetics[cosmeticType] ?? [],
+      final int cost = step['cost'] ?? 0; // cost 값 가져오기
+      print(
+          "########## Step $index: ${step['name']}, Cost: ${step['cost']} ##############");
+      if (cost == 0) {
+        // cost 값이 0인 경우 요청하지 않음
+        print(
+            "Step $index in $routineType routine has cost 0. Fetching owned cosmetics.");
+        final userCosmetics = await fetchUserOwnedCosmetics(widget.userData.id);
+        final ownedCosmetics = await fetchDetailedCosmetics(
+          userCosmetics[cosmeticType] ?? [],
+        );
+        setState(() {
+          if (!recommendedCosmetics[routineType]!.containsKey(index)) {
+            recommendedCosmetics[routineType]![index] = [];
+          }
+          recommendedCosmetics[routineType]![index] = ownedCosmetics;
+        });
+        return; // 요청 안보내고 return
+      }
+      // cost 값이 0보다 큰 경우 추천 화장품 요청
+      final skinType = widget.userData.skinType ?? "건성";
+      final cosmetics = await fetchRecommendedCosmetics(
+        skinType: skinType,
+        cosmeticType: cosmeticType,
+        budget: cost,
       );
+
       setState(() {
         if (!recommendedCosmetics[routineType]!.containsKey(index)) {
           recommendedCosmetics[routineType]![index] = [];
         }
-        recommendedCosmetics[routineType]![index] = ownedCosmetics;
+        recommendedCosmetics[routineType]![index] = cosmetics;
       });
-      return; // 요청 안보내고 return 
+    } catch (e) {
+      print(
+          "Error fetching cosmetics for step $index in $routineType routine: $e");
     }
-    // cost 값이 0보다 큰 경우 추천 화장품 요청
-    final skinType = widget.userData.skinType ?? "건성";
-    final cosmetics = await fetchRecommendedCosmetics(
-      skinType: skinType,
-      cosmeticType: cosmeticType,
-      budget: cost,
-    );
-
-    setState(() {
-      if (!recommendedCosmetics[routineType]!.containsKey(index)) {
-        recommendedCosmetics[routineType]![index] = [];
-      }
-      recommendedCosmetics[routineType]![index] = cosmetics;
-    });
-  } catch (e) {
-    print("Error fetching cosmetics for step $index in $routineType routine: $e");
   }
-}
-
-
 
 // 루틴 생성 중 로딩 페이지로 이동  *******************************************
   void goToLoadingPageAndFetchRoutine() async {
