@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Constants/bsti_put.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/Constants/which_bsti.dart';
+import 'package:frontend/face_detection/acne_data.dart';
 import 'package:frontend/face_detection/face_result.dart';
 import 'package:frontend/layout/text.dart';
+import 'package:frontend/record/score_data.dart';
 import 'package:frontend/survey/survey_info.dart';
 // 필요하다면 SurveyComplete 같은 다음 페이지 import
 
@@ -73,6 +75,10 @@ class _Survey4State extends State<Survey4> {
                         userBSTI, widget.userData); // bsti를 사용자 정보로 put
                     // 위 userBSTI string을 사용자 정보로 push하는 api 추가
                     widget.userData.bsti = userBSTI;
+                    final acne = acneDataStore.getMinScore();
+                    dashScore.saveData('acne', acne!);
+                    dashScore.postData(widget.userData.id);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
