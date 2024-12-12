@@ -20,11 +20,11 @@ class DecideBSTI {
     const int pivotDO = 40;
 
     // dryness 값 조정.
-    scalingData['dryness'] =
+    scalingData['moisture'] =
         (scalingData["pore"]! * poreWeight + surveyInfo.oil * surveyWeight)
             .toInt();
     // dash Score 저장.
-    dashScore.saveData('dryness', scalingData['dryness']!);
+    dashScore.saveData('moisture', scalingData['moisture']! + 20);
     dashScore.saveData('pigmentation', scalingData['pigmentation']?? 0);
     dashScore.saveData('wrinkle', scalingData['wrinkle']!);
     dashScore.saveData('pore', scalingData['pore']!);

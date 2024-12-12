@@ -56,7 +56,7 @@ class _DashPageState extends State<DashPage> {
           // Key를 한글로 변환
           final Map<String, String> keyTranslation = {
             "acne": "여드름",
-            "dryness": "건조도",
+            "moisture": "건조도",
             "pigmentation": "색소침착",
             "wrinkle": "주름",
             "pore": "모공",

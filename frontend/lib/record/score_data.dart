@@ -15,7 +15,7 @@ class DashScore {
     // 필요한 key만 필터링
     final List<String> allowedKeys = [
       'acne',
-      'dryness',
+      'moisture',
       'pigmentation',
       'wrinkle',
       'pore',
