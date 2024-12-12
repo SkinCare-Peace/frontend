@@ -726,6 +726,7 @@ class _RoutinePageState extends State<RoutinePage> {
       BuildContext context, Map<String, dynamic> cosmetic) async {
     String? reason; // 추천 이유저장 변수
 
+    
     try { //i 누르면 추천 이유 불러오기
       reason = await fetchCosmeticRecommendationReason(cosmetic);
     } catch (e) {
