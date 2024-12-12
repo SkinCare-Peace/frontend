@@ -87,7 +87,7 @@ class _Survey3State extends State<Survey3> {
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                     child: Text(
-                      '제출하기기',
+                      '제출하기',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
