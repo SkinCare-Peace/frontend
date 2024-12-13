@@ -7,7 +7,6 @@ import 'package:frontend/face_detection/face_result.dart';
 import 'package:frontend/layout/text.dart';
 import 'package:frontend/record/score_data.dart';
 import 'package:frontend/survey/survey_info.dart';
-import 'package:frontend/survey/survey4.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

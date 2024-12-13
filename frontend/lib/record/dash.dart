@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/colors.dart';
@@ -29,10 +30,11 @@ class _DashPageState extends State<DashPage> {
   final int criterion = 60;
   Map<DateTime, Map<String, int>> skinData = {};
 
-// 날짜 이동
+  DateTime? lastBackPressTime; // 마지막 뒤로가기 버튼 누른 시간
+
+  // 날짜 이동
   void updateDate(int days) {
-    final dates = skinData.keys.toList()
-      ..sort(); // skinData의 키(날짜)를 정렬된 리스트로 변환
+    final dates = skinData.keys.toList()..sort();
     final currentIndex = dates.indexOf(selectedDate);
 
     setState(() {
@@ -132,182 +134,204 @@ class _DashPageState extends State<DashPage> {
   Widget build(BuildContext context) {
     final currentData = skinData[selectedDate] ?? {};
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding:
-            const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
-        child: Column(
-          children: [
-            // 사용자 정보 및 프로필
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ContentTextLeft(
-                      text:
-                          "${widget.userData.bsti} ${utf8.decode(widget.userData.name.runes.toList())}님의\n피부 데이터",
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    const SizedBox(height: 10),
-                    ContentTextLeft(
-                      text:
-                          "${utf8.decode(widget.userData.name.runes.toList())}님! 오늘도 화이팅해요!",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ],
-                ),
-                Image.asset(
-                  BBISTI.bstiBBI(widget.userData.bsti),
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  fit: BoxFit.fitWidth,
-                ),
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        final currentTime = DateTime.now();
+        const duration = Duration(seconds: 2);
+
+        if (lastBackPressTime == null ||
+            currentTime.difference(lastBackPressTime!) > duration) {
+          // 첫 번째 뒤로가기 버튼 클릭
+          lastBackPressTime = currentTime;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('뒤로가기를 한 번 더 누르면 종료됩니다.'),
+              duration: duration,
             ),
-            const SizedBox(height: 20),
-            // 루틴 시작 및 기록 버튼
-            MainButton(
-              text: "루틴 시작하기",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RoutineStartPage(widget.userData),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            MainButton(
-              text: "오늘 피부 기록하기",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoadingPage0(widget.userData),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            // 통계 및 제품 관리 버튼
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                color: AppColors.greyBox,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
+          );
+          return false; // 앱 종료하지 않음
+        }
+        SystemNavigator.pop(); // 앱 종료
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding:
+              const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
+          child: Column(
+            children: [
+              // 사용자 정보 및 프로필
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              Insight(widget.userData, skinData),
-                        ),
-                      );
-                    },
-                    child: const ContentText(
-                      text: "결과 통계",
-                      fontSize: 14,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ContentTextLeft(
+                        text:
+                            "${widget.userData.bsti} ${utf8.decode(widget.userData.name.runes.toList())}님의\n피부 데이터",
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 10),
+                      ContentTextLeft(
+                        text:
+                            "${utf8.decode(widget.userData.name.runes.toList())}님! 오늘도 화이팅해요!",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ],
                   ),
-                  const Text("|", style: TextStyle(fontSize: 25)),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddedProduct(widget.userData),
-                        ),
-                      );
-                    },
-                    child: const ContentText(
-                      text: "보유 제품 관리",
-                      fontSize: 14,
-                    ),
+                  Image.asset(
+                    BBISTI.bstiBBI(widget.userData.bsti),
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    fit: BoxFit.fitWidth,
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            // 날짜 변경 및 데이터 표시
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  onPressed: () => updateDate(-1),
+              const SizedBox(height: 20),
+              // 루틴 시작 및 기록 버튼
+              MainButton(
+                text: "루틴 시작하기",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RoutineStartPage(widget.userData),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              MainButton(
+                text: "오늘 피부 기록하기",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoadingPage0(widget.userData),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              // 통계 및 제품 관리 버튼
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.greyBox,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.greyBox,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w700),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  onPressed: () => updateDate(1),
-                ),
-              ],
-            ),
-            Expanded(
-              child: currentData.isNotEmpty
-                  ? Scrollbar(
-                      thumbVisibility: true, // 스크롤바 항상 표시
-                      radius: const Radius.circular(20),
-                      interactive: true,
-                      child: ListView(
-                        children: currentData.entries.map((entry) {
-                          return ListTile(
-                            title: Text(
-                              entry.key,
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: SizedBox(
-                              height: 20, // ProgressIndicator의 높이를 지정
-                              child: LinearProgressIndicator(
-                                value: entry.value / 100,
-                                color: entry.value >= criterion
-                                    ? AppColors.positiveScore
-                                    : AppColors.negativeScore,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 240, 240, 240),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            trailing: Text(
-                              "${entry.value}점",
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w500),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    )
-                  : const Center(
-                      child: ContentText(
-                        text: "데이터가 없습니다.",
-                        fontSize: 16,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Insight(widget.userData, skinData),
+                          ),
+                        );
+                      },
+                      child: const ContentText(
+                        text: "결과 통계",
+                        fontSize: 14,
                       ),
                     ),
-            ),
-          ],
+                    const Text("|", style: TextStyle(fontSize: 25)),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddedProduct(widget.userData),
+                          ),
+                        );
+                      },
+                      child: const ContentText(
+                        text: "보유 제품 관리",
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // 날짜 변경 및 데이터 표시
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    onPressed: () => updateDate(-1),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.greyBox,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}",
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    onPressed: () => updateDate(1),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: currentData.isNotEmpty
+                    ? Scrollbar(
+                        thumbVisibility: true, // 스크롤바 항상 표시
+                        radius: const Radius.circular(20),
+                        interactive: true,
+                        child: ListView(
+                          children: currentData.entries.map((entry) {
+                            return ListTile(
+                              title: Text(
+                                entry.key,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: SizedBox(
+                                height: 20, // ProgressIndicator의 높이를 지정
+                                child: LinearProgressIndicator(
+                                  value: entry.value / 100,
+                                  color: entry.value >= criterion
+                                      ? AppColors.positiveScore
+                                      : AppColors.negativeScore,
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 240, 240, 240),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              trailing: Text(
+                                "${entry.value}점",
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w500),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      )
+                    : const Center(
+                        child: ContentText(
+                          text: "데이터가 없습니다.",
+                          fontSize: 16,
+                        ),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );

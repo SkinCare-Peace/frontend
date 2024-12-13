@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/record/dash.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/Constants/scalling.dart';
 import 'package:frontend/addProduct/add_main.dart';
 import 'package:frontend/Constants/colors.dart';
 import 'package:frontend/Constants/bsti_bbi_image.dart';
@@ -51,10 +51,11 @@ class _BSTIState extends State<BSTI> {
         };
 
         // 정규화된 데이터를 저장
-        final translatedData = (responseData['statistics'] as Map<String, dynamic>)
-            .values
-            .first
-            .map((k, v) => MapEntry(keyTranslation[k] ?? k, v));
+        final translatedData =
+            (responseData['statistics'] as Map<String, dynamic>)
+                .values
+                .first
+                .map((k, v) => MapEntry(keyTranslation[k] ?? k, v));
 
         setState(() {
           skinData = Map<String, int>.from(translatedData);
@@ -208,20 +209,36 @@ class _BSTIState extends State<BSTI> {
                 ),
               ),
               const SizedBox(height: 5),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: MainButton(
-                  text: "나만의 루틴 시작하기",
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddSkinCareMain(widget.userData),
+              widget.userData.routineId.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: MainButton(
+                        text: "나만의 루틴 시작하기",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AddSkinCareMain(widget.userData),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: MainButton(
+                        text: "대시보드 가기",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DashPage(widget.userData),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
             ],
           ),
         ),

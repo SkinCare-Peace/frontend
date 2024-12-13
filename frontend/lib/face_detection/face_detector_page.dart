@@ -66,14 +66,10 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   );
   // BSTI 화면으로 이동
   void _navigateToBSTI() {
-    //if widget.userData.점수:
-    //bsti 계산 로직 돌려서 유저 데이터 패치
-    //대시보드로 바로 꽂기
-    print('Navigating to BSTI screen...');
+    if (widget.userData.bsti.isEmpty) print('Navigating to BSTI screen...');
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        //builder: (context) => BSTI(widget.userData), // UserData 전달
         builder: (context) => Survey1(widget.userData, surveyInfo),
       ),
     );
