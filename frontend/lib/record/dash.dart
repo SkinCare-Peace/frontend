@@ -83,6 +83,9 @@ class _DashPageState extends State<DashPage> {
 
         setState(() {
           skinData = convertedStatistics;
+          if (skinData.isNotEmpty) {
+            selectedDate = skinData.keys.reduce((a, b) => a.isAfter(b) ? a : b);
+          }
         });
 
         print('데이터 로드 성공: $convertedStatistics');

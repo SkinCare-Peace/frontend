@@ -66,6 +66,9 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   );
   // BSTI 화면으로 이동
   void _navigateToBSTI() {
+    //if widget.userData.점수:
+    //bsti 계산 로직 돌려서 유저 데이터 패치
+    //대시보드로 바로 꽂기
     print('Navigating to BSTI screen...');
     Navigator.pushReplacement(
       context,
@@ -216,7 +219,8 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
           if (response.statusCode == 200) {
             print('####### $regionName 데이터 전송 성공');
             print('####### 응답 body: $responseBody');
-            await processServerResponse_acne(regionName, responseBody); // 응답 처리 호출
+            await processServerResponse_acne(
+                regionName, responseBody); // 응답 처리 호출
           } else if (response.statusCode == 404) {
             print('####### $regionName 데이터 전송 실패: Not Found (404)');
           } else if (response.statusCode == 400) {

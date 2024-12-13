@@ -144,17 +144,14 @@ class _Survey3State extends State<Survey3> {
 
       if (response.statusCode == 200) {
         // 성공적으로 전송한 경우
-         final String userBSTI = DecideBSTI.whichBSTI(
-                        widget.surveyInfo, widget.userData);
-                    updateBSTIStatus(
-                        userBSTI, widget.userData); // bsti를 사용자 정보로 put
-                    // 위 userBSTI string을 사용자 정보로 push하는 api 추가
-                    widget.userData.bsti = userBSTI;
-                    final acne = acneDataStore.getMinScore();
-                    dashScore.saveData('acne', acne!);
-                    dashScore.postData(widget.userData.id);
-
-
+        final String userBSTI =
+            DecideBSTI.whichBSTI(widget.surveyInfo, widget.userData);
+        updateBSTIStatus(userBSTI, widget.userData); // bsti를 사용자 정보로 put
+        // 위 userBSTI string을 사용자 정보로 push하는 api 추가
+        widget.userData.bsti = userBSTI;
+        final acne = acneDataStore.getMinScore();
+        dashScore.saveData('acne', acne!);
+        await dashScore.postData(widget.userData.id);
 
         Navigator.push(
           context,

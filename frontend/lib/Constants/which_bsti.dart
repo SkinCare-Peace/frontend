@@ -25,10 +25,13 @@ class DecideBSTI {
             .toInt();
     // dash Score 저장.
     dashScore.saveData('moisture', scalingData['moisture']! + 20);
-    dashScore.saveData('pigmentation', scalingData['pigmentation']! <0 ? scalingData['pigmentation']!: 100);
-    dashScore.saveData('wrinkle', scalingData['wrinkle']!);
+    dashScore.saveData('pigmentation',
+        scalingData['pigmentation']! < 0 ? scalingData['pigmentation']! : 100);
+    dashScore.saveData('wrinkle', scalingData['wrinkle']! ~/ 2 + 50);
     dashScore.saveData('pore', scalingData['pore']!);
-    dashScore.saveData('elasticity', scalingData['elasticity']!, 
+    dashScore.saveData(
+      'elasticity',
+      scalingData['elasticity']! ~/ 2 + 50,
     );
 
 // D:건성	O:지성
