@@ -98,13 +98,11 @@ class LoginInput extends StatelessWidget {
                                         LoadingPage0(userData),
                                   ));
                             } else {
-                              if (userData.routineId.isNotEmpty) {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => DashPage(userData),
                                     ));
-                              }
                             }
                           } else {
                             print("로그인에 실패했습니다.");

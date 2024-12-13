@@ -29,10 +29,20 @@ class _DashPageState extends State<DashPage> {
   final int criterion = 60;
   Map<DateTime, Map<String, int>> skinData = {};
 
-  // 날짜 이동
+// 날짜 이동
   void updateDate(int days) {
+    final dates = skinData.keys.toList()
+      ..sort(); // skinData의 키(날짜)를 정렬된 리스트로 변환
+    final currentIndex = dates.indexOf(selectedDate);
+
     setState(() {
-      selectedDate = selectedDate.add(Duration(days: days));
+      if (days < 0 && currentIndex > 0) {
+        // 이전 날짜로 이동
+        selectedDate = dates[currentIndex - 1];
+      } else if (days > 0 && currentIndex < dates.length - 1) {
+        // 다음 날짜로 이동
+        selectedDate = dates[currentIndex + 1];
+      }
     });
   }
 
@@ -196,7 +206,8 @@ class _DashPageState extends State<DashPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Insight(widget.userData, skinData),
+                          builder: (context) =>
+                              Insight(widget.userData, skinData),
                         ),
                       );
                     },
