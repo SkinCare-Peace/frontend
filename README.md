@@ -1,70 +1,81 @@
-## Frontend
+# CAPSTONE PROJECT Team - YANGMAL
+<img width="1419" alt="스크린샷 2024-12-17 오후 4 21 17" src="https://github.com/user-attachments/assets/76103d1e-cf46-4bcc-b756-fe90009b0b21" />
 
-파일 설명
+## About The Project
+**PEACE**는 사용자의 피부 상태를 분석하여, 사용자에게 맞는 루틴과 화장품을 추천하고 관리를 도와주는 어플리케이션 입니다<br/>
+**PEACE** is an application that analyzes the user's skin condition, recommends routine and skincare products suitable for the user, and helps with management.<br/>
 
-### Constants
-- bsti_bbi_image.dart : bsti별 BBI 이미지 parsing
-- colors.dart : 자주 사용하는 색 상수화
-- null_parsing.dart : 로그인/회원가입 시 전달받은 정보의 null을 ""로 parsing
-- scalling.dart : 백엔드 응답 데이터를 정규화 (0~100)
-- user_data.dart : 사용자의 정보를 다루는 class
-- which_bsti.dart : 사용자의 bsti를 판별하여 반환. (모델+설문)
-</br>
+<br/>
 
-### loading : 로딩과 관련된 페이지 
- - loading_page0.dart :  처음 로딩 페이지
- - loading_page1.dart :  설문 전 로딩페이지
- - loading_page2.dart :  루틴생성 로딩 페이지
- - loading_face_result : 얼굴 인식 결과 보여주기전 로딩 페이지
-</br>
+## 🔗 Figma Link
+https://www.figma.com/design/Ahb5aNUIbc7hKTc3jDVRnD/%EC%96%91%EB%A7%90%ED%8C%80-Peace?node-id=0-1&p=f&t=tbe1JUiOnojWbaaR-0
 
-### addProduct : 현재 있는 제품 추가하기 (건너띄기 누르면 loading_page1로 간다)
- - add_byName.dart : 제품명으로 보유 제품을 검색했을때 이 페이지로 넘어감. 제품을 클릭하고 상세를 볼 수 있음 (현재 백 연결 x)
- - add_main.dart : 보유 제품을 추가하는 메인 페이지로, 검색,장바구니를 들어갈 수 있음(여기에 카테고리 팝업도 존재)
- - added_product : 현재 추가된 제품을 보여주는 로직 (현재 백 연결 x)
-</br>
+## ⚙️ Tech Stack
+### Front-end 
 
-### face_detection : 얼굴인식 관련
+![flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
 
- - camera_view.dart : 카메라관련 설정들
- - face_detector_pager.dart : 얼굴 인식 페이지 (여기서 모든 처리가 이루어짐 ex: 서버 요청, 얼굴 틀, 등)
- - guidline.dart : 얼굴 인식 전, 제공되는 가이드라인 페이지
- - face_result.dart : 얼굴 인식결과 (더미데이터)
- - bbox.dart : 얼굴의 각 영역을 bbox로 따오는 부분
- - toserver.dart : 얼굴 인식을 백에게 전송하는 로직
+### Back-end
 
-</br>
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-### record
-- calendar_post.dart : 루틴 실천 날짜 정보를 요청
-- calendar.dart : 루틴 실천 기록 캘린더 표시
-- dash : 사용자의 메인 정보
-- insight : 사용자의 피부 정보 통계
-</br>
+![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
 
-### survey
-- survey_info.dart : 설문 결과를 담고 있음.
-- survey1~4 : 설문 문항
-</br>
+### ML
 
-### login : 로그인 관련
-</br>
+![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-### question : 설문 관련
- - question1.dart : 써본 화장품
- - question2.dart : 투자시간
- - question3.dart : 투자 비용
-</br>
+### IDE
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
-### routines : 루틴 생성, 관리 관련
- - complete.dart : 루틴 완료를 축하하는 화면
- - routine_create.dart : 루틴을 생성하는 화면 (화장품 추천로직 포함)
- - routine_start.dart : 생성된 루틴이 있으면, 이 페이지에서 루틴을 실천할 수 있다
- - routine_sucessfuly_create : "루틴을 저장중이에요" 로딩페이지
+### Coummunication Tool  
+![github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
+![notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)   
 
-</br>
+### OS
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
 
-### main.dart : 메인
+<br/>
 
+## ✅ Required environment
+### Front-end
+Flutter SDK: 3.22.1 or higher
+
+Dart SDK: 2.4.1 or higher
+
+### Back-end
+Python 3.11 or higher
+
+<br/>
+
+## 👍 Key features
+- **피부 분석 기능**🍎  <br/>
+Skin condition analysis through face recognition & model
+
+- **맞춤 루틴 생성**  <br/>
+customized routine based on skin analysis!
+
+- **깔끔한 ui** 😎 <br/>
+Dope & clean ui 😏
+
+
+<br/>
+
+
+## Contributors
+### Ryu soo jung   
+@shu030929
+
+### Lee sang yun    
+@Handoni    
+
+### Hyun so young   
+@thdudgus
+
+
+<img width="814" alt="스크린샷 2024-12-17 오후 4 33 21" src="https://github.com/user-attachments/assets/ebfa5e83-f1ee-4ea0-b2e9-0c243bcc65c2" />
 
 
