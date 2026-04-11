@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 
 class LoadingFaceResult extends StatefulWidget {
-
   final UserData userData; // UserData 필드 추가
   const LoadingFaceResult(this.userData, {super.key}); // UserData를 생성자에서 받음
 
   @override
-  _LoadingFaceResult  createState() => _LoadingFaceResult();
+  _LoadingFaceResult createState() => _LoadingFaceResult();
 }
 
-class _LoadingFaceResult  extends State<LoadingFaceResult > {
+class _LoadingFaceResult extends State<LoadingFaceResult> {
   final ScrollController _scrollController = ScrollController();
   late Timer _timer;
 
@@ -33,7 +32,7 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
     _timer = Timer.periodic(const Duration(milliseconds: 50), (Timer timer) {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
-      double scrollStep = 3.0; // 스크롤 속도 조정하는거 
+      double scrollStep = 3.0; // 스크롤 속도 조정하는거
 
       if (currentScroll + scrollStep >= maxScroll) {
         _scrollController.jumpTo(0); // 끝에 도달하면 처음으로 돌아감
@@ -57,7 +56,7 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
           children: [
             Text(
               '${utf8.decode(widget.userData.name.runes.toList())}님의\n피부를 검사하고 있어요!',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
@@ -65,7 +64,7 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
             ),
             const SizedBox(height: 30), //루틴을 생성중입니다 부터 박스까지 거리
             Container(
-              padding: const EdgeInsets.only( bottom: 50,  top: 20),  //컨테이너 안 패딩
+              padding: const EdgeInsets.only(bottom: 50, top: 20), //컨테이너 안 패딩
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 255, 255, 255),
                 boxShadow: [
@@ -79,9 +78,9 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
                 children: [
                   Text(
                     '${utf8.decode(widget.userData.name.runes.toList())}님의 피부 점수는 ?? 점',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w900,//글씨체 바꿔야할듯
+                      fontWeight: FontWeight.w900, //글씨체 바꿔야할듯
                     ),
                   ),
                   const SizedBox(height: 60),
@@ -92,34 +91,33 @@ class _LoadingFaceResult  extends State<LoadingFaceResult > {
                       scrollDirection: Axis.horizontal,
                       children: [
                         const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/apple.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBIpimple.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/lotion.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBImask.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/heart.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBIhappy.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/soap.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBIsad.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/icc.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/emoji/paint.png'), 
-                        const SizedBox(width: 70),
-                        Image.asset('assets/BBI.png'), 
+                        Image.asset('assets/BBI.png'),
                         const SizedBox(width: 70),
                         Image.asset('assets/emoji/apple.png'),
-                        
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIpimple.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/lotion.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBImask.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/heart.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIhappy.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/soap.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBIsad.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/icc.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBI.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/paint.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/BBI.png'),
+                        const SizedBox(width: 70),
+                        Image.asset('assets/emoji/apple.png'),
                       ],
                     ),
                   ),

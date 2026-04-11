@@ -30,7 +30,8 @@ class _QuestionPage1State extends State<QuestionPage1> {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 40,bottom: 20), // 화면 전체에 패딩 추가
+          padding: const EdgeInsets.only(
+              left: 20, right: 20, top: 40, bottom: 20), // 화면 전체에 패딩 추가
           child: Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -47,7 +48,7 @@ class _QuestionPage1State extends State<QuestionPage1> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 const Text(
                   '없다면 건너 뛰셔도 돼요!',
                   textAlign: TextAlign.center,

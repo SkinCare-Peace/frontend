@@ -1,3 +1,4 @@
+import 'package:frontend/Constants/server_config.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -7,7 +8,7 @@ import 'package:frontend/Constants/user_data.dart'; // Ensure this file contains
 class WebSocketNotificationApp extends StatefulWidget {
   final UserData userData;
 
-  WebSocketNotificationApp({required this.userData});
+  const WebSocketNotificationApp({super.key, required this.userData});
 
   @override
   _WebSocketNotificationAppState createState() =>
@@ -30,7 +31,7 @@ class _WebSocketNotificationAppState extends State<WebSocketNotificationApp> {
 
     // Connect to WebSocket with the user ID
     channel = WebSocketChannel.connect(
-      Uri.parse('ws://3.34.5.57/notifications/ws?user_id=$userId'),
+      Uri.parse('${ServerConfig.wsUrl}/notifications/ws?user_id=$userId'),
     );
 
     // WebSocket message listener
@@ -59,8 +60,8 @@ class _WebSocketNotificationAppState extends State<WebSocketNotificationApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('WebSocket Notifications')),
-      body: Center(child: Text('Listening for notifications...')),
+      appBar: AppBar(title: const Text('WebSocket Notifications')),
+      body: const Center(child: Text('Listening for notifications...')),
     );
   }
 }

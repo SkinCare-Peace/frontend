@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/colors.dart';
@@ -50,7 +51,7 @@ class _DashPageState extends State<DashPage> {
 
   // GET 요청을 통해 데이터 가져오기
   Future<void> fetchSkinData() async {
-    final uri = Uri.parse('http://3.34.5.57/statistics/${widget.userData.id}');
+    final uri = Uri.parse('${ServerConfig.statisticsUrl}/${widget.userData.id}');
 
     try {
       final response = await http.get(uri);

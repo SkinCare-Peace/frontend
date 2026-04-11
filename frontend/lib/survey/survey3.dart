@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/bsti_put.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/Constants/which_bsti.dart';
 import 'package:frontend/face_detection/acne_data.dart';
@@ -187,7 +188,7 @@ class _Survey3State extends State<Survey3> {
   }
 
   Future<http.Response> _sendDataToServer() async {
-    String url = 'http://3.34.5.57/users/${widget.userData.id}'; // API URL 변경
+    String url = '${ServerConfig.usersUrl}/${widget.userData.id}'; // API URL 변경
     final Map<String, dynamic> body = {
       "avoid_ingredients":
           _controller.text.isNotEmpty ? [_controller.text] : [], // 텍스트 필드 데이터

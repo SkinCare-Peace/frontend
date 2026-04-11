@@ -1,6 +1,6 @@
 //루틴 생성화면
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/face_detection/acne_data.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/loading/loading_page2.dart';
 import 'package:frontend/routines/routine_sucessfuly_create.dart';
 import 'package:url_launcher/url_launcher.dart'; // url 열기용
@@ -68,7 +68,7 @@ class _RoutinePageState extends State<RoutinePage> {
         .toList();
 
     // 서버 요청 준비
-    final uri = Uri.parse("http://3.34.5.57/routine/");
+    final uri = Uri.parse("${ServerConfig.routineUrl}");
     final requestBody = jsonEncode({
       "time_minutes": timeMinutes,
       "money_won": moneyWon,
@@ -105,7 +105,7 @@ class _RoutinePageState extends State<RoutinePage> {
   // 사용자가 보유한 화장품 종류 가져오기 *******************************************
   Future<Map<String, List<String>>> fetchUserOwnedCosmetics(
       String userId) async {
-    final uri = Uri.parse("http://3.34.5.57/users/$userId");
+    final uri = Uri.parse("${ServerConfig.usersUrl}/$userId");
 
     final response = await http.get(
       uri,
@@ -147,7 +147,7 @@ class _RoutinePageState extends State<RoutinePage> {
       List<String> cosmeticIds) async {
     List<Map<String, dynamic>> detailedCosmetics = [];
     for (String cosmeticId in cosmeticIds) {
-      final uri = Uri.parse("http://3.34.5.57/cosmetics/$cosmeticId");
+      final uri = Uri.parse("${ServerConfig.cosmeticsUrl}/$cosmeticId");
 
       final response = await http.get(
         uri,
@@ -172,7 +172,7 @@ class _RoutinePageState extends State<RoutinePage> {
     required String cosmeticType,
     required int budget,
   }) async {
-    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation")
+    final uri = Uri.parse("${ServerConfig.cosmeticsUrl}/recommendation")
         .replace(queryParameters: {
       "user_skin_type": skinType,
       "cosmetic_types": cosmeticType,
@@ -338,7 +338,7 @@ class _RoutinePageState extends State<RoutinePage> {
 
 //루틴id 유저한테 저장하기 *******************************************
   Future<void> updateRoutine(String routineId) async {
-    final uri = Uri.parse("http://3.34.5.57/users/${widget.userData.id}");
+    final uri = Uri.parse("${ServerConfig.usersUrl}/${widget.userData.id}");
     final requestBody = jsonEncode({
       "routine_id": routineId, //루틴 id 보내기
     });
@@ -360,7 +360,7 @@ class _RoutinePageState extends State<RoutinePage> {
 //제품 추천 이유 API 호출 함수 ************************************************************
   Future<String> fetchCosmeticRecommendationReason(
       Map<String, dynamic> cosmetic) async {
-    final uri = Uri.parse("http://3.34.5.57/cosmetics/recommendation/reason");
+    final uri = Uri.parse("${ServerConfig.cosmeticsUrl}/recommendation/reason");
 
     final requestBody = jsonEncode({
       "name": cosmetic['name'],
@@ -727,8 +727,8 @@ class _RoutinePageState extends State<RoutinePage> {
       BuildContext context, Map<String, dynamic> cosmetic) async {
     String? reason; // 추천 이유저장 변수
 
-    
-    try { //i 누르면 추천 이유 불러오기
+    try {
+      //i 누르면 추천 이유 불러오기
       reason = await fetchCosmeticRecommendationReason(cosmetic);
     } catch (e) {
       print("추천 이유를 불러오는데 오류가 발생 : $e");
@@ -762,11 +762,11 @@ class _RoutinePageState extends State<RoutinePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
-                Text(
-                  reason ?? '추천 이유 정보 없음',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 15),
-                ),
+                  Text(
+                    reason ?? '추천 이유 정보 없음',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 15),
+                  ),
                   const SizedBox(height: 15),
                   if (cosmetic['image_url'] != null)
                     ClipRRect(

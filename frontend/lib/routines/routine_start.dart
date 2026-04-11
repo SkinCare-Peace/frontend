@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/Constants/user_data.dart';
-import 'package:frontend/face_detection/acne_data.dart';
 import 'package:frontend/loading/loading_page5.dart';
 import 'package:frontend/loading/loading_recreate.dart';
-import 'package:frontend/record/score_data.dart';
 import 'package:http/http.dart' as http;
 import 'complete.dart'; // 완료 페이지
 
@@ -56,7 +55,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
   // 저장된 루틴 가져오기
   Future<List<Map<String, dynamic>>> fetchRoutineSteps() async {
     final uri =
-        Uri.parse('http://3.34.5.57/routine/user/${widget.userData.id}');
+        Uri.parse('${ServerConfig.routineUrl}/user/${widget.userData.id}');
     print('요청 URL (마지막 id 유저id임): $uri');
 
     try {
@@ -390,7 +389,7 @@ class _RoutinePageState extends State<RoutineStartPage> {
     final currentDate = DateTime.now()
         .toIso8601String()
         .split('T')[0]; // 현재 날짜 (yyyy-MM-dd)형식으로 전송
-    final uri = Uri.parse('http://3.34.5.57/routine/record');
+    final uri = Uri.parse('${ServerConfig.routineUrl}/record');
 
     // 완료된 루틴 이름이랑 상태 수집
     final routinePractice = {

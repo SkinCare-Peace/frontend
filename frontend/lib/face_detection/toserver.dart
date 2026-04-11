@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/face_detection/face_result.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Constants/user_data.dart'; // UserData import
 
-Future<void> sendFaceDataToServer(
-    String areaName, Rect boundingBox, File imageFile, BuildContext context, UserData userData) async { // UserData 추가
-  final url = 'http://3.34.5.57/predict/$areaName';
+Future<void> sendFaceDataToServer(String areaName, Rect boundingBox,
+    File imageFile, BuildContext context, UserData userData) async {
+  // UserData 추가
+  final url = '${ServerConfig.baseUrl}/predict/$areaName';
 
   // bbox 데이터를 쉼표로 구분된 문자열로 변환
   final bboxString = boundingBoxToString(boundingBox);

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/addProduct/add_main.dart';
 import 'package:http/http.dart' as http;
@@ -30,11 +31,13 @@ class _AddedProductState extends State<AddedProduct> {
 
     try {
       // 사용자 보유 제품 ID 목록 가져오기
-      final uri = Uri.parse("http://3.34.5.57/users/${widget.userData.id}/cosmetics");
+      final uri =
+          Uri.parse("${ServerConfig.usersUrl}/${widget.userData.id}/cosmetics");
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        final List<dynamic> productIds = json.decode(utf8.decode(response.bodyBytes));
+        final List<dynamic> productIds =
+            json.decode(utf8.decode(response.bodyBytes));
         print("API 응답 데이터: $productIds");
 
         final List<Map<String, dynamic>> fetchedProducts = [];
@@ -49,7 +52,8 @@ class _AddedProductState extends State<AddedProduct> {
           _productList = fetchedProducts;
         });
       } else {
-        print('Failed to fetch user products. Status code: ${response.statusCode}');
+        print(
+            'Failed to fetch user products. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching user products: $e');
@@ -60,9 +64,10 @@ class _AddedProductState extends State<AddedProduct> {
     }
   }
 
-  Future<Map<String, dynamic>?> _fetchProductDetailsById(String productId) async {
+  Future<Map<String, dynamic>?> _fetchProductDetailsById(
+      String productId) async {
     try {
-      final uri = Uri.parse("http://3.34.5.57/cosmetics/$productId");
+      final uri = Uri.parse("${ServerConfig.cosmeticsUrl}/$productId");
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
@@ -73,12 +78,14 @@ class _AddedProductState extends State<AddedProduct> {
           "_id": decodedData["_id"],
           "name": decodedData["name"],
           "brand": decodedData["brand"] ?? "알 수 없음",
-          "image": decodedData["image_url"] ?? "https://via.placeholder.com/150",
+          "image":
+              decodedData["image_url"] ?? "https://via.placeholder.com/150",
           "volume": decodedData["volume"] ?? "알 수 없음",
           "selling_price": decodedData["selling_price"] ?? "가격 정보 없음",
         };
       } else {
-        print('Failed to fetch product details for $productId. Status code: ${response.statusCode}');
+        print(
+            'Failed to fetch product details for $productId. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching product details for $productId: $e');
@@ -88,12 +95,13 @@ class _AddedProductState extends State<AddedProduct> {
 
   void _removeProduct(int index, String productId) async {
     try {
-      final uri = Uri.parse("http://3.34.5.57/users/${widget.userData.id}/cosmetics/$productId");
+      final uri = Uri.parse(
+          "${ServerConfig.usersUrl}/${widget.userData.id}/cosmetics/$productId");
       final response = await http.delete(uri);
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("제품을 삭제했어요 :)")),
+          const SnackBar(content: Text("제품을 삭제했어요 :)")),
         );
         print("제품 삭제함 : $productId");
         setState(() {
@@ -104,8 +112,8 @@ class _AddedProductState extends State<AddedProduct> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("다시 삭제를 시도해보세요 :(")),
-        );
+        const SnackBar(content: Text("다시 삭제를 시도해보세요 :(")),
+      );
       print("제품 삭제 중 오류 발생: $e");
     }
   }
@@ -184,7 +192,8 @@ class _AddedProductState extends State<AddedProduct> {
                                       Icons.delete,
                                       color: Colors.grey,
                                     ),
-                                    onPressed: () => _removeProduct(index, product["_id"]),
+                                    onPressed: () =>
+                                        _removeProduct(index, product["_id"]),
                                   ),
                                 ],
                               ),
@@ -205,7 +214,9 @@ class _AddedProductState extends State<AddedProduct> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: const Color.fromARGB(255, 87, 204, 222), // 텍스트 색상
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    const Color.fromARGB(255, 87, 204, 222), // 텍스트 색상
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 textStyle: const TextStyle(
                   fontSize: 20,

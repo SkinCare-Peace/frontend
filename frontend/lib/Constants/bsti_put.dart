@@ -1,9 +1,10 @@
 import 'dart:convert'; // JSON 변환에 사용
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:http/http.dart' as http; // HTTP 요청에 사용
 
 Future<void> updateBSTIStatus(String userBSTI, UserData userData) async {
-  final url = Uri.parse('http://3.34.5.57/users/${userData.id}'); // 백엔드 주소를 넣어주세요
+  final url = Uri.parse('${ServerConfig.usersUrl}/${userData.id}'); // 백엔드 주소를 넣어주세요
   final headers = {'Content-Type': 'application/json'};
   final body = jsonEncode({'bsti': userBSTI});
 

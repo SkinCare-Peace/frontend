@@ -1,3 +1,4 @@
+import 'package:frontend/Constants/server_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -38,7 +39,7 @@ class DashScore {
     // HTTP POST 요청
     try {
       final response = await http.post(
-        Uri.parse('http://3.34.5.57/statistics/'), // 여기에 API URL 입력
+        Uri.parse('${ServerConfig.statisticsUrl}'), // 여기에 API URL 입력
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestData),
       );

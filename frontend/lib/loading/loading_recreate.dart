@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/loading/loading_page1.dart';
-import 'package:frontend/question/question1.dart';
 
 class ReCreate extends StatelessWidget {
   final UserData userData; // UserData 필드 추가

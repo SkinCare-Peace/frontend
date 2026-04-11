@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:frontend/Constants/null_parsing.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http;
 
 Future<UserData?> fetchUserData(String email) async {
-  final url = Uri.parse('http://3.34.5.57/users/email/$email'); // 실제 엔드포인트로 변경
+  final url = Uri.parse('${ServerConfig.usersUrl}/email/$email'); // 실제 엔드포인트로 변경
 
   try {
     final response =

@@ -77,31 +77,33 @@ class RegressionDataStore {
   Map<String, double> aggregateData(
       Map<String, Map<String, double>> inputData) {
     final result = <String, double>{};
+    
+    print('####### Aggregating data from: ${inputData.keys.toList()}');
+
     // moisture, elasticity, wrinkle 평균 계산
-    for (var category in ["moisture", "elasticity", "wrinkle"]) {
+    for (var category in ["moisture", "elasticity", "wrinkle", "pigmentation"]) {
       if (inputData.containsKey(category)) {
         final values = inputData[category]!.values;
         if (values.isNotEmpty) {
           result[category] = values.reduce((a, b) => a + b) / values.length;
+          print('####### Category $category aggregated value: ${result[category]}');
         }
+      } else {
+        print('####### Category $category is MISSING in inputData');
       }
     }
-    // pore에서 최대값 선택
+
+    // pore에서 최대값 선택 (모공은 가장 안 좋은 부위를 기준으로 함)
     if (inputData.containsKey("pore")) {
       final values = inputData["pore"]!.values;
       if (values.isNotEmpty) {
         result["pore"] = values.reduce((a, b) => a > b ? a : b);
+        print('####### Category pore aggregated value (max): ${result["pore"]}');
       }
+    } else {
+      print('####### Category pore is MISSING in inputData');
     }
 
-        if (_categoryBasedData.containsKey("pigmentation")) {
-      final pigmentationValue =
-          _categoryBasedData["pigmentation"]?.values.first;
-      if (pigmentationValue != null) {
-        result["pigmentation"] =
-            pigmentationValue * (result["pigmentation"] ?? 1.0);
-      }
-    }
     return result;
   }
 }

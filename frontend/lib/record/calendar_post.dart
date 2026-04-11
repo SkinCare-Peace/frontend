@@ -1,10 +1,11 @@
+import 'package:frontend/Constants/server_config.dart';
 import 'dart:convert';
 import 'package:frontend/Constants/user_data.dart';
 import 'package:http/http.dart' as http;
 
 // user_id를 받아 해당 사용자의 routine 데이터를 가져와서 List<DateTime> 반환하는 함수
 Future<List<DateTime>> fetchMarkedDates(UserData userData) async {
-  final url = Uri.parse("http://3.34.5.57/routine/${userData.id}");
+  final url = Uri.parse("${ServerConfig.routineUrl}/${userData.id}");
 
   try {
     final response = await http.get(url);
