@@ -1,3 +1,4 @@
+import 'package:frontend/Constants/server_config.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -18,7 +19,7 @@ class Calander extends StatefulWidget {
 class _CalanderState extends State<Calander> {
   Future<void> fetchRecords() async {
     final uri =
-        Uri.parse('http://3.34.5.57/routine/record/${widget.userData.id}');
+        Uri.parse('${ServerConfig.routineUrl}/record/${widget.userData.id}');
     try {
       final response = await http.get(uri);
       if (response.statusCode == 200) {

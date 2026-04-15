@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Constants/bsti_bbi_image.dart';
 import 'package:frontend/Constants/colors.dart';
@@ -50,7 +51,7 @@ class _DashPageState extends State<DashPage> {
 
   // GET 요청을 통해 데이터 가져오기
   Future<void> fetchSkinData() async {
-    final uri = Uri.parse('http://3.34.5.57/statistics/${widget.userData.id}');
+    final uri = Uri.parse('${ServerConfig.statisticsUrl}/${widget.userData.id}');
 
     try {
       final response = await http.get(uri);
@@ -92,8 +93,10 @@ class _DashPageState extends State<DashPage> {
 
         print('데이터 로드 성공: $convertedStatistics');
       } else if (response.statusCode == 404) {
-        print('에러: Not Found (404)');
-        _showErrorDialog('데이터를 찾을 수 없습니다.');
+        print('데이터 없음: 404 (새 사용자)');
+        setState(() {
+          skinData = {};
+        });
       } else if (response.statusCode == 422) {
         print('에러: Validation Error (422)');
         _showErrorDialog('요청이 유효하지 않습니다.');

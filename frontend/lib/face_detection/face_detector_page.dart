@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/user_data.dart';
+import 'package:frontend/Constants/server_config.dart';
 import 'package:frontend/face_detection/acne_data.dart';
 import 'package:frontend/face_detection/regression_data.dart';
 import 'package:frontend/loading/loading_face_result.dart';
@@ -165,7 +166,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   // 서버로 데이터 전송
   Future<void> _sendDataToServer(
       String areaName, Rect boundingBox, File imageFile) async {
-    final url = Uri.parse('http://3.34.5.57/predict/$areaName');
+    final url = Uri.parse('${ServerConfig.baseUrl}/predict/$areaName');
     final bboxString = boundingBoxToString(boundingBox);
 
     try {
@@ -192,7 +193,7 @@ class _FaceDetectorPageState extends State<FaceDetectorPage> {
   // 서버로 데이터 전송 for 여드름
   Future<void> sendAcneDataOnlyCheeks(
       Map<String, Rect> faceRegions, File imageFile) async {
-    final url = Uri.parse('http://3.34.5.57/acne_detection/');
+    final url = Uri.parse(ServerConfig.acneDetectionUrl);
 
     // l_cheek과 r_cheek만 전송
     final cheekRegions = ["l_cheek", "r_cheek"];

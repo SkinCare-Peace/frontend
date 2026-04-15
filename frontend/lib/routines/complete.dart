@@ -5,9 +5,9 @@ import 'package:frontend/Constants/user_data.dart';
 import 'package:frontend/record/dash.dart';
 
 class CompletePage extends StatelessWidget {
-  final UserData userData; // user Data 전달 받기 
+  final UserData userData; // user Data 전달 받기
 
-  const CompletePage({Key? key, required this.userData}) : super(key: key);
+  const CompletePage({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +19,7 @@ class CompletePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-               Text(
+              Text(
                 '${utf8.decode(userData.name.runes.toList())}님! 루틴을 완료하셨어요!',
                 style: const TextStyle(
                   fontSize: 27,
@@ -39,11 +38,11 @@ class CompletePage extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               Image.asset(
-              'assets/BBIcongs.png',
-              width: 200,
-              height: 200,
-            ),
-            const SizedBox(height: 80),
+                'assets/BBIcongs.png',
+                width: 200,
+                height: 200,
+              ),
+              const SizedBox(height: 80),
               // 홈으로 돌아가기 버튼
               ElevatedButton(
                 onPressed: () {
@@ -51,10 +50,12 @@ class CompletePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DashPage(userData), // DashPage로 이동
-                    ),);
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor: const Color.fromARGB(255, 87, 204, 222),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -63,10 +64,9 @@ class CompletePage extends StatelessWidget {
                 child: const Text(
                   '홈으로 돌아가기',
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700
-                  ),
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700),
                 ),
               ),
             ],

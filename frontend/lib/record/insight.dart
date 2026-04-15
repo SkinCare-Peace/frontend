@@ -1,3 +1,4 @@
+import 'package:frontend/Constants/server_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _InsightState extends State<Insight> {
   Map<DateTime, Map<String, int>> skinData = {};
 
   Future<void> fetchSkinData( ) async {
-    final uri = Uri.parse('http://3.34.5.57/statistics/${widget.userData.id}');
+    final uri = Uri.parse('${ServerConfig.statisticsUrl}/${widget.userData.id}');
 
     try {
       final response = await http.get(uri);

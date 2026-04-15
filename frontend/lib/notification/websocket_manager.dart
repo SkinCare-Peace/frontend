@@ -1,4 +1,5 @@
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:frontend/Constants/server_config.dart';
 
 class WebSocketManager {
   final String userId;
@@ -9,7 +10,7 @@ class WebSocketManager {
   // WebSocket 연결
   void connect(void Function(String) onMessageReceived) {
     _channel = WebSocketChannel.connect(
-      Uri.parse('ws://3.34.5.57/notifications/ws?user_id=$userId'),
+      Uri.parse('${ServerConfig.wsUrl}/notifications/ws/?user_id=$userId'),
     );
 
     // 메시지 수신 처리

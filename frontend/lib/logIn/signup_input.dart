@@ -80,18 +80,46 @@ class SignupInput extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          final userData = await userRegister(
-                              _nameController.text,
-                              _emailController.text,
-                              _passwordController.text,
-                              int.parse(_ageController.text));
-                          if (userData != null && !isUserDataEmpty(userData)) {
-                            print("회원가입 성공! $userData");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoadingPage0(userData),
-                                ));
+                          if (_nameController.text.isEmpty || 
+                              _emailController.text.isEmpty || 
+                              _passwordController.text.isEmpty || 
+                              _ageController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('모든 필드를 입력해주세요.')),
+                            );
+                            return;
+                          }
+                          
+                          int? age = int.tryParse(_ageController.text);
+                          if (age == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('나이는 숫자로 입력해주세요.')),
+                            );
+                            return;
+                          }
+
+                          try {
+                            final userData = await userRegister(
+                                _nameController.text,
+                                _emailController.text,
+                                _passwordController.text,
+                                age);
+                            if (userData != null && !isUserDataEmpty(userData)) {
+                              print("회원가입 성공! $userData");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoadingPage0(userData),
+                                  ));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('회원가입에 실패했습니다. 이미 등록된 이메일일 수 있습니다.')),
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('에러가 발생했습니다: $e')),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
