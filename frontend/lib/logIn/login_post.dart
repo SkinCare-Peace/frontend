@@ -8,8 +8,9 @@ Future<UserData?> fetchUserData(String email) async {
   final url = Uri.parse('${ServerConfig.usersUrl}/email/$email'); // 실제 엔드포인트로 변경
 
   try {
-    final response =
-        await http.get(url, headers: {'Content-Type': 'application/json'});
+    final response = await http
+        .get(url, headers: {'Content-Type': 'application/json'})
+        .timeout(const Duration(seconds: 10)); // 10초 타임아웃 추가
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http; // HTTP 요청을 위해 필요
 
 Future<UserData?> userRegister(
     String name, String email, String password, int age) async {
-  final url = Uri.parse(ServerConfig.usersUrl); // 백엔드의 엔드포인트
+  final url = Uri.parse("${ServerConfig.usersUrl}/"); // 백엔드의 엔드포인트
   final headers = {'Content-Type': 'application/json'}; // 요청 헤더 설정
   final body = jsonEncode({
     "email": email,

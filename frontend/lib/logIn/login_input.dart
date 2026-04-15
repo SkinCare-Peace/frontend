@@ -73,40 +73,58 @@ class LoginInput extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          final userData =
-                              await fetchUserData(_emailController.text);
-                          if (userData != null && !isUserDataEmpty(userData)) {
-                            print("로그인 성공! $userData");
-                            // WebSocket 연결
-                            _webSocketManager =
-                                WebSocketManager(userId: userData.id);
-                            _webSocketManager!.connect((message) {
-                              // 메시지 처리: WebSocket 메시지를 알림으로 표시
-                              final data = json.decode(message);
-                              final String title = data['title'] ?? "알림";
-                              final String body = data['body'] ?? "내용 없음";
-                              final String image = data['image'] ?? "";
-                              _notificationService.showNotification(
-                                  title, body, image);
-                            });
-                            if (userData.routineId.isEmpty) {
-                              print("~!~!~!~!~!${userData.routineId}");
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        LoadingPage0(userData),
-                                  ));
-                            } else {
+                          print('--- 로그인 버튼 클릭됨 ---'); // 이 로그가 찍히는지 확인해주세요!
+                          if (_emailController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('이메일을 입력해주세요.')),
+                            );
+                            return;
+                          }
+                          try {
+                            print('서버 요청 시작: ${_emailController.text}');
+                            final userData =
+                                await fetchUserData(_emailController.text);
+                            if (userData != null && !isUserDataEmpty(userData)) {
+                              print("로그인 성공! $userData");
+                              // WebSocket 연결
+                              _webSocketManager =
+                                  WebSocketManager(userId: userData.id);
+                              _webSocketManager!.connect((message) {
+                                // 메시지 처리: WebSocket 메시지를 알림으로 표시
+                                final data = json.decode(message);
+                                final String title = data['title'] ?? "알림";
+                                final String body = data['body'] ?? "내용 없음";
+                                final String image = data['image'] ?? "";
+                                _notificationService.showNotification(
+                                    title, body, image);
+                              });
+                              if (userData.routineId.isEmpty) {
+                                print("~!~!~!~!~!${userData.routineId}");
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => DashPage(userData),
+                                      builder: (context) =>
+                                          LoadingPage0(userData),
                                     ));
+                              } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DashPage(userData),
+                                      ));
+                              }
+                            } else {
+                              print("로그인에 실패했습니다.");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('사용자를 찾을 수 없습니다. (이메일 확인 필요)')),
+                              );
                             }
-                          } else {
-                            print("로그인에 실패했습니다.");
-                          } // 추후 팝업으로 변경 필요
+                          } catch (e) {
+                            print("네트워크 에러 발생: $e");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('서버 연결 실패: $e')),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.mainColor),

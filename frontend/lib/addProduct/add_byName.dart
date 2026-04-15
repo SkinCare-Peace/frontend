@@ -150,6 +150,25 @@ class _SearchByNameState extends State<SearchByName> {
                   height: 150,
                   width: 150,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 150,
+                      width: 150,
+                      color: Colors.grey[200],
+                      child: const Icon(Icons.image_not_supported,
+                          color: Colors.grey),
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      height: 150,
+                      width: 150,
+                      color: Colors.grey[100],
+                      child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2)),
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 20),
@@ -255,6 +274,8 @@ class _SearchByNameState extends State<SearchByName> {
                             itemCount: _searchResults.length,
                             itemBuilder: (context, index) {
                               final result = _searchResults[index];
+                              print("이미지");
+                              print(result['image']);
                               return GestureDetector(
                                 onTap: () {
                                   _showProductPopup(context, result);
@@ -269,6 +290,31 @@ class _SearchByNameState extends State<SearchByName> {
                                         height: 170,
                                         width: 170,
                                         fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            height: 170,
+                                            width: 170,
+                                            color: Colors.grey[200],
+                                            child: const Icon(
+                                                Icons.image_not_supported,
+                                                color: Colors.grey),
+                                          );
+                                        },
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Container(
+                                            height: 170,
+                                            width: 170,
+                                            color: Colors.grey[100],
+                                            child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2)),
+                                          );
+                                        },
                                       ),
                                     ),
                                     const SizedBox(height: 5),
