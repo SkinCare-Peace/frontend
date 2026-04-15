@@ -10,7 +10,7 @@ class WebSocketManager {
   // WebSocket 연결
   void connect(void Function(String) onMessageReceived) {
     _channel = WebSocketChannel.connect(
-      Uri.parse('${ServerConfig.wsUrl}/notifications/ws?user_id=$userId'),
+      Uri.parse('${ServerConfig.wsUrl}/notifications/ws/?user_id=$userId'),
     );
 
     // 메시지 수신 처리

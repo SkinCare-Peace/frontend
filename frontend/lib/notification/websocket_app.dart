@@ -31,7 +31,7 @@ class _WebSocketNotificationAppState extends State<WebSocketNotificationApp> {
 
     // Connect to WebSocket with the user ID
     channel = WebSocketChannel.connect(
-      Uri.parse('${ServerConfig.wsUrl}/notifications/ws?user_id=$userId'),
+      Uri.parse('${ServerConfig.wsUrl}/notifications/ws/?user_id=$userId'),
     );
 
     // WebSocket message listener
