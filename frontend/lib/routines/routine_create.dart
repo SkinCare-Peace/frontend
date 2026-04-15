@@ -592,23 +592,30 @@ class _RoutinePageState extends State<RoutinePage> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 10),
-                                  if (recommendedCosmetics[selectedRoutine]![index] == null)
+                                  if (recommendedCosmetics[selectedRoutine]![
+                                          index] ==
+                                      null)
                                     const Text(
                                       '추천 데이터를 불러오는 중입니다...',
                                       style: TextStyle(
                                           fontStyle: FontStyle.italic,
                                           color: Colors.grey),
                                     )
-                                  else if (recommendedCosmetics[selectedRoutine]![index]!.isEmpty)
+                                  else if (recommendedCosmetics[
+                                          selectedRoutine]![index]!
+                                      .isEmpty)
                                     const Text(
                                       '조건에 맞는 상품이 없습니다.',
                                       style: TextStyle(
                                           fontStyle: FontStyle.italic,
-                                          color: Color.fromARGB(255, 255, 114, 114)),
+                                          color: Color.fromARGB(
+                                              255, 255, 114, 114)),
                                     )
                                   else
                                     Column(
-                                      children: recommendedCosmetics[selectedRoutine]![index]!.map((cosmetic) {
+                                      children: recommendedCosmetics[
+                                              selectedRoutine]![index]!
+                                          .map((cosmetic) {
                                         return Padding(
                                           padding: const EdgeInsets.only(
                                               bottom: 10.0),
@@ -625,9 +632,11 @@ class _RoutinePageState extends State<RoutinePage> {
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (context,
                                                         error, stackTrace) {
-                                                      return const Icon(
-                                                          Icons.broken_image,
-                                                          size: 50);
+                                                      return Image.asset(
+                                                        'assets/emoji/appleG.png',
+                                                        height: 25,
+                                                        width: 25,
+                                                      );
                                                     },
                                                   ),
                                                 ),
