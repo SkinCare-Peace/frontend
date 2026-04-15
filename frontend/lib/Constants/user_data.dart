@@ -43,7 +43,7 @@ class UserData {
           ? List<String>.from(json['skin_concerns'])
           : [],
       sensitive: (json['has_sensitive_skin'] is bool)
-          ? json['has_sensitive_skin'] is bool
+          ? json['has_sensitive_skin']
           : false,
       avoidIngredients: json['avoid_ingredients'] is Iterable
           ? List<String>.from(json['avoid_ingredients'])

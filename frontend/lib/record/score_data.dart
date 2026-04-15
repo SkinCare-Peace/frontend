@@ -13,8 +13,8 @@ class DashScore {
 
     // 데이터를 서버로 POST 요청
   Future<String> postData(String userId) async {
-    // 필요한 key만 필터링
-    final List<String> allowedKeys = [
+    // 필요한 key만 필터링하고 모든 필수 키가 존재하도록 보장
+    final List<String> requiredKeys = [
       'acne',
       'moisture',
       'pigmentation',
@@ -22,9 +22,11 @@ class DashScore {
       'pore',
       'elasticity'
     ];
-    final Map<String, int> filteredScores = Map.fromEntries(
-      _dashScoreData.entries.where((entry) => allowedKeys.contains(entry.key)),
-    );
+    
+    final Map<String, int> filteredScores = {};
+    for (var key in requiredKeys) {
+      filteredScores[key] = _dashScoreData[key] ?? 100; // 기본값 100으로 설정 (필요시 조정 가능)
+    }
 
     // 현재 날짜 가져오기
     final String currentDate = DateTime.now().toIso8601String().split('T').first;
@@ -39,7 +41,7 @@ class DashScore {
     // HTTP POST 요청
     try {
       final response = await http.post(
-        Uri.parse('${ServerConfig.statisticsUrl}'), // 여기에 API URL 입력
+        Uri.parse('${ServerConfig.statisticsUrl}/'), // 여기에 API URL 입력
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestData),
       );

@@ -93,8 +93,10 @@ class _DashPageState extends State<DashPage> {
 
         print('데이터 로드 성공: $convertedStatistics');
       } else if (response.statusCode == 404) {
-        print('에러: Not Found (404)');
-        _showErrorDialog('데이터를 찾을 수 없습니다.');
+        print('데이터 없음: 404 (새 사용자)');
+        setState(() {
+          skinData = {};
+        });
       } else if (response.statusCode == 422) {
         print('에러: Validation Error (422)');
         _showErrorDialog('요청이 유효하지 않습니다.');

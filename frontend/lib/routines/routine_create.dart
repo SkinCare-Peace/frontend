@@ -30,7 +30,7 @@ class _RoutinePageState extends State<RoutinePage> {
   bool isLoading = true;
   List<Map<String, dynamic>> routineSteps = [];
   late List<bool> isExpandedList;
-  Map<String, Map<int, List<Map<String, dynamic>>>> recommendedCosmetics = {
+  Map<String, Map<int, List<Map<String, dynamic>>?>> recommendedCosmetics = {
     "morning": {}, // 아침 화장품
     "evening": {}, // 저녁 화장품
   };
@@ -68,7 +68,7 @@ class _RoutinePageState extends State<RoutinePage> {
         .toList();
 
     // 서버 요청 준비
-    final uri = Uri.parse("${ServerConfig.routineUrl}");
+    final uri = Uri.parse("${ServerConfig.routineUrl}/");
     final requestBody = jsonEncode({
       "time_minutes": timeMinutes,
       "money_won": moneyWon,
@@ -198,6 +198,10 @@ class _RoutinePageState extends State<RoutinePage> {
       final List<dynamic> data = json.decode(decodedResponse);
       print("Received recommendation response: $data");
       return List<Map<String, dynamic>>.from(data);
+    } else if (response.statusCode == 404) {
+      // 조건에 맞는 제품이 없는 경우 빈 리스트 반환
+      print("No products found for $cosmeticType");
+      return [];
     } else {
       final errorResponse = utf8.decode(response.bodyBytes);
       print("Error fetching recommended cosmetics: $errorResponse");
@@ -285,9 +289,6 @@ class _RoutinePageState extends State<RoutinePage> {
           userCosmetics[cosmeticType] ?? [],
         );
         setState(() {
-          if (!recommendedCosmetics[routineType]!.containsKey(index)) {
-            recommendedCosmetics[routineType]![index] = [];
-          }
           recommendedCosmetics[routineType]![index] = ownedCosmetics;
         });
         return; // 요청 안보내고 return
@@ -301,14 +302,15 @@ class _RoutinePageState extends State<RoutinePage> {
       );
 
       setState(() {
-        if (!recommendedCosmetics[routineType]!.containsKey(index)) {
-          recommendedCosmetics[routineType]![index] = [];
-        }
         recommendedCosmetics[routineType]![index] = cosmetics;
       });
     } catch (e) {
       print(
           "Error fetching cosmetics for step $index in $routineType routine: $e");
+      setState(() {
+        // 에러 발생 시 빈 리스트를 넣어 무한 로딩 방지
+        recommendedCosmetics[routineType]![index] = [];
+      });
     }
   }
 
@@ -590,16 +592,23 @@ class _RoutinePageState extends State<RoutinePage> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 10),
-                                  if (cosmetics.isEmpty)
+                                  if (recommendedCosmetics[selectedRoutine]![index] == null)
                                     const Text(
                                       '추천 데이터를 불러오는 중입니다...',
                                       style: TextStyle(
                                           fontStyle: FontStyle.italic,
                                           color: Colors.grey),
                                     )
+                                  else if (recommendedCosmetics[selectedRoutine]![index]!.isEmpty)
+                                    const Text(
+                                      '조건에 맞는 상품이 없습니다.',
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          color: Color.fromARGB(255, 255, 114, 114)),
+                                    )
                                   else
                                     Column(
-                                      children: cosmetics.map((cosmetic) {
+                                      children: recommendedCosmetics[selectedRoutine]![index]!.map((cosmetic) {
                                         return Padding(
                                           padding: const EdgeInsets.only(
                                               bottom: 10.0),
